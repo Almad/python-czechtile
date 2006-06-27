@@ -47,7 +47,7 @@ classifiers=[
     "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Natural Language :: Czech"
+    "Natural Language :: Czech",
     "Topic :: Software Development :: Documentation",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Text Processing",
