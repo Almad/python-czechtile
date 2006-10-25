@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-""" Implementation of Czechtile WikiSyntax
+""" Czechtile: WikiHezky Cesky
+Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
 """
 
 __version__ = 0.1
 
 ###
-#RpgWiki: Fuel for your wiki
+#Czechtile: WikiHezkyCesky
 #Copyright (C) 2006 Lukas "Almad" Linhart http://www.almad.net/
 #
 #This library is free software; you can redistribute it and/or
@@ -24,7 +25,3 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-def transform(wikiText):
-    """ Simple transformation from Czechtile text to HTML."""
-    #TODO: write ,)
-    return ''.join(['<html>', str(wikiText), '</html>'])
