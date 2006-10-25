@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Czechtile: WikiHezky Cesky
-Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
+""" Macros
 """
 
 __version__ = 0.1
@@ -25,22 +24,16 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-
-from sneakylang import *
-
-import parsers
+from sneakylang import Macro
 import nodes
-import macros
-import expanders
 
-registerMap = {
-    parsers.Document : Register([])
-}
+class Document(Macro):
+    name = 'document'
+    help = '<toto makro se nikdy nepouziva explicitne>'
 
-expanderMap = {
-    'docbook4' : {
-        nodes.Document : expanders.DocumentDocbook4
-    },
-    'docbook5' : {
-    }
-}
+    def expand(self, content):
+        doc = node.Document()
+        nodes = parse(content, self.registerMap)
+        for n in nodes:
+            doc.addChild(n)
+        return doc

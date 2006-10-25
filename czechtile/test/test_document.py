@@ -1,10 +1,5 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-""" Czechtile: WikiHezky Cesky
-Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
-"""
-
-__version__ = 0.1
 
 ###
 #Czechtile: WikiHezkyCesky
@@ -25,22 +20,27 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
+from os import pardir, tmpfile, remove
+from os.path import join
+import sys
+sys.path.insert(0, join(pardir, pardir))
+import logging
+import re
 
-from sneakylang import *
+from unittest import main,TestCase
 
-import parsers
-import nodes
-import macros
-import expanders
+#logging.basicConfig(level=logging.DEBUG)
 
-registerMap = {
-    parsers.Document : Register([])
-}
+from czechtile import *
 
-expanderMap = {
-    'docbook4' : {
-        nodes.Document : expanders.DocumentDocbook4
-    },
-    'docbook5' : {
-    }
-}
+### Define basic grammar
+# This wiki have only paragraps (\n\n) and headings (=)
+
+class TestParsing(TestCase):
+
+    def testBasicDocbook(self):
+        tree = parse('', registerMap)
+        res = expand(tree, 'docbook4', expanderMap)
+
+if __name__ == "__main__":
+    main()

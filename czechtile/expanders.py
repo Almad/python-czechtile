@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Czechtile: WikiHezky Cesky
-Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
+""" Expanders
 """
 
 __version__ = 0.1
@@ -25,22 +24,11 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
+from sneakylang import Expander
 
-from sneakylang import *
-
-import parsers
-import nodes
-import macros
-import expanders
-
-registerMap = {
-    parsers.Document : Register([])
-}
-
-expanderMap = {
-    'docbook4' : {
-        nodes.Document : expanders.DocumentDocbook4
-    },
-    'docbook5' : {
-    }
-}
+class DocumentDocbook4(Expander):
+    def expand(self, node, format, node_map):
+        return ''.join(['''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book>'''] + [expand(child, format, node_map) for child in self.node.children] + ['</book>'])

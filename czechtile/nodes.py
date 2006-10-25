@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """ Czechtile: WikiHezky Cesky
-Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
+Set Nodes
 """
 
 __version__ = 0.1
@@ -25,22 +25,6 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
+from sneakylang import Node
 
-from sneakylang import *
-
-import parsers
-import nodes
-import macros
-import expanders
-
-registerMap = {
-    parsers.Document : Register([])
-}
-
-expanderMap = {
-    'docbook4' : {
-        nodes.Document : expanders.DocumentDocbook4
-    },
-    'docbook5' : {
-    }
-}
+class Document(Node): pass
