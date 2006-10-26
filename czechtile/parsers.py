@@ -28,10 +28,11 @@ from sneakylang import Parser
 import macros
 
 class Document(Parser):
-    start = ['']
+    start = ['^()$']
     macro = macros.Document
     end = ''
 
     def resolveContent(self):
-        self.content = stream
+        self.content = self.stream
         self.stream = ''
+        self.args = self.content

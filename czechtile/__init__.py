@@ -27,20 +27,28 @@ __version__ = 0.1
 
 
 from sneakylang import *
+import sneakylang
 
-import parsers
 import nodes
 import macros
 import expanders
+import parsers
 
 registerMap = {
     parsers.Document : Register([])
 }
 
-expanderMap = {
+nodeMap = {
     'docbook4' : {
-        nodes.Document : expanders.DocumentDocbook4
+        nodes.Document : expanders.DocumentDocbook4,
+        TextNode : TextNodeExpander
     },
     'docbook5' : {
     }
 }
+
+### overwrite SneakyLang's parse method, we wont' everythink to be wrapped in Document
+def parse(stream, registerMap):
+    parser = parsers.Document(stream, registerMap[parsers.Document], '', registerMap)
+    documentNode = parser.parse()
+    return documentNode

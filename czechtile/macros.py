@@ -24,7 +24,8 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from sneakylang import Macro
+from sneakylang import Macro, parse
+
 import nodes
 
 class Document(Macro):
@@ -32,8 +33,8 @@ class Document(Macro):
     help = '<toto makro se nikdy nepouziva explicitne>'
 
     def expand(self, content):
-        doc = node.Document()
-        nodes = parse(content, self.registerMap)
-        for n in nodes:
+        doc = nodes.Document()
+        child_nodes = parse(content, self.registerMap)
+        for n in child_nodes:
             doc.addChild(n)
         return doc
