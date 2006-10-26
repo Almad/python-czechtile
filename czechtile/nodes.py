@@ -28,3 +28,14 @@ __version__ = 0.1
 from sneakylang import Node
 
 class Document(Node): pass
+
+class Book(Node): pass
+class Article(Node): pass
+class Sekce(Node):pass
+
+class Nadpis(Node):pass
+
+class Odstavec(Node):pass
+
+class Silne(Node):pass
+class Zvyraznene(Node):pass

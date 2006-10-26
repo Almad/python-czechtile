@@ -35,13 +35,23 @@ import expanders
 import parsers
 
 registerMap = {
-    parsers.Document : Register([])
+    parsers.Document : Register([parsers.Book, parsers.Article]),
+    parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
+    parsers.Article : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
+    parsers.Sekce : Register([parsers.Odstavec, parsers.Nadpis]),
+    parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne])
 }
 
 nodeMap = {
     'docbook4' : {
         nodes.Document : expanders.DocumentDocbook4,
-        TextNode : TextNodeExpander
+        nodes.Book : expanders.OdstavecDocbook4,
+        nodes.Article : expanders.ArticleDocbook4,
+        nodes.Sekce : expanders.SekceDocbook4,
+        TextNode : TextNodeExpander,
+        nodes.Odstavec : expanders.OdstavecDocbook4,
+        nodes.Silne : expanders.SilneDocbook4,
+        nodes.Zvyraznene : expanders.ZvyrazneneDocbook4
     },
     'docbook5' : {
     }

@@ -28,11 +28,43 @@ from sneakylang import Parser
 import macros
 
 class Document(Parser):
-    start = ['^()$']
+    start = None
     macro = macros.Document
-    end = ''
 
     def resolveContent(self):
         self.content = self.stream
         self.stream = ''
         self.args = self.content
+
+class Book(Document):
+    start = None
+    macro = macros.Book
+    end = ''
+
+class Article(Document):
+    start = None
+    macro = macros.Article
+
+class Sekce(Document):
+    start = None
+    macro = macros.Sekce
+
+class Odstavec(Parser):
+    start = ['^(\n){2}$']
+    end = ['^(\n){2}$']
+    macro = macros.Odstavec
+
+class Silne(Parser):
+    start = ['^("){3}$']
+    end = ['^("){3}$']
+    macro = macros.Silne
+
+class Zvyraznene(Parser):
+    start = ['^("){2}$']
+    end = ['^("){2}$']
+    macro = macros.Zvyraznene
+
+class Nadpis(Parser):
+    start = ['^(=){1,5}$']
+    end = ['^(=){1,5}$']
+    macro = macros.Nadpis

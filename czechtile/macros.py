@@ -38,3 +38,31 @@ class Document(Macro):
         for n in child_nodes:
             doc.addChild(n)
         return doc
+
+class Book(Document):
+    name = 'kniha'
+    help = '((kniha text knihy))'
+
+class Article(Document):
+    name = 'clanek'
+    help = '((clanek text clanku))'
+
+class Sekce(Document):
+    name = 'sekce'
+    help = '((sekce text sekce))'
+
+class Nadpis(Macro):
+    name = 'nadpis'
+    help = '((nadpis cislo_urovne text nadpisu))'
+
+class Odstavec(Macro):
+    name = 'odstavec'
+    help = '((odstavec text odstavce))'
+
+class Zvyraznene(Macro):
+    name = 'zvyraznene'
+    help = '((zvyraznene zesilneny text))'
+
+class Silne(Macro):
+    name = 'silne'
+    help = '((silne zesilneny text))'
