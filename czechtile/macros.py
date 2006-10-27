@@ -24,7 +24,7 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from sneakylang import Macro, parse
+from sneakylang import Macro, parse, TextNode
 
 import nodes
 
@@ -54,7 +54,7 @@ class Article(Macro):
 
     def expand(self, content):
         doc = nodes.Article()
-        child_nodes = parse(content, self.registerMap)
+        child_nodes = parse(content, self.registerMap, self.register)
         for n in child_nodes:
             doc.addChild(n)
         return doc
@@ -67,9 +67,20 @@ class Nadpis(Macro):
     name = 'nadpis'
     help = '((nadpis cislo_urovne text nadpisu))'
 
+    def expand(self, level, content):
+        node = nodes.Nadpis()
+        node.level = level
+        tn = TextNode()
+        tn.content = content
+        node.addChild(tn)
+        return node
+
 class Odstavec(Macro):
     name = 'odstavec'
     help = '((odstavec text odstavce))'
+
+    def expand(self, args):
+        return nodes.Odstavec()
 
 class Zvyraznene(Macro):
     name = 'zvyraznene'

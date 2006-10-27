@@ -30,22 +30,17 @@ import re
 from unittest import main,TestCase
 from czechtile import *
 
+#logging.basicConfig(level=logging.DEBUG)
+
 class TestResult(TestCase):
 
-    def testBasicArticle(self):
-        tree = parse('doc', registerMap)
-        res = expand(tree, 'docbook4', nodeMap)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>doc</article>''')
+    def testResolving(self):
+        tree = parse('''= Nadpis =\n\nOdstavec''', registerMap)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
+        self.assertEquals(tree.children[0].children[0].children[0].content, 'Nadpis')
+        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[1].children[0].content, 'Odstavec')
 
-    def testBasicBook(self):
-        tree = parse('doc', registerMap, parsers.Book)
-        self.assertEquals(isinstance(tree.children[0], nodes.Book), True)
-        res = expand(tree, 'docbook4', nodeMap)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book>doc</book>''')
 
 if __name__ == "__main__":
     main()

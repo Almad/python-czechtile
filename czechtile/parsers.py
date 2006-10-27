@@ -24,7 +24,9 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from sneakylang import Parser
+import re
+
+from sneakylang import Parser, ParserRollback
 import macros
 
 class Document(Parser):
@@ -68,8 +70,11 @@ class Sekce(Document):
 
 class Odstavec(Parser):
     start = ['^(\n){2}$']
-    end = ['^(\n){2}$']
+    end = '^(\n){2}$'
     macro = macros.Odstavec
+
+    def resolveContent(self):
+        pass
 
 class Silne(Parser):
     start = ['^("){3}$']
@@ -82,6 +87,25 @@ class Zvyraznene(Parser):
     macro = macros.Zvyraznene
 
 class Nadpis(Parser):
-    start = ['^(=){1,5}$']
-    end = ['^(=){1,5}$']
+    start = ['^(\n)?(=){1,5}(\ ){1}$']
+    #end same as start match
     macro = macros.Nadpis
+
+    def resolveContent(self):
+        endPattern = self.chunk[:-1]
+        if endPattern.startswith('\n'):
+            endPattern = endPattern[1:]
+        # chunk is \n={n}[whitespace],
+        # end is [whitespace]={n}\n
+        endMatch = re.search(''.join([' ', endPattern, '\n']), self.stream)
+        if not endMatch:
+            raise ParserRollback
+        self.level = len(endPattern)
+        self.content = self.stream[0:endMatch.start()]
+        # end()-1 because we won't eat trailing newline
+        self.chunk_end = self.stream[endMatch.start():endMatch.end()-1]
+        self.stream = self.stream[endMatch.end()-1:]
+
+    def callMacro(self):
+        """ Do proper call to related macro(s) """
+        return self.macro(self.register, self.registerMap).expand(self.level, self.content)

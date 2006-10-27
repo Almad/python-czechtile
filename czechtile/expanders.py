@@ -45,7 +45,7 @@ class SekceDocbook4(Expander):
         return ''.join(['<section>'] + [expand(child, format, node_map) for child in node.children] + ['</section>'])
 
 class NadpisDocbook4(Expander):
-    def expand(self, node, format, node_map):
+    def expand(self, level, node, format, node_map):
         return ''.join(['<title>'] + [expand(child, format, node_map) for child in node.children] + ['</title>'])
 
 class OdstavecDocbook4(Expander):
