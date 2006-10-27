@@ -35,7 +35,7 @@ from czechtile import *
 class TestResult(TestCase):
 
     def testResolving(self):
-        tree = parse('''= Nadpis =\n\nOdstavec''', registerMap)
+        tree = parse('''= Nadpis =\n\nOdstavec\n\n''', registerMap)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[0].children[0].content, 'Nadpis')
         self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)

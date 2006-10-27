@@ -70,11 +70,22 @@ class Sekce(Document):
 
 class Odstavec(Parser):
     start = ['^(\n){2}$']
-    end = '^(\n){2}$'
+    end = '(\n){2}'
     macro = macros.Odstavec
 
     def resolveContent(self):
-        pass
+        end = re.search(self.__class__.end, self.stream)
+        if end:
+            self.args = self.content = self.stream[0:end.start()]
+            self.chunk_end = self.stream[end.start():end.end()]
+            # we're not eating trailing \ns
+            self.stream = self.stream[end.start():]
+        else:
+            #FIXME: now that is problem
+            # either paragraph is until end of document
+            # or it was badly resolved
+            # invent some algorythm on this...
+            raise ParserRollback
 
 class Silne(Parser):
     start = ['^("){3}$']

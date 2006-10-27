@@ -79,8 +79,12 @@ class Odstavec(Macro):
     name = 'odstavec'
     help = '((odstavec text odstavce))'
 
-    def expand(self, args):
-        return nodes.Odstavec()
+    def expand(self, content):
+        node = nodes.Odstavec()
+        child_nodes = parse(content, self.registerMap, self.register)
+        for n in child_nodes:
+            node.addChild(n)
+        return node
 
 class Zvyraznene(Macro):
     name = 'zvyraznene'
