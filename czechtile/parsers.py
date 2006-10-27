@@ -31,19 +31,36 @@ class Document(Parser):
     start = None
     macro = macros.Document
 
+    def __init__(self, documentType, *args, **kwargs):
+        self.parser = documentType
+        Parser.__init__(self, *args, **kwargs)
+
+    def resolveContent(self):
+        self.content = self.stream
+        self.stream = ''
+
+    def callMacro(self):
+        """ Do proper call to related macro(s) """
+        return self.macro(self.register, self.registerMap).expand(self.content, self.parser)
+
+class Book(Parser):
+    start = None
+    macro = macros.Book
+    end = ''
+
     def resolveContent(self):
         self.content = self.stream
         self.stream = ''
         self.args = self.content
 
-class Book(Document):
-    start = None
-    macro = macros.Book
-    end = ''
-
-class Article(Document):
+class Article(Parser):
     start = None
     macro = macros.Article
+
+    def resolveContent(self):
+        self.content = self.stream
+        self.stream = ''
+        self.args = self.content
 
 class Sekce(Document):
     start = None

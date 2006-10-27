@@ -32,20 +32,32 @@ class Document(Macro):
     name = 'document'
     help = '<toto makro se nikdy nepouziva explicitne>'
 
-    def expand(self, content):
+    def expand(self, content, parser):
         doc = nodes.Document()
+        doc.addChild(parser.parse())
+        return doc
+
+class Book(Macro):
+    name = 'kniha'
+    help = '((kniha text knihy))'
+
+    def expand(self, content):
+        doc = nodes.Book()
         child_nodes = parse(content, self.registerMap)
         for n in child_nodes:
             doc.addChild(n)
         return doc
 
-class Book(Document):
-    name = 'kniha'
-    help = '((kniha text knihy))'
-
-class Article(Document):
+class Article(Macro):
     name = 'clanek'
     help = '((clanek text clanku))'
+
+    def expand(self, content):
+        doc = nodes.Article()
+        child_nodes = parse(content, self.registerMap)
+        for n in child_nodes:
+            doc.addChild(n)
+        return doc
 
 class Sekce(Document):
     name = 'sekce'

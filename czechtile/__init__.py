@@ -34,6 +34,7 @@ import macros
 import expanders
 import parsers
 
+# map parsers to regiters with nodes allowed
 registerMap = {
     parsers.Document : Register([parsers.Book, parsers.Article]),
     parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
@@ -42,10 +43,12 @@ registerMap = {
     parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne])
 }
 
+
+# map nodes to expanders
 nodeMap = {
     'docbook4' : {
         nodes.Document : expanders.DocumentDocbook4,
-        nodes.Book : expanders.OdstavecDocbook4,
+        nodes.Book : expanders.BookDocbook4,
         nodes.Article : expanders.ArticleDocbook4,
         nodes.Sekce : expanders.SekceDocbook4,
         TextNode : TextNodeExpander,
@@ -58,7 +61,7 @@ nodeMap = {
 }
 
 ### overwrite SneakyLang's parse method, we wont' everythink to be wrapped in Document
-def parse(stream, registerMap):
-    parser = parsers.Document(stream, registerMap[parsers.Document], '', registerMap)
+def parse(stream, registerMap, documentType=parsers.Article):
+    parser = parsers.Document(documentType(stream, registerMap[documentType], '', registerMap), stream, registerMap[parsers.Document], '', registerMap)
     documentNode = parser.parse()
     return documentNode

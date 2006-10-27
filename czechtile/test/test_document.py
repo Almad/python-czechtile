@@ -32,13 +32,20 @@ from czechtile import *
 
 class TestParsing(TestCase):
 
-    def testBasicDocbook(self):
+    def testBasicArticle(self):
         tree = parse('doc', registerMap)
         res = expand(tree, 'docbook4', nodeMap)
-#        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-#<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-#    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
-#<book>doc</book>''')
+        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>doc</article>''')
+
+    def testBasicBook(self):
+        tree = parse('doc', registerMap, parsers.Book)
+        self.assertEquals(isinstance(tree.children[0], nodes.Book), True)
+        res = expand(tree, 'docbook4', nodeMap)
+        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book>doc</book>''')
 
 if __name__ == "__main__":
     main()
