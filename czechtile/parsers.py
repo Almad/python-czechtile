@@ -69,23 +69,17 @@ class Sekce(Document):
     macro = macros.Sekce
 
 class Odstavec(Parser):
-    start = ['^(\n){2}$']
-    end = '(\n){2}'
+    start = None
+    end = None
     macro = macros.Odstavec
 
     def resolveContent(self):
-        end = re.search(self.__class__.end, self.stream)
-        if end:
-            self.args = self.content = self.stream[0:end.start()]
-            self.chunk_end = self.stream[end.start():end.end()]
-            # we're not eating trailing \ns
-            self.stream = self.stream[end.start():]
-        else:
-            #FIXME: now that is problem
-            # either paragraph is until end of document
-            # or it was badly resolved
-            # invent some algorythm on this...
-            raise ParserRollback
+        """ Odstavec parser is called only and only on unbound TextNodes; thus,
+        all content of TextNode is Paragraph
+        """
+        self.content = self.stream
+        self.stream = ''
+        self.args = self.content
 
 class Silne(Parser):
     start = ['^("){3}$']

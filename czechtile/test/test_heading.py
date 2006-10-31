@@ -41,6 +41,12 @@ class TestResult(TestCase):
         self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[1].children[0].content, 'Odstavec')
 
+        tree = parse('''= Nadpis =\n\nOdst avec\n\n''', registerMap)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
+        self.assertEquals(tree.children[0].children[0].children[0].content, 'Nadpis')
+        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[1].children[0].content, 'Odst avec')
+
 
 if __name__ == "__main__":
     main()

@@ -24,9 +24,14 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from sneakylang import Macro, parse, TextNode
+import re
 
+from sneakylang import Macro, parse, TextNode
 import nodes
+
+def _wrapText(textNode, register, registerMap):
+    """ Wrap unbound TextNode to Paragraph """
+    return Odstavec(register, registerMap).expand(re.sub("^(\s)*", "", re.sub("(\s)*$", "", textNode.content)))
 
 class Document(Macro):
     name = 'document'
@@ -45,7 +50,10 @@ class Book(Macro):
         doc = nodes.Book()
         child_nodes = parse(content, self.registerMap)
         for n in child_nodes:
-            doc.addChild(n)
+            if isinstance(n, TextNode):
+                doc.addChild(_wrapText(n, self.register, self.registerMap))
+            else:
+                doc.addChild(n)
         return doc
 
 class Article(Macro):
@@ -56,7 +64,10 @@ class Article(Macro):
         doc = nodes.Article()
         child_nodes = parse(content, self.registerMap, self.register)
         for n in child_nodes:
-            doc.addChild(n)
+            if isinstance(n, TextNode):
+                doc.addChild(_wrapText(n, self.register, self.registerMap))
+            else:
+                doc.addChild(n)
         return doc
 
 class Sekce(Document):
