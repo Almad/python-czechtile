@@ -37,7 +37,7 @@ class TestResult(TestCase):
         res = expand(tree, 'docbook4', nodeMap)
         self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>doc</article>''')
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para>doc</para></article>''')
 
     def testBasicBook(self):
         tree = parse('doc', registerMap, parsers.Book)
@@ -45,7 +45,7 @@ class TestResult(TestCase):
         res = expand(tree, 'docbook4', nodeMap)
         self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book>doc</book>''')
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book><para>doc</para></book>''')
 
 if __name__ == "__main__":
     main()
