@@ -28,17 +28,17 @@ from sneakylang import Expander, expand
 
 class DocumentDocbook4(Expander):
     def expand(self, node, format, node_map):
-        return ''.join(['''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">'''] + [expand(child, format, node_map) for child in node.children])
+        return ''.join(['<?xml version="1.0" encoding="UTF-8"?>\n'] + [expand(child, format, node_map) for child in node.children])
 
 class BookDocbook4(Expander):
     def expand(self, node, format, node_map):
-        return ''.join(['<book>'] + [expand(child, format, node_map) for child in node.children] + ['</book>'])
+        return ''.join(['''<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book>'''] + [expand(child, format, node_map) for child in node.children] + ['</book>'])
 
 class ArticleDocbook4(Expander):
     def expand(self, node, format, node_map):
-        return ''.join(['<article>'] + [expand(child, format, node_map) for child in node.children] + ['</article>'])
+        return ''.join(['''<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>'''] + [expand(child, format, node_map) for child in node.children] + ['</article>'])
 
 class SekceDocbook4(Expander):
     def expand(self, node, format, node_map):

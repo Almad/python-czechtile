@@ -44,7 +44,7 @@ class TestResult(TestCase):
         self.assertEquals(isinstance(tree.children[0], nodes.Book), True)
         res = expand(tree, 'docbook4', nodeMap)
         self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
     "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book><para>doc</para></book>''')
 
 if __name__ == "__main__":
