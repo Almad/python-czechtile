@@ -1,11 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" Czechtile: WikiHezky Cesky
-Set Nodes
+""" Test nahrazovani na peknou ceskou typografii
 """
-
-__version__ = 0.1
-
 ###
 #Czechtile: WikiHezkyCesky
 #Copyright (C) 2006 Lukas "Almad" Linhart http://www.almad.net/
@@ -25,19 +22,27 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from sneakylang import Node
+from os import pardir, tmpfile, remove
+from os.path import join
+import sys
+sys.path.insert(0, join(pardir, pardir))
+import logging
+import re
 
-class Document(Node): pass
+from unittest import main,TestCase
+from czechtile import *
 
-class Book(Node): pass
-class Article(Node): pass
-class Sekce(Node):pass
+#logging.basicConfig(level=logging.DEBUG)
 
-class Nadpis(Node):pass
+class TestResult(TestCase):
 
-class Odstavec(Node):pass
+    def testResolving(self):
+        tree = parse('''Typo hezky cesky...''', registerMap)
+        result = expand(tree, 'docbook4', nodeMap)
+        self.assertEquals(result, '''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para>Typo hezky cesky&#8230</para></article>''')
 
-class Silne(Node):pass
-class Zvyraznene(Node):pass
 
-class TriTecky(Node): pass
+if __name__ == "__main__":
+    main()

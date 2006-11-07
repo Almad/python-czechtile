@@ -30,22 +30,30 @@ import re
 from unittest import main,TestCase
 from czechtile import *
 
-class TestResult(TestCase):
+#logging.basicConfig(level=logging.DEBUG)
 
-    def testBasicArticle(self):
-        tree = parse('doc', registerMap)
+class TestInliners(TestCase):
+
+    def testSilne(self):
+        tree = parse('''"""silne"""''', registerMap)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Silne)
+
         res = expand(tree, 'docbook4', nodeMap)
         self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para>doc</para></article>''')
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para><emphasis role="bold">silne</emphasis></para></article>''')
 
-    def testBasicBook(self):
-        tree = parse('doc', registerMap, parsers.Book)
-        self.assertEquals(isinstance(tree.children[0], nodes.Book), True)
+    def testZvyraznene(self):
+        tree = parse('''""zvyraznene""''', registerMap)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Zvyraznene)
+
         res = expand(tree, 'docbook4', nodeMap)
         self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book><para>doc</para></book>''')
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para><emphasis>zvyraznene</emphasis></para></article>''')
+
 
 if __name__ == "__main__":
     main()

@@ -29,6 +29,9 @@ import re
 from sneakylang import Parser, ParserRollback
 import macros
 
+
+### "Global content" holders ###
+
 class Document(Parser):
     start = None
     macro = macros.Document
@@ -68,6 +71,10 @@ class Sekce(Document):
     start = None
     macro = macros.Sekce
 
+### End of "global content" hodlers ###
+
+### "Block" elements, which should be top-level ###
+
 class Odstavec(Parser):
     start = None
     end = None
@@ -80,16 +87,6 @@ class Odstavec(Parser):
         self.content = self.stream
         self.stream = ''
         self.args = self.content
-
-class Silne(Parser):
-    start = ['^("){3}$']
-    end = ['^("){3}$']
-    macro = macros.Silne
-
-class Zvyraznene(Parser):
-    start = ['^("){2}$']
-    end = ['^("){2}$']
-    macro = macros.Zvyraznene
 
 class Nadpis(Parser):
     start = ['^(\n)?(=){1,5}(\ ){1}$']
@@ -114,3 +111,58 @@ class Nadpis(Parser):
     def callMacro(self):
         """ Do proper call to related macro(s) """
         return self.macro(self.register, self.registerMap).expand(self.level, self.content)
+
+### End of "block" elements ###
+
+### Inline elements, mostly in Paragraphs ####
+
+class Silne(Parser):
+    start = ['^("){3}$']
+    end = '^("){3}$'
+    macro = macros.Silne
+
+    def resolveContent(self):
+        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+        if not endMatch:
+            raise ParserRollback
+        self.content = self.stream[0:endMatch.start()]
+        self.chunk_end = self.stream[endMatch.start():endMatch.end()]
+        self.stream = self.stream[endMatch.end():]
+
+    def callMacro(self):
+        """ Do proper call to related macro(s) """
+        return self.macro(self.register, self.registerMap).expand(self.content)
+
+class Zvyraznene(Parser):
+    start = ['^("){2}$']
+    end = '^("){2}$'
+    macro = macros.Zvyraznene
+
+    def resolveContent(self):
+        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+        if not endMatch:
+            raise ParserRollback
+        self.content = self.stream[0:endMatch.start()]
+        self.chunk_end = self.stream[endMatch.start():endMatch.end()]
+        self.stream = self.stream[endMatch.end():]
+
+    def callMacro(self):
+        """ Do proper call to related macro(s) """
+        return self.macro(self.register, self.registerMap).expand(self.content)
+
+### Typographic parsers - transfer text to czech typographic customs ###
+
+class TriTecky(Parser):
+    start = ['^(\.){3}$']
+    end = None
+    macro = macros.TriTecky
+
+    def resolveContent(self):
+        pass
+
+    def callMacro(self):
+        return self.macro(self.register, self.registerMap).expand()
+
+### End of typographic parsers ###
+
+### End of inline elements ###

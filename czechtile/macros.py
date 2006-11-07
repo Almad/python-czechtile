@@ -31,7 +31,9 @@ import nodes
 
 def _wrapText(textNode, register, registerMap):
     """ Wrap unbound TextNode to Paragraph """
-    return Odstavec(register, registerMap).expand(re.sub("^(\s)*", "", re.sub("(\s)*$", "", textNode.content)))
+    #FIXME: This is considered to be a hack, overwrite registerMap
+    from parsers import Odstavec as OdstavecParser
+    return Odstavec(registerMap[OdstavecParser], registerMap).expand(re.sub("^(\s)*", "", re.sub("(\s)*$", "", textNode.content)))
 
 class Document(Macro):
     name = 'document'
@@ -101,6 +103,27 @@ class Zvyraznene(Macro):
     name = 'zvyraznene'
     help = '((zvyraznene zesilneny text))'
 
+    def expand(self, content):
+        node = nodes.Zvyraznene()
+        child_nodes = parse(content, self.registerMap, self.register)
+        for n in child_nodes:
+            node.addChild(n)
+        return node
+
 class Silne(Macro):
     name = 'silne'
     help = '((silne zesilneny text))'
+
+    def expand(self, content):
+        node = nodes.Silne()
+        child_nodes = parse(content, self.registerMap, self.register)
+        for n in child_nodes:
+            node.addChild(n)
+        return node
+
+class TriTecky(Macro):
+    name = 'tri_tecky'
+    help = '((tri_tecky))'
+
+    def expand(self):
+        return nodes.TriTecky()

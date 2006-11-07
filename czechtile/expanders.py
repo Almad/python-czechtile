@@ -29,7 +29,7 @@ from sneakylang import Expander, expand
 class DocumentDocbook4(Expander):
     def expand(self, node, format, node_map):
         return ''.join(['''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
     "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">'''] + [expand(child, format, node_map) for child in node.children])
 
 class BookDocbook4(Expander):
@@ -56,8 +56,13 @@ class OdstavecDocbook4(Expander):
 
 class SilneDocbook4(Expander):
     def expand(self, node, format, node_map):
-        return ''.join(['<strong>'] + [expand(child, format, node_map) for child in node.children] + ['</strong>'])
+        return ''.join(['<emphasis role="bold">'] + [expand(child, format, node_map) for child in node.children] + ['</emphasis>'])
 
 class ZvyrazneneDocbook4(Expander):
     def expand(self, node, format, node_map):
-        return ''.join(['<strong role="bold">'] + [expand(child, format, node_map) for child in node.children] + ['</strong>'])
+        return ''.join(['<emphasis>'] + [expand(child, format, node_map) for child in node.children] + ['</emphasis>'])
+
+
+class TriTeckyDocbook4(Expander):
+    def expand(self, node, format, node_map):
+        return '&#8230'

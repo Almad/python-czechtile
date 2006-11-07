@@ -40,7 +40,7 @@ registerMap = {
     parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
     parsers.Article : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
     parsers.Sekce : Register([parsers.Odstavec, parsers.Nadpis]),
-    parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne])
+    parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne, parsers.TriTecky])
 }
 
 
@@ -54,7 +54,8 @@ nodeMap = {
         TextNode : TextNodeExpander,
         nodes.Odstavec : expanders.OdstavecDocbook4,
         nodes.Silne : expanders.SilneDocbook4,
-        nodes.Zvyraznene : expanders.ZvyrazneneDocbook4
+        nodes.Zvyraznene : expanders.ZvyrazneneDocbook4,
+        nodes.TriTecky : expanders.TriTeckyDocbook4
     },
     'docbook5' : {
     }
