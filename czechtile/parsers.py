@@ -151,7 +151,7 @@ class Zvyraznene(Parser):
         return self.macro(self.register, self.registerMap).expand(self.content)
 
 class Hyperlink(Parser):
-    start = ['^http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*$']
+    start = ['^http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*$', '^\(http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*$']
     end = '^(\))$'
     macro = macros.Hyperlink
 
@@ -162,7 +162,13 @@ class Hyperlink(Parser):
             self.content = self.chunk
         else:
             # Substitution with arguments, (http://link link text)
-            raise NotImplementedError
+            endMatch = re.search(self.__class__.end[1:-1], self.stream)
+            if not endMatch:
+                raise ParserRollback
+            self.link = self.chunk[1:]
+            self.content = re.sub("^(\s)*", '', self.stream[0:endMatch.start()])
+            self.chunk_end = self.stream[endMatch.start():endMatch.end()]
+            self.stream = self.stream[endMatch.end():]
 
     def callMacro(self):
         """ Do proper call to related macro(s) """
