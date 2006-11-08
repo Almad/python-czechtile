@@ -62,6 +62,9 @@ class ZvyrazneneDocbook4(Expander):
     def expand(self, node, format, node_map):
         return ''.join(['<emphasis>'] + [expand(child, format, node_map) for child in node.children] + ['</emphasis>'])
 
+class HyperlinkDocbook4(Expander):
+    def expand(self, node, format, node_map):
+        return ''.join(['<ulink url="', node.link, '">'] + [expand(child, format, node_map) for child in node.children] + ['</ulink>'])
 
 class TriTeckyDocbook4(Expander):
     def expand(self, node, format, node_map):

@@ -150,6 +150,24 @@ class Zvyraznene(Parser):
         """ Do proper call to related macro(s) """
         return self.macro(self.register, self.registerMap).expand(self.content)
 
+class Hyperlink(Parser):
+    start = ['^http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*$']
+    end = '^(\))$'
+    macro = macros.Hyperlink
+
+    def resolveContent(self):
+        if not self.chunk.startswith('('):
+            # Easy substitution of http://link
+            self.link = self.chunk
+            self.content = self.chunk
+        else:
+            # Substitution with arguments, (http://link link text)
+            raise NotImplementedError
+
+    def callMacro(self):
+        """ Do proper call to related macro(s) """
+        return self.macro(self.register, self.registerMap).expand(self.link, self.content)
+
 ### Typographic parsers - transfer text to czech typographic customs ###
 
 class TriTecky(Parser):

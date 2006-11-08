@@ -39,5 +39,6 @@ class Odstavec(Node):pass
 
 class Silne(Node):pass
 class Zvyraznene(Node):pass
+class Hyperlink(Node): pass
 
 class TriTecky(Node): pass

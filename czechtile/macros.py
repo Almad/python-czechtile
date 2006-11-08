@@ -121,6 +121,24 @@ class Silne(Macro):
             node.addChild(n)
         return node
 
+class Hyperlink(Macro):
+    name = 'link'
+    help = '((link http://adresa/linku text linku))'
+
+    def expand(self, link, content):
+        node = nodes.Hyperlink()
+        node.link = link
+        if link == content:
+            tn = TextNode()
+            tn.content = content
+            node.addChild(tn)
+        else:
+            child_nodes = parse(content, self.registerMap, self.register)
+            for n in child_nodes:
+                node.addChild(n)
+        return node
+
+
 class TriTecky(Macro):
     name = 'tri_tecky'
     help = '((tri_tecky))'

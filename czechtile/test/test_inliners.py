@@ -54,6 +54,21 @@ class TestInliners(TestCase):
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
     "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para><emphasis>zvyraznene</emphasis></para></article>''')
 
+    def testOdkazEasyNahrazovani(self):
+        tree = parse('''http://rpgplanet.cz''', registerMap)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Hyperlink)
+
+        res = expand(tree, 'docbook4', nodeMap)
+        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para><ulink url="http://rpgplanet.cz">http://rpgplanet.cz</ulink></para></article>''')
+
+#    def testOdkaz(self):
+#        tree = parse('''(http://rpgplanet.cz Stranky materskeho projektu)''', registerMap)
+#        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+#        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Hyperlink)
+
 
 if __name__ == "__main__":
     main()
