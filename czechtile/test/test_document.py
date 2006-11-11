@@ -27,25 +27,24 @@ sys.path.insert(0, join(pardir, pardir))
 import logging
 import re
 
-from unittest import main,TestCase
+from unittest import main
 from czechtile import *
 
-class TestResult(TestCase):
+from module_test import *
+
+class TestResult(OutputTestCase):
 
     def testBasicArticle(self):
         tree = parse('doc', registerMap)
         res = expand(tree, 'docbook4', nodeMap)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para>doc</para></article>''')
+        self.assertDocbook4('''<para>doc</para>''', res)
 
     def testBasicBook(self):
         tree = parse('doc', registerMap, parsers.Book)
         self.assertEquals(isinstance(tree.children[0], nodes.Book), True)
         res = expand(tree, 'docbook4', nodeMap)
         self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book><para>doc</para></book>''')
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book><para>doc</para></book>''')
 
 if __name__ == "__main__":
     main()

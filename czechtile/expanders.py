@@ -30,15 +30,25 @@ class DocumentDocbook4(Expander):
     def expand(self, node, format, node_map):
         return ''.join(['<?xml version="1.0" encoding="UTF-8"?>\n'] + [expand(child, format, node_map) for child in node.children])
 
+class DocumentXhtml11(Expander):
+    def expand(self, node, format, node_map):
+        return ''.join(['<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">'] + [expand(child, format, node_map) for child in node.children]+['</html>'])
+
 class BookDocbook4(Expander):
     def expand(self, node, format, node_map):
-        return ''.join(['''<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book>'''] + [expand(child, format, node_map) for child in node.children] + ['</book>'])
+        return ''.join(['''<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book>'''] + [expand(child, format, node_map) for child in node.children] + ['</book>'])
+
+class BookXhtml11(Expander):
+    def expand(self, node, format, node_map):
+        return ''.join(['''<body class="book">'''] + [expand(child, format, node_map) for child in node.children] + ['</body>'])
 
 class ArticleDocbook4(Expander):
     def expand(self, node, format, node_map):
-        return ''.join(['''<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>'''] + [expand(child, format, node_map) for child in node.children] + ['</article>'])
+        return ''.join(['''<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>'''] + [expand(child, format, node_map) for child in node.children] + ['</article>'])
+
+class ArticleXhtml11(Expander):
+    def expand(self, node, format, node_map):
+        return ''.join(['''<body class="article">'''] + [expand(child, format, node_map) for child in node.children] + ['</body>'])
 
 class SekceDocbook4(Expander):
     def expand(self, node, format, node_map):
@@ -52,6 +62,10 @@ class OdstavecDocbook4(Expander):
     def expand(self, node, format, node_map):
         return ''.join(['<para>'] + [expand(child, format, node_map) for child in node.children] + ['</para>'])
 
+class OdstavecXhtml11(Expander):
+    def expand(self, node, format, node_map):
+        return ''.join(['<p>'] + [expand(child, format, node_map) for child in node.children] + ['</p>'])
+
 #TODO: zesilene vs. silne v docbook
 
 class SilneDocbook4(Expander):
@@ -61,6 +75,10 @@ class SilneDocbook4(Expander):
 class ZvyrazneneDocbook4(Expander):
     def expand(self, node, format, node_map):
         return ''.join(['<emphasis>'] + [expand(child, format, node_map) for child in node.children] + ['</emphasis>'])
+
+class ZvyrazneneXhtml11(Expander):
+    def expand(self, node, format, node_map):
+        return ''.join(['<em>'] + [expand(child, format, node_map) for child in node.children] + ['</em>'])
 
 class HyperlinkDocbook4(Expander):
     def expand(self, node, format, node_map):

@@ -1,8 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" Test nahrazovani na peknou ceskou typografii
-"""
 ###
 #Czechtile: WikiHezkyCesky
 #Copyright (C) 2006 Lukas "Almad" Linhart http://www.almad.net/
@@ -22,26 +19,12 @@
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from os import pardir, tmpfile, remove
-from os.path import join
-import sys
-sys.path.insert(0, join(pardir, pardir))
-import logging
-import re
+import unittest
 
-from unittest import main
-from czechtile import *
+class OutputTestCase(unittest.TestCase):
+    
+    def assertXhtml(self, txt, out):
+        return self.assertEquals(''.join(['''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs"><body class="article">''', txt, '</body></html>']), out)
 
-from module_test import *
-#logging.basicConfig(level=logging.DEBUG)
-
-class TestResult(OutputTestCase):
-
-    def testResolving(self):
-        tree = parse('''Typo hezky cesky...''', registerMap)
-        result = expand(tree, 'docbook4', nodeMap)
-        self.assertDocbook4('''<para>Typo hezky cesky&#8230</para>''', result)
-
-
-if __name__ == "__main__":
-    main()
+    def assertDocbook4(self, txt, out):
+        return self.assertEquals(''.join(['''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>''', txt, '</article>']), out)

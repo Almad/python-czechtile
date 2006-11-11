@@ -27,12 +27,13 @@ sys.path.insert(0, join(pardir, pardir))
 import logging
 import re
 
-from unittest import main,TestCase
+from unittest import main, TestCase
 from czechtile import *
 
+from module_test import *
 #logging.basicConfig(level=logging.DEBUG)
 
-class TestSilne(TestCase):
+class TestSilne(OutputTestCase):
 
     def testSilne(self):
         tree = parse('''"""silne"""''', registerMap)
@@ -40,31 +41,28 @@ class TestSilne(TestCase):
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Silne)
 
         res = expand(tree, 'docbook4', nodeMap)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para><emphasis role="bold">silne</emphasis></para></article>''')
+        self.assertDocbook4('''<para><emphasis role="bold">silne</emphasis></para>''', res)
 
-class TestZvyraznene(TestCase):
+class TestZvyraznene(OutputTestCase):
     def testZvyraznene(self):
         tree = parse('''""zvyraznene""''', registerMap)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Zvyraznene)
 
         res = expand(tree, 'docbook4', nodeMap)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para><emphasis>zvyraznene</emphasis></para></article>''')
+        self.assertDocbook4('''<para><emphasis>zvyraznene</emphasis></para>''', res)
 
-class TestOdkaz(TestCase):
+        res = expand(tree, 'xhtml11', nodeMap)
+        self.assertXhtml('''<p><em>zvyraznene</em></p>''', res)
+
+class TestOdkaz(OutputTestCase):
     def testOdkazEasyNahrazovani(self):
         tree = parse('''http://rpgplanet.cz''', registerMap)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Hyperlink)
 
         res = expand(tree, 'docbook4', nodeMap)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para><ulink url="http://rpgplanet.cz">http://rpgplanet.cz</ulink></para></article>''')
+        self.assertDocbook4('''<para><ulink url="http://rpgplanet.cz">http://rpgplanet.cz</ulink></para>''', res)
 
     def testOdkaz(self):
         tree = parse('''(http://rpgplanet.cz Stranky materskeho projektu)''', registerMap)
@@ -73,9 +71,7 @@ class TestOdkaz(TestCase):
         self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Stranky materskeho projektu')
 
         res = expand(tree, 'docbook4', nodeMap)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para><ulink url="http://rpgplanet.cz">Stranky materskeho projektu</ulink></para></article>''')
+        self.assertDocbook4('''<para><ulink url="http://rpgplanet.cz">Stranky materskeho projektu</ulink></para>''', res)
 
     def testOdkazBadSyntax(self):
         tree = parse('''(http://rpgplanet.cz Stranky materskeho projektu''', registerMap)
@@ -85,9 +81,7 @@ class TestOdkaz(TestCase):
         self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.Hyperlink)
 
         res = expand(tree, 'docbook4', nodeMap)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para>(<ulink url="http://rpgplanet.cz">http://rpgplanet.cz</ulink> Stranky materskeho projektu</para></article>''')
+        self.assertDocbook4('''<para>(<ulink url="http://rpgplanet.cz">http://rpgplanet.cz</ulink> Stranky materskeho projektu</para>''', res)
 
     def testOdkazWithEmpansedParts(self):
         tree = parse('''(http://rpgplanet.cz Stranky ""materskeho"" """projektu""")''', registerMap)
@@ -99,9 +93,7 @@ class TestOdkaz(TestCase):
         self.assertEquals(tree.children[0].children[0].children[0].children[3].__class__, nodes.Silne)
 
         res = expand(tree, 'docbook4', nodeMap)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article><para><ulink url="http://rpgplanet.cz">Stranky <emphasis>materskeho</emphasis> <emphasis role="bold">projektu</emphasis></ulink></para></article>''')
+        self.assertDocbook4('''<para><ulink url="http://rpgplanet.cz">Stranky <emphasis>materskeho</emphasis> <emphasis role="bold">projektu</emphasis></ulink></para>''', res)
 
 if __name__ == "__main__":
     main()

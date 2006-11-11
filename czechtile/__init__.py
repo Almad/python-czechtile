@@ -61,6 +61,14 @@ nodeMap = {
         nodes.Hyperlink : expanders.HyperlinkDocbook4
     },
     'docbook5' : {
+    },
+    'xhtml11' : {
+        nodes.Document : expanders.DocumentXhtml11,
+        nodes.Book : expanders.BookXhtml11,
+        nodes.Article : expanders.ArticleXhtml11,
+        TextNode : TextNodeExpander,
+        nodes.Odstavec : expanders.OdstavecXhtml11,
+        nodes.Zvyraznene : expanders.ZvyrazneneXhtml11
     }
 }
 
