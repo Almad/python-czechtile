@@ -38,12 +38,12 @@ import parsers
 registerMap = {
     parsers.Document : Register([parsers.Book, parsers.Article]),
     parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
-    parsers.Article : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
     parsers.Sekce : Register([parsers.Odstavec, parsers.Nadpis]),
     parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne,
                        parsers.Hyperlink, parsers.TriTecky]),
     parsers.Hyperlink : Register([])
 }
+registerMap[parsers.Article] = registerMap[parsers.Book]
 
 
 # map nodes to expanders
@@ -54,10 +54,11 @@ nodeMap = {
         nodes.Article : expanders.ArticleDocbook4,
         nodes.Sekce : expanders.SekceDocbook4,
         TextNode : TextNodeExpander,
+        nodes.Nadpis : expanders.NadpisDocbook4,
         nodes.Odstavec : expanders.OdstavecDocbook4,
         nodes.Silne : expanders.SilneDocbook4,
         nodes.Zvyraznene : expanders.ZvyrazneneDocbook4,
-        nodes.TriTecky : expanders.TriTeckyDocbook4,
+        nodes.TriTecky : expanders.TriTeckyEntity,
         nodes.Hyperlink : expanders.HyperlinkDocbook4
     },
     'docbook5' : {
@@ -67,8 +68,12 @@ nodeMap = {
         nodes.Book : expanders.BookXhtml11,
         nodes.Article : expanders.ArticleXhtml11,
         TextNode : TextNodeExpander,
+        nodes.Nadpis : expanders.NadpisXhtml11,
         nodes.Odstavec : expanders.OdstavecXhtml11,
-        nodes.Zvyraznene : expanders.ZvyrazneneXhtml11
+        nodes.Silne : expanders.SilneXhtml11,
+        nodes.Zvyraznene : expanders.ZvyrazneneXhtml11,
+        nodes.TriTecky : expanders.TriTeckyEntity,
+        nodes.Hyperlink : expanders.HyperlinkXhtml11
     }
 }
 

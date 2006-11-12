@@ -30,22 +30,34 @@ import re
 from unittest import main,TestCase
 from czechtile import *
 
+from module_test import *
 #logging.basicConfig(level=logging.DEBUG)
 
-class TestResult(TestCase):
+class TestHeadings(OutputTestCase):
 
-    def testResolving(self):
+    def testSimplest(self):
         tree = parse('''= Nadpis =\n\nOdstavec\n\n''', registerMap)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[0].children[0].content, 'Nadpis')
         self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[1].children[0].content, 'Odstavec')
+        
+        result = expand(tree, 'docbook4', nodeMap)
+        self.assertDocbook4('<title>Nadpis</title><para>Odstavec</para>', result)
 
-        tree = parse('''= Nadpis =\n\nOdst avec\n\n''', registerMap)
+        result = expand(tree, 'xhtml11', nodeMap)
+        self.assertXhtml('<h1>Nadpis</h1><p>Odstavec</p>', result)
+    
+    def testTwolevel(self):
+        tree = parse('= Nadpis =\nOdstavec\n== NadpisDva ==\nOdstavec', registerMap)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[0].children[0].content, 'Nadpis')
         self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[1].children[0].content, 'Odst avec')
+        self.assertEquals(tree.children[0].children[1].children[0].content, 'Odstavec')
+ #       self.assertEquals(tree.children[0].children[2].__class__, nodes.Sekce)
+        
+        result = expand(tree, 'xhtml11', nodeMap)
+        self.assertXhtml('<h1>Nadpis</h1><p>Odstavec</p><h2>NadpisDva</h2><p>Odstavec</p>', result)
 
 
 if __name__ == "__main__":

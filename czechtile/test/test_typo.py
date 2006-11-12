@@ -35,12 +35,15 @@ from czechtile import *
 from module_test import *
 #logging.basicConfig(level=logging.DEBUG)
 
-class TestResult(OutputTestCase):
+class TestCzechTypos(OutputTestCase):
 
-    def testResolving(self):
+    def testTriTecky(self):
         tree = parse('''Typo hezky cesky...''', registerMap)
         result = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('''<para>Typo hezky cesky&#8230</para>''', result)
+
+        result = expand(tree, 'xhtml11', nodeMap)
+        self.assertXhtml('''<p>Typo hezky cesky&#8230</p>''', result)
 
 
 if __name__ == "__main__":

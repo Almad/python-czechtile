@@ -64,6 +64,9 @@ class TestOdkaz(OutputTestCase):
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('''<para><ulink url="http://rpgplanet.cz">http://rpgplanet.cz</ulink></para>''', res)
 
+        res = expand(tree, 'xhtml11', nodeMap)
+        self.assertXhtml('''<p><a href="http://rpgplanet.cz">http://rpgplanet.cz</a></p>''', res)
+
     def testOdkaz(self):
         tree = parse('''(http://rpgplanet.cz Stranky materskeho projektu)''', registerMap)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
@@ -72,6 +75,9 @@ class TestOdkaz(OutputTestCase):
 
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('''<para><ulink url="http://rpgplanet.cz">Stranky materskeho projektu</ulink></para>''', res)
+
+        res = expand(tree, 'xhtml11', nodeMap)
+        self.assertXhtml('''<p><a href="http://rpgplanet.cz">Stranky materskeho projektu</a></p>''', res)
 
     def testOdkazBadSyntax(self):
         tree = parse('''(http://rpgplanet.cz Stranky materskeho projektu''', registerMap)
@@ -82,6 +88,9 @@ class TestOdkaz(OutputTestCase):
 
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('''<para>(<ulink url="http://rpgplanet.cz">http://rpgplanet.cz</ulink> Stranky materskeho projektu</para>''', res)
+
+        res = expand(tree, 'xhtml11', nodeMap)
+        self.assertXhtml('''<p>(<a href="http://rpgplanet.cz">http://rpgplanet.cz</a> Stranky materskeho projektu</p>''', res)
 
     def testOdkazWithEmpansedParts(self):
         tree = parse('''(http://rpgplanet.cz Stranky ""materskeho"" """projektu""")''', registerMap)
@@ -94,6 +103,9 @@ class TestOdkaz(OutputTestCase):
 
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('''<para><ulink url="http://rpgplanet.cz">Stranky <emphasis>materskeho</emphasis> <emphasis role="bold">projektu</emphasis></ulink></para>''', res)
+
+        res = expand(tree, 'xhtml11', nodeMap)
+        self.assertXhtml('''<p><a href="http://rpgplanet.cz">Stranky <em>materskeho</em> <strong>projektu</strong></a></p>''', res)
 
 if __name__ == "__main__":
     main()
