@@ -203,11 +203,13 @@ class List(Parser):
         self.args = self.content
 
 class ListItem(Parser):
-    start = ['^(\ )-(\ )$']
-    end = '^\n$'
+    start = ['^(\ -\ ){1}$']
+    end = '^(\n)$'
     macro = macros.ListItem
 
     def resolveContent(self):
+        # Almad: This is not true, because self.strem is contains REST of whole stream,
+        # not only until newline (or generally, self.__class__.end, so you must identify it
         self.content = self.stream
 # commented because of small problems with type_
 #        if re.search(self.chunk, '^ - '):

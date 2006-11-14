@@ -37,7 +37,7 @@ import parsers
 # map parsers to registers with nodes allowed
 registerMap = {
     parsers.Document : Register([parsers.Book, parsers.Article]),
-    parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
+    parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis, parsers.ListItem]),
     parsers.Sekce : Register([parsers.Odstavec, parsers.Nadpis]),
     parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne,
                        parsers.Hyperlink, parsers.TriTecky, parsers.ListItem]),

@@ -32,15 +32,16 @@ from czechtile import *
 
 from module_test import *
 
+logging.basicConfig(level=logging.DEBUG)
 
 class TestList(OutputTestCase):
 
     def testItemizedList(self):
         tree = parse(''' - Polozka1\n - Polozka2''', registerMap)
-# most of the code is commented because of "IndexError: list index out of range"
-# which sometimes does problems
-# momentarily is causing problems the uncommented line too :(
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.List)
+        #self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.List)
 #        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
 #        self.assertEquals(tree.children[0].children[0].children[0].children[0].__class__, nodes.Odstavec)
 #        self.assertEquals(tree.children[0].children[0].children[0].children[0].children[0].__class__, 'Polozka1')
