@@ -190,3 +190,30 @@ class TriTecky(Parser):
 ### End of typographic parsers ###
 
 ### End of inline elements ###
+
+
+class List(Parser):
+    start = None
+    end = None
+    macro = macros.List
+
+    def resolveContent(self):
+        self.content = self.stream
+        self.stream = ''
+        self.args = self.content
+
+class ListItem(Parser):
+    start = ['^(\ )-(\ )$']
+    end = '^\n$'
+    macro = macros.ListItem
+
+    def resolveContent(self):
+        self.content = self.stream
+# commented because of small problems with type_
+#        if re.search(self.chunk, '^ - '):
+#            self.type_ = 'itemized'
+
+    def callMacro(self):
+        """ Do proper call to related macro(s) """
+        self.macro(self.register, self.registerMap).expand(self.content)
+#        return self.macro(self.register, self.registerMap).expand(self.type_, self.content)

@@ -40,8 +40,9 @@ registerMap = {
     parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
     parsers.Sekce : Register([parsers.Odstavec, parsers.Nadpis]),
     parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne,
-                       parsers.Hyperlink, parsers.TriTecky]),
+                       parsers.Hyperlink, parsers.TriTecky, parsers.ListItem]),
     parsers.Hyperlink : Register([])
+
 }
 registerMap[parsers.Article] = registerMap[parsers.Book]
 
@@ -59,7 +60,9 @@ nodeMap = {
         nodes.Silne : expanders.SilneDocbook4,
         nodes.Zvyraznene : expanders.ZvyrazneneDocbook4,
         nodes.TriTecky : expanders.TriTeckyEntity,
-        nodes.Hyperlink : expanders.HyperlinkDocbook4
+        nodes.Hyperlink : expanders.HyperlinkDocbook4,
+        nodes.List : expanders.ListDocbook4,
+        nodes.ListItem : expanders.ListDocbook4
     },
     'docbook5' : {
     },
@@ -82,3 +85,4 @@ def parse(stream, registerMap, documentType=parsers.Article):
     parser = parsers.Document(documentType(stream, registerMap[documentType], '', registerMap), stream, registerMap[parsers.Document], '', registerMap)
     documentNode = parser.parse()
     return documentNode
+

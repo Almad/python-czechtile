@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 """ Czechtile: WikiHezky Cesky
 Set Nodes
@@ -42,3 +42,6 @@ class Zvyraznene(Node):pass
 class Hyperlink(Node): pass
 
 class TriTecky(Node): pass
+
+class List(Node): pass
+class ListItem(Node): pass

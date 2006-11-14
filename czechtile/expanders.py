@@ -28,7 +28,7 @@ from sneakylang import Expander, expand
 
 class CzechtileExpander:
     """ Expander wrapper."""
-    
+
     def expand_with_content(self, node, format, node_map, prefix='', suffix=''):
         return ''.join([str(prefix)] + [expand(child, format, node_map) for child in node.children] + [str(suffix)])
 
@@ -109,3 +109,11 @@ class HyperlinkXhtml11(CzechtileExpander):
 class TriTeckyEntity(CzechtileExpander):
     def expand(self, node, format, node_map):
         return '&#8230'
+        
+class ListDocbook4(Expander):
+    def expand(self, type_, node, format, node_map):
+        return ''.join(['<itemizedlist>'] + [expand(child, format, node_map) for child in node.children] + ['</itemizedList>'])
+
+class ListItemDocbook4(Expander):
+    def expand(self, node, format, node_map):
+        return ''.join(['<listitem>'] + [expand(child, format, node_map) for child in node.children] + ['</listitem>'])

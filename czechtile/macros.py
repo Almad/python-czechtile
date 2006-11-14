@@ -70,6 +70,7 @@ class Article(Macro):
                 doc.addChild(_wrapText(n, self.register, self.registerMap))
             else:
                 doc.addChild(n)
+
         return doc
 
 class Sekce(Document):
@@ -96,7 +97,15 @@ class Odstavec(Macro):
         node = nodes.Odstavec()
         child_nodes = parse(content, self.registerMap, self.register)
         for n in child_nodes:
-            node.addChild(n)
+            # this is temporary fix - without this
+            # parsing of lists won't work properly
+            # (if it will work at all)
+            if isinstance(n, nodes.ListItem):
+                node.children[0] = nodes.List()
+                node.children[0].addChild(n)
+#            else:
+             # commented because of 'None' object in child_nodes
+#                node.addChild(n)
         return node
 
 class Zvyraznene(Macro):
@@ -145,3 +154,23 @@ class TriTecky(Macro):
 
     def expand(self):
         return nodes.TriTecky()
+
+class ListItem(Macro):
+    name = 'listitem'
+    help = '((listitem text polozky))'
+
+    def expand(self, content):
+        node = nodes.ListItem()
+        child_nodes = parse(content, self.registerMap, self.register)
+        for n in child_nodes:
+            node.addChild(n)
+        return node
+
+
+class List(Macro):
+    name = 'list'
+    help = '((list typ_zoznamu))'
+
+    def expand(self, type_):
+        node = nodes.List()
+        return node
