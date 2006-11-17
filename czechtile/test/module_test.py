@@ -21,10 +21,23 @@
 
 import unittest
 
+import os
+from tempfile import mkstemp
+
 class OutputTestCase(unittest.TestCase):
-    
+
     def assertXhtml(self, txt, out):
         return self.assertEquals(''.join(['''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs"><body class="article">''', txt, '</body></html>']), out)
 
     def assertDocbook4(self, txt, out):
         return self.assertEquals(''.join(['''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>''', txt, '</article>']), out)
+
+# slightly modified, taken from PyArticle
+def getPersistentTmpfile(suffix='.czt', prefix='czechtile_', object=False):
+    fd, fn = mkstemp(suffix=suffix,prefix=prefix)
+    f = os.fdopen(fd, 'w')
+    f.close()
+    if object == True:
+        return open(fn, 'w+b')
+    else:
+        return fn

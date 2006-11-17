@@ -37,12 +37,12 @@ required_python_version = '2.4'
 # arguments for the setup command
 ###############################################################################
 name = "czechtile"
-version = "0.1_alpha1"
+version = "0.1_beta1"
 desc = "Python implementation of Czechtile WikiSyntax"
 long_desc = """Czechtile is WikiSyntax intended to be used on Czech keyboard layout: this is Python module for
 handling Czechtile input and transformation into DocBook and XHTML."""
 classifiers=[
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
     "Operating System :: OS Independent",
@@ -63,6 +63,8 @@ packages=[
 ]
 download_url="http://projects.almad.net/czechtile/wiki/Download"
 data_files=[]
+scripts = ['bin/czechtile']
+
 ###############################################################################
 # end arguments for setup
 ###############################################################################
@@ -80,6 +82,7 @@ def main():
 
     setup(
         name=name,
+        scripts=scripts,
         version=version,
         description=desc,
         long_description=long_desc,

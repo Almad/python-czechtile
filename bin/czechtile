@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" Czechtile: File conversion tool.
+
+Copyright (C) 2006 Lukas Almad Linhart
+"""
+
+###
+#Czechtile: WikiHezkyCesky
+#Copyright (C) 2006 Lukas "Almad" Linhart http://www.almad.net/
+#
+#This library is free software; you can redistribute it and/or
+#modify it under the terms of the GNU Lesser General Public
+#License as published by the Free Software Foundation; either
+#version 2.1 of the License, or (at your option) any later version.
+#
+#This library is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#Lesser General Public License for more details.
+#
+#You should have received a copy of the GNU Lesser General Public
+#License along with this library; if not, write to the Free Software
+#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+###
+
+import os
+from os import pardir
+from os.path import exists
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir)))
+import logging
+
+
+
+from optparse import OptionParser
+
+from czechtile import parse, expand, registerMap, nodeMap
+
+parser = OptionParser()
+
+parser.add_option("", "--debug",
+    action="store_true",
+    default=False,
+    dest="debug",
+    help="Vypsat chybove hlasky")
+
+parser.add_option("-i", "--input-file",
+    action="store",
+    default=None,
+    metavar='FILE',
+    dest="in_file",
+    help="Input file")
+
+parser.add_option("", "--xhtml",
+    action="store",
+    default=None,
+    metavar='FILE',
+    dest="xhtml_file",
+    help="File to store XHTML in")
+
+parser.add_option("", "--docbook4",
+    action="store",
+    metavar='FILE',
+    dest="docbook4_file",
+    help="File to store Docbook 4 in")
+
+
+def _check_options(options, args):
+    if options.debug == True:
+        logging.basicConfig(level=logging.DEBUG)
+
+def readFile(fn):
+	f = open(fn)
+	t = f.read()
+	f.close()
+	return t
+
+def writeFile(fn, content):
+	f = open(fn, 'wb')
+	f.write(content)
+	f.close()
+def main():
+    (options, args) = parser.parse_args()
+    _check_options(options, args)
+
+    txt = readFile(options.in_file)
+    logging.debug('File readed: %s' % txt)
+
+    tree = parse(txt, registerMap)
+
+    if options.xhtml_file is not None:
+        writeFile(options.xhtml_file, expand(tree, 'xhtml11', nodeMap))
+
+    if options.docbook4_file is not None:
+        writeFile(options.docbook4_file, expand(tree, 'docbook4', nodeMap))
+
+
+if __name__ == '__main__':
+    main()
