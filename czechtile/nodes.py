@@ -36,6 +36,7 @@ class Sekce(Node):pass
 class Nadpis(Node):pass
 
 class Odstavec(Node):pass
+class NeformatovanyText(Node):pass
 
 class Silne(Node):pass
 class Zvyraznene(Node):pass

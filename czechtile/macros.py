@@ -107,6 +107,17 @@ class Odstavec(Macro):
                 node.addChild(n)
         return node
 
+class NeformatovanyText(Macro):
+    name = 'neformatovany-text'
+    help = '((neformatovany-text nenaformatovany obsah textu))'
+    
+    def expand(self, content):
+        node = nodes.NeformatovanyText()
+        tn = TextNode()
+        tn.content = content
+        node.addChild(tn)
+        return node
+
 class Zvyraznene(Macro):
     name = 'zvyraznene'
     help = '((zvyraznene zesilneny text))'

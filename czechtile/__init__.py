@@ -37,12 +37,11 @@ import parsers
 # map parsers to registers with nodes allowed
 registerMap = {
     parsers.Document : Register([parsers.Book, parsers.Article]),
-    parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
-    parsers.Sekce : Register([parsers.Odstavec, parsers.Nadpis]),
+    parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText]),
+    parsers.Sekce : Register([parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText]),
     parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne,
                        parsers.Hyperlink, parsers.TriTecky]),
     parsers.Hyperlink : Register([])
-
 }
 registerMap[parsers.Article] = registerMap[parsers.Book]
 
@@ -57,6 +56,7 @@ nodeMap = {
         TextNode : TextNodeExpander,
         nodes.Nadpis : expanders.NadpisDocbook4,
         nodes.Odstavec : expanders.OdstavecDocbook4,
+        nodes.NeformatovanyText : expanders.NeformatovanyTextDocbook4,
         nodes.Silne : expanders.SilneDocbook4,
         nodes.Zvyraznene : expanders.ZvyrazneneDocbook4,
         nodes.TriTecky : expanders.TriTeckyEntity,
@@ -73,6 +73,7 @@ nodeMap = {
         TextNode : TextNodeExpander,
         nodes.Nadpis : expanders.NadpisXhtml11,
         nodes.Odstavec : expanders.OdstavecXhtml11,
+        nodes.NeformatovanyText : expanders.NeformatovanyTextXhtml11,
         nodes.Silne : expanders.SilneXhtml11,
         nodes.Zvyraznene : expanders.ZvyrazneneXhtml11,
         nodes.TriTecky : expanders.TriTeckyEntity,

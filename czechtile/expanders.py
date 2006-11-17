@@ -80,6 +80,14 @@ class OdstavecXhtml11(CzechtileExpander):
     def expand(self, node, format, node_map):
         return self.expand_with_content(node, format, node_map, '<p>', '</p>')
 
+class NeformatovanyTextDocbook4(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, '<literallayout>', '</literallayout>')
+
+class NeformatovanyTextXhtml11(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, '<pre>', '</pre>')
+
 #TODO: zesilene vs. silne v docbook
 
 class SilneDocbook4(CzechtileExpander):

@@ -88,6 +88,23 @@ class Odstavec(Parser):
         self.stream = ''
         self.args = self.content
 
+class NeformatovanyText(Parser):
+    start = ['^(\n§§\n){1}$']
+    end = '^(\n§§\n){1}$'
+    macro = macros.NeformatovanyText
+    
+    def resolveContent(self):
+        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+        if not endMatch:
+            raise ParserRollback
+        
+        self.content = self.stream[0:endMatch.start()]
+        self.stream = self.stream[endMatch.end():]
+
+    def callMacro(self):
+        """ Do proper call to related macro(s) """
+        return self.macro(self.register, self.registerMap).expand(self.content)
+
 class Nadpis(Parser):
     start = ['^(\n)?(=){1,5}(\ ){1}$']
     #end same as start match
