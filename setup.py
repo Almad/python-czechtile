@@ -42,7 +42,7 @@ desc = "Python implementation of Czechtile WikiSyntax"
 long_desc = """Czechtile is WikiSyntax intended to be used on Czech keyboard layout: this is Python module for
 handling Czechtile input and transformation into DocBook and XHTML."""
 classifiers=[
-    "Development Status :: 3 - Beta",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
     "Operating System :: OS Independent",
