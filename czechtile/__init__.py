@@ -37,10 +37,10 @@ import parsers
 # map parsers to registers with nodes allowed
 registerMap = {
     parsers.Document : Register([parsers.Book, parsers.Article]),
-    parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis, parsers.ListItem]),
+    parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis]),
     parsers.Sekce : Register([parsers.Odstavec, parsers.Nadpis]),
     parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne,
-                       parsers.Hyperlink, parsers.TriTecky, parsers.ListItem]),
+                       parsers.Hyperlink, parsers.TriTecky]),
     parsers.Hyperlink : Register([])
 
 }
@@ -60,9 +60,9 @@ nodeMap = {
         nodes.Silne : expanders.SilneDocbook4,
         nodes.Zvyraznene : expanders.ZvyrazneneDocbook4,
         nodes.TriTecky : expanders.TriTeckyEntity,
-        nodes.Hyperlink : expanders.HyperlinkDocbook4,
-        nodes.List : expanders.ListDocbook4,
-        nodes.ListItem : expanders.ListDocbook4
+        nodes.Hyperlink : expanders.HyperlinkDocbook4
+#        nodes.List : expanders.ListDocbook4,
+#        nodes.ListItem : expanders.ListDocbook4
     },
     'docbook5' : {
     },

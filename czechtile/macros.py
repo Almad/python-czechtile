@@ -103,9 +103,8 @@ class Odstavec(Macro):
             if isinstance(n, nodes.ListItem):
                 node.children[0] = nodes.List()
                 node.children[0].addChild(n)
-#            else:
-             # commented because of 'None' object in child_nodes
-#                node.addChild(n)
+            elif n is not None:
+                node.addChild(n)
         return node
 
 class Zvyraznene(Macro):

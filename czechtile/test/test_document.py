@@ -32,6 +32,8 @@ from czechtile import *
 
 from module_test import *
 
+#logging.basicConfig(level=logging.DEBUG)
+
 class TestResult(OutputTestCase):
 
     def testBasicArticle(self):
