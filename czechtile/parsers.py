@@ -48,6 +48,40 @@ class Document(Parser):
         """ Do proper call to related macro(s) """
         return self.macro(self.register, self.registerMap).expand(self.content, self.parser)
 
+class Macro(Parser):
+    start = ['^(\(){2}$']
+    end = '^(\)){2}$'
+    macro = macros.Macro
+
+    def __init__(self, *args, **kwargs):
+        Parser.__init__(self, *args, **kwargs)
+        self.register = self.registerMap[self.__class__]
+
+    def resolveContent(self):
+        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+        if not endMatch:
+            raise ParserRollback
+
+        # content is splitted by commas
+
+        self.content = self.stream[0:endMatch.start()]
+        self.chunk_end = self.stream[endMatch.start():endMatch.end()]
+
+        self.args = self.content.split()
+        self.macroName = self.args.pop(0)
+
+        self.macro = self.register.get_macro(self.macroName)
+        if not self.macro:
+            raise ParserRollback
+
+        # finally, no rollback expected so we can update stream
+        self.stream = self.stream[endMatch.end():]
+
+    def callMacro(self):
+        """ Do proper call to related macro(s) """
+        return self.macro(self.register, self.registerMap).macroCall(*self.args)
+
+
 class Book(Parser):
     start = None
     macro = macros.Book
@@ -92,12 +126,12 @@ class NeformatovanyText(Parser):
     start = ['^(\n§§\n){1}$']
     end = '^(\n§§\n){1}$'
     macro = macros.NeformatovanyText
-    
+
     def resolveContent(self):
         endMatch = re.search(self.__class__.end[1:-1], self.stream)
         if not endMatch:
             raise ParserRollback
-        
+
         self.content = self.stream[0:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
 

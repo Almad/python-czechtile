@@ -36,12 +36,17 @@ import parsers
 
 # map parsers to registers with nodes allowed
 registerMap = {
-    parsers.Document : Register([parsers.Book, parsers.Article]),
-    parsers.Book : Register([parsers.Sekce, parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText]),
-    parsers.Sekce : Register([parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText]),
-    parsers.Odstavec : Register([parsers.Zvyraznene, parsers.Silne,
+    parsers.Document : Register([parsers.Macro, parsers.Book, parsers.Article]),
+    parsers.Book : Register([parsers.Macro, parsers.Sekce, parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText]),
+    parsers.Sekce : Register([parsers.Macro, parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText]),
+    parsers.Odstavec : Register([parsers.Macro, parsers.Zvyraznene, parsers.Silne,
                        parsers.Hyperlink, parsers.TriTecky]),
-    parsers.Hyperlink : Register([])
+
+    # V makru nejsou zadna omezeni a muze v nem expandovat cokoli, proto registr obsahuje vsechny
+    # parsery, respektive makra
+    parsers.Macro : Register([parsers.Macro, parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText,
+                    parsers.Zvyraznene, parsers.Silne, parsers.Hyperlink, parsers.TriTecky]),
+    parsers.Hyperlink : Register([parsers.Macro])
 }
 registerMap[parsers.Article] = registerMap[parsers.Book]
 

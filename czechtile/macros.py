@@ -35,7 +35,29 @@ def _wrapText(textNode, register, registerMap):
     from parsers import Odstavec as OdstavecParser
     return Odstavec(registerMap[OdstavecParser], registerMap).expand(re.sub("^(\s)*", "", re.sub("(\s)*$", "", textNode.content)))
 
-class Document(Macro):
+class CzechtileMacro(Macro):
+
+    def _macroCallWithoutRequiredQuotes(self, *args):
+        content = ''.join([''.join([arg, ' ']) for arg in args])[:-1]
+        return self.expand(content)
+
+    def macroCall(self, *args):
+        """ This call is used when macro is triggered by macro syntax.
+        Spec is ((macroname arg arg "space separated arg" arg)),
+        but usually macros accept ((macroname space separated arg)); thus,
+        overwrite this method and call either self._macroCallWithRequiredQuotes or
+        self._macroCallWithotRequiredQuotes; default is second case.
+        MUST be overwrited if call is different then expand(self.content) (another
+        argument required)"""
+        return self._macroCallWithoutRequiredQuotes(*args)
+
+class Macro(CzechtileMacro):
+    name = 'macro'
+    help = 'nepouziva se'
+    def __init__(self, *args, **kwargs):
+        raise NotImplementedError, 'Macro macro should be never used'
+
+class Document(CzechtileMacro):
     name = 'document'
     help = '<toto makro se nikdy nepouziva explicitne>'
 
@@ -44,7 +66,7 @@ class Document(Macro):
         doc.addChild(parser.parse())
         return doc
 
-class Book(Macro):
+class Book(CzechtileMacro):
     name = 'kniha'
     help = '((kniha text knihy))'
 
@@ -58,7 +80,7 @@ class Book(Macro):
                 doc.addChild(n)
         return doc
 
-class Article(Macro):
+class Article(CzechtileMacro):
     name = 'clanek'
     help = '((clanek text clanku))'
 
@@ -77,7 +99,7 @@ class Sekce(Document):
     name = 'sekce'
     help = '((sekce text sekce))'
 
-class Nadpis(Macro):
+class Nadpis(CzechtileMacro):
     name = 'nadpis'
     help = '((nadpis cislo_urovne text nadpisu))'
 
@@ -89,7 +111,7 @@ class Nadpis(Macro):
         node.addChild(tn)
         return node
 
-class Odstavec(Macro):
+class Odstavec(CzechtileMacro):
     name = 'odstavec'
     help = '((odstavec text odstavce))'
 
@@ -107,10 +129,10 @@ class Odstavec(Macro):
                 node.addChild(n)
         return node
 
-class NeformatovanyText(Macro):
+class NeformatovanyText(CzechtileMacro):
     name = 'neformatovany-text'
     help = '((neformatovany-text nenaformatovany obsah textu))'
-    
+
     def expand(self, content):
         node = nodes.NeformatovanyText()
         tn = TextNode()
@@ -118,7 +140,7 @@ class NeformatovanyText(Macro):
         node.addChild(tn)
         return node
 
-class Zvyraznene(Macro):
+class Zvyraznene(CzechtileMacro):
     name = 'zvyraznene'
     help = '((zvyraznene zesilneny text))'
 
@@ -129,7 +151,7 @@ class Zvyraznene(Macro):
             node.addChild(n)
         return node
 
-class Silne(Macro):
+class Silne(CzechtileMacro):
     name = 'silne'
     help = '((silne zesilneny text))'
 
@@ -140,7 +162,7 @@ class Silne(Macro):
             node.addChild(n)
         return node
 
-class Hyperlink(Macro):
+class Hyperlink(CzechtileMacro):
     name = 'link'
     help = '((link http://adresa/linku text linku))'
 
@@ -158,14 +180,14 @@ class Hyperlink(Macro):
         return node
 
 
-class TriTecky(Macro):
+class TriTecky(CzechtileMacro):
     name = 'tri_tecky'
     help = '((tri_tecky))'
 
     def expand(self):
         return nodes.TriTecky()
 
-class ListItem(Macro):
+class ListItem(CzechtileMacro):
     name = 'listitem'
     help = '((listitem text polozky))'
 
@@ -177,7 +199,7 @@ class ListItem(Macro):
         return node
 
 
-class List(Macro):
+class List(CzechtileMacro):
     name = 'list'
     help = '((list typ_zoznamu))'
 
