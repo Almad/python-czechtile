@@ -168,8 +168,8 @@ class Nadpis(Parser):
 ### Inline elements, mostly in Paragraphs ####
 
 class Silne(Parser):
-    start = ['^("){3}$']
-    end = '^("){3}$'
+    start = ['^("""){1}$']
+    end = '^("""){1}$'
     macro = macros.Silne
 
     def resolveContent(self):
@@ -185,8 +185,8 @@ class Silne(Parser):
         return self.macro(self.register, self.registerMap).expand(self.content)
 
 class Zvyraznene(Parser):
-    start = ['^("){2}$']
-    end = '^("){2}$'
+    start = ['^(""){1}$']
+    end = '^(""){1}$'
     macro = macros.Zvyraznene
 
     def resolveContent(self):

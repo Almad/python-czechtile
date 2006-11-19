@@ -36,7 +36,7 @@ from module_test import *
 class TestSilne(OutputTestCase):
 
     def testSilne(self):
-        tree = parse('''"""silne"""''', registerMap)
+        tree = parse('"""silne"""', registerMap)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Silne)
 
