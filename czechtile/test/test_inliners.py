@@ -43,6 +43,9 @@ class TestSilne(OutputTestCase):
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('''<para><emphasis role="bold">silne</emphasis></para>''', res)
 
+        res = expand(tree, 'xhtml11', nodeMap)
+        self.assertXhtml('''<p><strong>silne</strong></p>''', res)
+
 class TestZvyraznene(OutputTestCase):
     def testZvyraznene(self):
         tree = parse('''""zvyraznene""''', registerMap)
@@ -91,19 +94,19 @@ class TestOdkaz(OutputTestCase):
 
         res = expand(tree, 'xhtml11', nodeMap)
         self.assertXhtml('''<p>(<a href="http://rpgplanet.cz">http://rpgplanet.cz</a> Stranky materskeho projektu</p>''', res)
-    
+
     def testFixedText(self):
         tree = parse('\n§§\nTohle je ""nenaparsovaný"" text\nKterý je fixní.\n§§\n', registerMap)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.NeformatovanyText)
         self.assertEquals(len(tree.children[0].children), 1)
         self.assertEquals(tree.children[0].children[0].children[0].content, 'Tohle je ""nenaparsovaný"" text\nKterý je fixní.')
-        
+
         res = expand(tree, 'xhtml11', nodeMap)
         self.assertXhtml('<pre>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</pre>', res)
-        
+
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('<literallayout>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</literallayout>', res)
-    
+
     def testOdkazWithEmpansedParts(self):
         tree = parse('''(http://rpgplanet.cz Stranky ""materskeho"" """projektu""")''', registerMap)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
