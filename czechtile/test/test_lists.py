@@ -32,29 +32,24 @@ from czechtile import *
 
 from module_test import *
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 class TestList(OutputTestCase):
 
     def testItemizedList(self):
-        tree = parse(''' - Polozka1\n - Polozka2''', registerMap)
+        tree = parse('''\n\n - Polozka1\n - Polozka2\n\n''', registerMap)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
-        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.List)
-        #self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.List)
-#        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
-#        self.assertEquals(tree.children[0].children[0].children[0].children[0].__class__, nodes.Odstavec)
-#        self.assertEquals(tree.children[0].children[0].children[0].children[0].children[0].__class__, 'Polozka1')
-#        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
-#        self.assertEquals(tree.children[0].children[0].children[1].children[0].__class__, nodes.Odstavec)
-#        self.assertEquals(tree.children[0].children[0].children[1].children[0].children[0].content, 'Polozka2')
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
 
 
-#    def testExpandedItemizedList(self):
-#        tree = parse(''' - Polozka1\n - Polozka2''', registerMap)
-#        res = expand('itemized', tree, 'docbook4', nodeMap)
-#        res = expand(tree, 'docbook4', nodeMap)
-#        self.assertDocbook4(res, '''<para><itemizedlist><listitem>Polozka1</listitem><listitem>Polozka2</listitem></itemizedlist></para>''')
+    def testExpandedItemizedList(self):
+        tree = parse('''\n\n - Polozka1\n - Polozka2\n\n''', registerMap)
+        res = expand(tree, 'docbook4', nodeMap)
+        self.assertDocbook4('<itemizedlist><listitem>Polozka1</listitem><listitem>Polozka2</listitem></itemizedlist>', res)
 
 
 if __name__ == "__main__":

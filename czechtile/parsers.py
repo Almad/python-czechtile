@@ -244,14 +244,26 @@ class TriTecky(Parser):
 
 
 class List(Parser):
-    start = None
-    end = None
+    # the '\n\n' start and end is only for now, later it can be removed
+    # (when it'll be all right)
+    start = ['^(\n\n\ -\ ){1}$']
+    end = '^(\n\n)$'
     macro = macros.List
 
     def resolveContent(self):
-        self.content = self.stream
+        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+        if not endMatch:
+            raise ParserRollback
+        self.content = self.stream[0:endMatch.start()]
         self.stream = ''
-        self.args = self.content
+        self.content = self.chunk[2:] + self.content
+        #self.args = self.content
+        if not self.content.endswith('\n'):
+            self.content += '\n'
+
+    def callMacro(self):
+        """ Do proper call to related macro(s) """
+        return self.macro(self.register, self.registerMap).expand(self.content)
 
 class ListItem(Parser):
     start = ['^(\ -\ ){1}$']
@@ -259,14 +271,15 @@ class ListItem(Parser):
     macro = macros.ListItem
 
     def resolveContent(self):
-        # Almad: This is not true, because self.strem is contains REST of whole stream,
-        # not only until newline (or generally, self.__class__.end, so you must identify it
-        self.content = self.stream
+        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+        if not endMatch:
+            raise ParserRollback
+        self.content = self.stream[0:endMatch.start()]
 # commented because of small problems with type_
 #        if re.search(self.chunk, '^ - '):
 #            self.type_ = 'itemized'
 
     def callMacro(self):
         """ Do proper call to related macro(s) """
-        self.macro(self.register, self.registerMap).expand(self.content)
+        return self.macro(self.register, self.registerMap).expand(self.content)
 #        return self.macro(self.register, self.registerMap).expand(self.type_, self.content)

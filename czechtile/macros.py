@@ -119,14 +119,7 @@ class Odstavec(CzechtileMacro):
         node = nodes.Odstavec()
         child_nodes = parse(content, self.registerMap, self.register)
         for n in child_nodes:
-            # this is temporary fix - without this
-            # parsing of lists won't work properly
-            # (if it will work at all)
-            if isinstance(n, nodes.ListItem):
-                node.children[0] = nodes.List()
-                node.children[0].addChild(n)
-            elif n is not None:
-                node.addChild(n)
+            node.addChild(n)
         return node
 
 class NeformatovanyText(CzechtileMacro):
@@ -201,8 +194,14 @@ class ListItem(CzechtileMacro):
 
 class List(CzechtileMacro):
     name = 'list'
-    help = '((list typ_zoznamu))'
+    help = '((list obsah seznamu))'
 
-    def expand(self, type_):
+    def expand(self, content):
         node = nodes.List()
+        child_nodes = parse(content, self.registerMap, self.register)
+        for n in child_nodes:
+            if isinstance(n, nodes.ListItem):
+            # this if statement is necessary because without it there
+            # i-dont-know-why will occur textnodes
+                node.addChild(n)
         return node

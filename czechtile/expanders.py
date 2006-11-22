@@ -118,10 +118,10 @@ class TriTeckyEntity(CzechtileExpander):
     def expand(self, node, format, node_map):
         return '&#8230'
         
-class ListDocbook4(Expander):
-    def expand(self, type_, node, format, node_map):
-        return ''.join(['<itemizedlist>'] + [expand(child, format, node_map) for child in node.children] + ['</itemizedList>'])
-
-class ListItemDocbook4(Expander):
+class ListDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return ''.join(['<listitem>'] + [expand(child, format, node_map) for child in node.children] + ['</listitem>'])
+        return self.expand_with_content(node, format, node_map, '<itemizedlist>', '</itemizedlist>')
+
+class ListItemDocbook4(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, '<listitem>', '</listitem>')
