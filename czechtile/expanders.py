@@ -120,7 +120,23 @@ class TriTeckyEntity(CzechtileExpander):
         
 class ListDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, '<itemizedlist>', '</itemizedlist>')
+        # this solving is not elegant too but today I don't want to think
+        # over much, sorry
+        # but it works... :)
+        tag = []
+        if node.type_ == 'itemized':
+            tag.append('itemizedlist')
+            tag.append('')
+        if node.type_ == '1-ordered':
+            tag.append('orderedlist')
+            tag.append(' numeration="arabic"')
+        if node.type_ == 'A-ordered':
+            tag.append('orderedlist')
+            tag.append(' numeration="loweralpha"')
+        if node.type_ == 'I-ordered':
+            tag.append('orderedlist')
+            tag.append(' numeration="lowerroman"')
+        return self.expand_with_content(node, format, node_map, ''.join(['<', tag[0], tag[1], '>']), ''.join(['</', tag[0], '>']))
 
 class ListItemDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):

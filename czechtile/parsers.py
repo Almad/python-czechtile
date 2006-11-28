@@ -246,8 +246,8 @@ class TriTecky(Parser):
 class List(Parser):
     # the '\n\n' start and end is only for now, later it can be removed
     # (when it'll be all right)
-    start = ['^(\n\n\ -\ ){1}$']
-    end = '^(\n\n)$'
+    start = ['^(\n\n\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}$']
+    end = '^(\n){2}$'
     macro = macros.List
 
     def resolveContent(self):
@@ -261,12 +261,22 @@ class List(Parser):
         if not self.content.endswith('\n'):
             self.content += '\n'
 
+        # this types are maybe not very practic...
+        if re.search(self.chunk[2:], ' - '):
+            self.type_ = 'itemized'
+        if re.search(self.chunk[2:], ' 1. '):
+            self.type_ = '1-ordered'
+        if re.search(self.chunk[2:], ' a. '):
+            self.type_ = 'A-ordered'
+        if re.search(self.chunk[2:], ' i. '):
+            self.type_ = 'I-ordered'
+
     def callMacro(self):
         """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).expand(self.content)
+        return self.macro(self.register, self.registerMap).expand(self.type_, self.content)
 
 class ListItem(Parser):
-    start = ['^(\ -\ ){1}$']
+    start = ['^(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}$']
     end = '^(\n)$'
     macro = macros.ListItem
 
@@ -275,11 +285,7 @@ class ListItem(Parser):
         if not endMatch:
             raise ParserRollback
         self.content = self.stream[0:endMatch.start()]
-# commented because of small problems with type_
-#        if re.search(self.chunk, '^ - '):
-#            self.type_ = 'itemized'
 
     def callMacro(self):
         """ Do proper call to related macro(s) """
         return self.macro(self.register, self.registerMap).expand(self.content)
-#        return self.macro(self.register, self.registerMap).expand(self.type_, self.content)

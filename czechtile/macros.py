@@ -194,10 +194,11 @@ class ListItem(CzechtileMacro):
 
 class List(CzechtileMacro):
     name = 'list'
-    help = '((list obsah seznamu))'
+    help = '((list typ obsah seznamu))'
 
-    def expand(self, content):
+    def expand(self, type_, content):
         node = nodes.List()
+        node.type_ = type_
         child_nodes = parse(content, self.registerMap, self.register)
         for n in child_nodes:
             if isinstance(n, nodes.ListItem):
