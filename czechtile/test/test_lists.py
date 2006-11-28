@@ -40,6 +40,7 @@ class TestList(OutputTestCase):
         tree = parse('''\n\n - Polozka1\n - Polozka2\n\n''', registerMap)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, 'itemized')
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
         self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
@@ -50,7 +51,56 @@ class TestList(OutputTestCase):
         tree = parse('''\n\n - Polozka1\n - Polozka2\n\n''', registerMap)
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('<itemizedlist><listitem>Polozka1</listitem><listitem>Polozka2</listitem></itemizedlist>', res)
+        
 
+    def testNumberOrderedList(self):
+        tree = parse('''\n\n 1. Polozka1\n 1. Polozka2\n\n''', registerMap)
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, '1-ordered')
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
+
+
+    def testExpandedNumberOrderedList(self):
+        tree = parse('''\n\n 1. Polozka1\n 1. Polozka2\n\n''', registerMap)
+        res = expand(tree, 'docbook4', nodeMap)
+        self.assertDocbook4('<orderedlist numeration="arabic"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
+
+        
+    def testAlphaOrderedList(self):
+        tree = parse('''\n\n a. Polozka1\n a. Polozka2\n\n''', registerMap)
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, 'A-ordered')
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
+
+
+    def testExpandedAlphaOrderedList(self):
+        tree = parse('''\n\n a. Polozka1\n a. Polozka2\n\n''', registerMap)
+        res = expand(tree, 'docbook4', nodeMap)
+        self.assertDocbook4('<orderedlist numeration="loweralpha"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
+
+    def testRomanOrderedList(self):
+        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\n''', registerMap)
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, 'I-ordered')
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
+
+
+    def testExpandedRomanOrderedList(self):
+        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\n''', registerMap)
+        res = expand(tree, 'docbook4', nodeMap)
+        self.assertDocbook4('<orderedlist numeration="lowerroman"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
 
 if __name__ == "__main__":
     main()
