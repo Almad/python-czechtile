@@ -120,10 +120,6 @@ class TriTeckyEntity(CzechtileExpander):
         
 class ListDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
-        # this solving is not elegant too but today I don't want to think
-        # over much, sorry
-        # but it works... :)
-        
         # maybe there we can make a link to types in list parser,
         # so we won't have the same on two places
         types = {
@@ -144,26 +140,7 @@ class ListDocbook4(CzechtileExpander):
                 else:
                     tag.append(types[i])
                     tag.append('')
-#                    numeration = {
-#                        '1' : 'arabic',
-#                        'A' : 'loweralpha',
-#                        'I' : 'lowerroman'
-#                    }
-#                    tag.append(' numeration="' + numeration[i[:1]] + '"')
-#                else:
-#                    tag.append('')
-#        if node.type_ == 'itemized':
-#            tag.append('itemizedlist')
-#            tag.append('')
-#        if node.type_ == '1-ordered':
-#            tag.append('orderedlist')
-#            tag.append(' numeration="arabic"')
-#        if node.type_ == 'A-ordered':
-#            tag.append('orderedlist')
-#            tag.append(' numeration="loweralpha"')
-#        if node.type_ == 'I-ordered':
-#            tag.append('orderedlist')
-#            tag.append(' numeration="lowerroman"')
+
         return self.expand_with_content(node, format, node_map, ''.join(['<', tag[0], tag[1], '>']), ''.join(['</', tag[0], '>']))
 
 class ListItemDocbook4(CzechtileExpander):

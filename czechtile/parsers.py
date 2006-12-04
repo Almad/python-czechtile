@@ -267,7 +267,6 @@ class List(Parser):
             ' i. ' : 'I-ordered'
         }
         for i in types.keys():
-#            if re.search(self.chunk[2:], i):
             if re.search(i, self.chunk[2:]):
                 self.type_ = types[i]
 
