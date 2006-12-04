@@ -258,18 +258,18 @@ class List(Parser):
         self.stream = ''
         self.content = self.chunk[2:] + self.content
         #self.args = self.content
-        if not self.content.endswith('\n'):
-            self.content += '\n'
+        self.content += '\n'
 
-        # this types are maybe not very practic...
-        if re.search(self.chunk[2:], ' - '):
-            self.type_ = 'itemized'
-        if re.search(self.chunk[2:], ' 1. '):
-            self.type_ = '1-ordered'
-        if re.search(self.chunk[2:], ' a. '):
-            self.type_ = 'A-ordered'
-        if re.search(self.chunk[2:], ' i. '):
-            self.type_ = 'I-ordered'
+        types = {
+            ' - ' : 'itemized',
+            ' 1. ' : '1-ordered',
+            ' a. ' : 'A-ordered',
+            ' i. ' : 'I-ordered'
+        }
+        for i in types.keys():
+#            if re.search(self.chunk[2:], i):
+            if re.search(i, self.chunk[2:]):
+                self.type_ = types[i]
 
     def callMacro(self):
         """ Do proper call to related macro(s) """

@@ -123,19 +123,47 @@ class ListDocbook4(CzechtileExpander):
         # this solving is not elegant too but today I don't want to think
         # over much, sorry
         # but it works... :)
+        
+        # maybe there we can make a link to types in list parser,
+        # so we won't have the same on two places
+        types = {
+            'itemized' : 'itemizedlist',
+            '1-ordered' : 'orderedlist numeration="arabic"',
+            'A-ordered' : 'orderedlist numeration="loweralpha"',
+            'I-ordered' : 'orderedlist numeration="lowerroman"'
+        }
         tag = []
-        if node.type_ == 'itemized':
-            tag.append('itemizedlist')
-            tag.append('')
-        if node.type_ == '1-ordered':
-            tag.append('orderedlist')
-            tag.append(' numeration="arabic"')
-        if node.type_ == 'A-ordered':
-            tag.append('orderedlist')
-            tag.append(' numeration="loweralpha"')
-        if node.type_ == 'I-ordered':
-            tag.append('orderedlist')
-            tag.append(' numeration="lowerroman"')
+        for i in types.keys():
+            if node.type_ == i:
+                # this don't look nice
+                import re
+                spaceMatch = re.search(' ', types[i])
+                if spaceMatch:
+                    tag.append(types[i][:spaceMatch.start()])
+                    tag.append(types[i][spaceMatch.start():])
+                else:
+                    tag.append(types[i])
+                    tag.append('')
+#                    numeration = {
+#                        '1' : 'arabic',
+#                        'A' : 'loweralpha',
+#                        'I' : 'lowerroman'
+#                    }
+#                    tag.append(' numeration="' + numeration[i[:1]] + '"')
+#                else:
+#                    tag.append('')
+#        if node.type_ == 'itemized':
+#            tag.append('itemizedlist')
+#            tag.append('')
+#        if node.type_ == '1-ordered':
+#            tag.append('orderedlist')
+#            tag.append(' numeration="arabic"')
+#        if node.type_ == 'A-ordered':
+#            tag.append('orderedlist')
+#            tag.append(' numeration="loweralpha"')
+#        if node.type_ == 'I-ordered':
+#            tag.append('orderedlist')
+#            tag.append(' numeration="lowerroman"')
         return self.expand_with_content(node, format, node_map, ''.join(['<', tag[0], tag[1], '>']), ''.join(['</', tag[0], '>']))
 
 class ListItemDocbook4(CzechtileExpander):
