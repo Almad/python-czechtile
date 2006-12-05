@@ -120,28 +120,13 @@ class TriTeckyEntity(CzechtileExpander):
         
 class ListDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
-        # maybe there we can make a link to types in list parser,
-        # so we won't have the same on two places
         types = {
-            'itemized' : 'itemizedlist',
-            '1-ordered' : 'orderedlist numeration="arabic"',
-            'A-ordered' : 'orderedlist numeration="loweralpha"',
-            'I-ordered' : 'orderedlist numeration="lowerroman"'
+            'itemized' : ['itemizedlist', ''],
+            '1-ordered' : ['orderedlist', ' numeration="arabic"'],
+            'A-ordered' : ['orderedlist', ' numeration="loweralpha"'],
+            'I-ordered' : ['orderedlist', ' numeration="lowerroman"']
         }
-        tag = []
-        for i in types.keys():
-            if node.type_ == i:
-                # this don't look nice
-                import re
-                spaceMatch = re.search(' ', types[i])
-                if spaceMatch:
-                    tag.append(types[i][:spaceMatch.start()])
-                    tag.append(types[i][spaceMatch.start():])
-                else:
-                    tag.append(types[i])
-                    tag.append('')
-
-        return self.expand_with_content(node, format, node_map, ''.join(['<', tag[0], tag[1], '>']), ''.join(['</', tag[0], '>']))
+        return self.expand_with_content(node, format, node_map, ''.join(['<', types[node.type_][0], types[node.type_][1], '>']), ''.join(['</', types[node.type_][0], '>']))
 
 class ListItemDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
