@@ -270,12 +270,13 @@ class List(Parser):
             if re.search(i, self.chunk[2:]):
                 self.type_ = types[i]
 
+
     def callMacro(self):
         """ Do proper call to related macro(s) """
         return self.macro(self.register, self.registerMap).expand(self.type_, self.content)
 
 class ListItem(Parser):
-    start = ['^(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}$']
+    start = ['^(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}$']
     end = '^(\n)$'
     macro = macros.ListItem
 
@@ -283,8 +284,29 @@ class ListItem(Parser):
         endMatch = re.search(self.__class__.end[1:-1], self.stream)
         if not endMatch:
             raise ParserRollback
+            
+        self.level = self.chunk.count(' ') - 2
         self.content = self.stream[0:endMatch.start()]
+#        self.content = self.stream[self.level:endMatch.start()]
+#        re.search('\n', self.content)
+
+        # copied from list parser
+        # can we make somehow a link to types in the list parser,
+        # so we won't have the same on two places?
+        types = {
+            ' - ' : 'itemized',
+            ' 1. ' : '1-ordered',
+            ' a. ' : 'A-ordered',
+            ' i. ' : 'I-ordered'
+        }
+        for i in types.keys():
+            if re.search(i, self.chunk):
+                self.type_ = types[i]
+
 
     def callMacro(self):
         """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).expand(self.content)
+        if self.level > 0:
+            return macros.List(self.register, self.registerMap).expand(self.type_, self.content)
+        else:
+            return self.macro(self.register, self.registerMap).expand(self.content)

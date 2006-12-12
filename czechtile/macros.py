@@ -200,9 +200,9 @@ class List(CzechtileMacro):
         node = nodes.List()
         node.type_ = type_
         child_nodes = parse(content, self.registerMap, self.register)
+        print self.register.parser_name_map
         for n in child_nodes:
-            if isinstance(n, nodes.ListItem):
-            # this if statement is necessary because without it there
+            if isinstance(n, nodes.ListItem) or isinstance(n, nodes.List):                                                                                                                                                                                                 # this if statement is necessary because without it there
             # i-dont-know-why will occur textnodes
                 node.addChild(n)
         return node

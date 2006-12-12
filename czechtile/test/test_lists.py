@@ -32,7 +32,7 @@ from czechtile import *
 
 from module_test import *
 
-#logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 class TestList(OutputTestCase):
 
@@ -92,6 +92,29 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('<orderedlist numeration="lowerroman"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
+
+
+    def testSublist(self):
+        tree = parse('''\n\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n  - VnorenaPolozka3\n - Polozka2\n\n''', registerMap)
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, 'itemized')
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].children[1].type_, 'itemized')
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].children[0].content, 'VnorenaPolozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[1].children[0].content, 'VnorenaPolozka2')
+        self.assertEquals(tree.children[0].children[0].children[1].children[2].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].children[1].children[2].children[0], nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[2].children[0].children[0].content, 'DvojitoVnorenaPolozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].children[3], nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[3].children[0].content, 'VnorenaPolozka3')
+        self.assertEquals(tree.children[0].children[0].children[2].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[2].children[0].content, 'Polozka2')
+
 
 if __name__ == "__main__":
     main()
