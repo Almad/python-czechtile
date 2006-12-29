@@ -48,5 +48,24 @@ class TestResult(OutputTestCase):
         self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book><para>doc</para></book>''')
 
+class TestParagraph(OutputTestCase):
+    def testSimplestPara(self):
+        tree = parse('doc', register_map)
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para>doc</para>''', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p>doc</p>''', res)
+
+    def testSimplestMultiplePara(self):
+        tree = parse('doc\n\ndoc', register_map)
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para>doc</para><para>doc</para>''', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p>doc</p><p>doc</p>''', res)
+
 if __name__ == "__main__":
     main()

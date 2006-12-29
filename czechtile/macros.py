@@ -32,9 +32,12 @@ import nodes
 def _wrap_text(text_node, register, register_map):
     """ Wrap unbound TextNode to Paragraph """
     #FIXME: This is considered to be a hack, overwrite register_map
-    from parsers import Odstavec as OdstavecParser
-    para = Odstavec.argument_call(re.sub("^(\s)*", "", re.sub("(\s)*$", "", text_node.content)), register)
-    return para.expand()
+    text = re.sub("^(\s)*", "", re.sub("(\s)*$", "", text_node.content))
+    result_tree = []
+    for para_content in text.split('\n\n'):
+        para = Odstavec.argument_call(para_content, register)
+        result_tree.append(para.expand())
+    return result_tree
 
 class CzechtileMacro(Macro):
 
@@ -54,7 +57,8 @@ class Book(CzechtileMacro):
         child_nodes = parse(content, self.register_map)
         for n in child_nodes:
             if isinstance(n, TextNode):
-                doc.add_child(_wrap_text(n, self.register, self.register_map))
+                for node in _wrap_text(n, self.register, self.register_map):
+                    doc.add_child(node)
             else:
                 doc.add_child(n)
         return doc
@@ -68,7 +72,8 @@ class Article(CzechtileMacro):
         child_nodes = parse(content, self.register_map, self.register)
         for n in child_nodes:
             if isinstance(n, TextNode):
-                doc.add_child(_wrap_text(n, self.register, self.register_map))
+                for node in _wrap_text(n, self.register, self.register_map):
+                    doc.add_child(node)
             else:
                 doc.add_child(n)
 
