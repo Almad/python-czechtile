@@ -156,10 +156,6 @@ class Hyperlink(Parser):
             self.chunk_end = self.stream[endMatch.start():endMatch.end()]
             self.stream = self.stream[endMatch.end():]
 
-    def call_macro(self):
-        """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.register_map).expand(self.link, self.content)
-
 ### Typographic parsers - transfer text to czech typographic customs ###
 
 class TriTecky(Parser):
@@ -205,11 +201,6 @@ class List(Parser):
             if re.search(i, self.chunk[2:]):
                 self.type_ = types[i]
 
-
-    def call_macro(self):
-        """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.register_map).expand(self.type_, self.content)
-
 class ListItem(Parser):
     start = ['(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
     end = '(\n)'
@@ -238,12 +229,12 @@ class ListItem(Parser):
             if re.search(i, self.chunk):
                 self.type_ = types[i]
 
-
-    def call_macro(self):
-        """ Do proper call to related macro(s) """
-        if self.level > 0:
-            return macros.List(self.register, self.register_map).expand(self.type_, self.content)
-        else:
-            return self.macro(self.register, self.register_map).expand(self.content)
+#
+#    def call_macro(self):
+#        """ Do proper call to related macro(s) """
+#        if self.level > 0:
+#            return macros.List(self.register, self.register_map).expand(self.type_, self.content)
+#        else:
+#            return self.macro(self.register, self.register_map).expand(self.content)
 
 parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene]
