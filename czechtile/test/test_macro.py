@@ -36,14 +36,14 @@ from module_test import *
 
 class TestBasicSyntax(OutputTestCase):
     def testSilne(self):
-        tree = parse('''((silne silne))''', registerMap)
+        tree = parse('''((silne silne))''', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Silne)
 
-        res = expand(tree, 'docbook4', nodeMap)
+        res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('''<para><emphasis role="bold">silne</emphasis></para>''', res)
 
-        res = expand(tree, 'xhtml11', nodeMap)
+        res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><strong>silne</strong></p>''', res)
 
 if __name__ == "__main__":

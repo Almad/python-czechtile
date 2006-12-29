@@ -26,14 +26,15 @@ __version__ = 0.1
 
 import re
 
-from sneakylang import Macro, parse, TextNode
+from sneakylang import Macro, parse, TextNode, Document
 import nodes
 
-def _wrapText(textNode, register, registerMap):
+def _wrap_text(text_node, register, register_map):
     """ Wrap unbound TextNode to Paragraph """
-    #FIXME: This is considered to be a hack, overwrite registerMap
+    #FIXME: This is considered to be a hack, overwrite register_map
     from parsers import Odstavec as OdstavecParser
-    return Odstavec(registerMap[OdstavecParser], registerMap).expand(re.sub("^(\s)*", "", re.sub("(\s)*$", "", textNode.content)))
+    para = Odstavec.argument_call(re.sub("^(\s)*", "", re.sub("(\s)*$", "", text_node.content)), register)
+    return para.expand()
 
 class CzechtileMacro(Macro):
 
@@ -41,59 +42,38 @@ class CzechtileMacro(Macro):
         content = ''.join([''.join([arg, ' ']) for arg in args])[:-1]
         return self.expand(content)
 
-    def macroCall(self, *args):
-        """ This call is used when macro is triggered by macro syntax.
-        Spec is ((macroname arg arg "space separated arg" arg)),
-        but usually macros accept ((macroname space separated arg)); thus,
-        overwrite this method and call either self._macroCallWithRequiredQuotes or
-        self._macroCallWithotRequiredQuotes; default is second case.
-        MUST be overwrited if call is different then expand(self.content) (another
-        argument required)"""
-        return self._macroCallWithoutRequiredQuotes(*args)
-
-class Macro(CzechtileMacro):
-    name = 'macro'
-    help = 'nepouziva se'
-    def __init__(self, *args, **kwargs):
-        raise NotImplementedError, 'Macro macro should be never used'
-
-class Document(CzechtileMacro):
-    name = 'document'
-    help = '<toto makro se nikdy nepouziva explicitne>'
-
-    def expand(self, content, parser):
-        doc = nodes.Document()
-        doc.addChild(parser.parse())
-        return doc
+    def parse_argument_string(self, argument_string):
+        self.arguments = [argument_string]
 
 class Book(CzechtileMacro):
     name = 'kniha'
     help = '((kniha text knihy))'
 
-    def expand(self, content):
+    def expand_to_nodes(self, content):
         doc = nodes.Book()
-        child_nodes = parse(content, self.registerMap)
+        child_nodes = parse(content, self.register_map)
         for n in child_nodes:
             if isinstance(n, TextNode):
-                doc.addChild(_wrapText(n, self.register, self.registerMap))
+                doc.add_child(_wrap_text(n, self.register, self.register_map))
             else:
-                doc.addChild(n)
+                doc.add_child(n)
         return doc
 
 class Article(CzechtileMacro):
     name = 'clanek'
     help = '((clanek text clanku))'
 
-    def expand(self, content):
+    def expand_to_nodes(self, content):
         doc = nodes.Article()
-        child_nodes = parse(content, self.registerMap, self.register)
+        child_nodes = parse(content, self.register_map, self.register)
         for n in child_nodes:
             if isinstance(n, TextNode):
-                doc.addChild(_wrapText(n, self.register, self.registerMap))
+                doc.add_child(_wrap_text(n, self.register, self.register_map))
             else:
-                doc.addChild(n)
+                doc.add_child(n)
 
         return doc
+
 
 class Sekce(Document):
     name = 'sekce'
@@ -103,73 +83,83 @@ class Nadpis(CzechtileMacro):
     name = 'nadpis'
     help = '((nadpis cislo_urovne text nadpisu))'
 
-    def expand(self, level, content):
+    def parse_argument_string(self, argument_string):
+        args = argument_string.split()
+        level = int(args[0])
+        self.arguments = [level, ''.join([''.join([arg, ' ']) for arg in args[1:]])[:-1]]
+
+    def expand_to_nodes(self, level, content):
         node = nodes.Nadpis()
         node.level = level
         tn = TextNode()
         tn.content = content
-        node.addChild(tn)
+        node.add_child(tn)
         return node
 
 class Odstavec(CzechtileMacro):
     name = 'odstavec'
     help = '((odstavec text odstavce))'
 
-    def expand(self, content):
+    def expand_to_nodes(self, content):
         node = nodes.Odstavec()
-        child_nodes = parse(content, self.registerMap, self.register)
+        child_nodes = parse(content, self.register_map, self.register)
         for n in child_nodes:
-            node.addChild(n)
+            node.add_child(n)
         return node
 
 class NeformatovanyText(CzechtileMacro):
     name = 'neformatovany-text'
     help = '((neformatovany-text nenaformatovany obsah textu))'
 
-    def expand(self, content):
+    def expand_to_nodes(self, content):
         node = nodes.NeformatovanyText()
         tn = TextNode()
         tn.content = content
-        node.addChild(tn)
+        node.add_child(tn)
         return node
 
 class Zvyraznene(CzechtileMacro):
     name = 'zvyraznene'
     help = '((zvyraznene zesilneny text))'
 
-    def expand(self, content):
+    def expand_to_nodes(self, content):
         node = nodes.Zvyraznene()
-        child_nodes = parse(content, self.registerMap, self.register)
+        child_nodes = parse(content, self.register_map, self.register)
         for n in child_nodes:
-            node.addChild(n)
+            node.add_child(n)
         return node
 
 class Silne(CzechtileMacro):
     name = 'silne'
     help = '((silne zesilneny text))'
 
-    def expand(self, content):
+    def expand_to_nodes(self, content):
         node = nodes.Silne()
-        child_nodes = parse(content, self.registerMap, self.register)
+        child_nodes = parse(content, self.register_map, self.register)
         for n in child_nodes:
-            node.addChild(n)
+            node.add_child(n)
         return node
 
 class Hyperlink(CzechtileMacro):
     name = 'link'
     help = '((link http://adresa/linku text linku))'
 
-    def expand(self, link, content):
+    def parse_argument_string(self, argument_string):
+        args = argument_string.split()
+        link = args[0]
+        self.arguments = [link, ''.join([''.join([arg, ' ']) for arg in args[1:]])[:-1]]
+
+    def expand_to_nodes(self, link, content):
         node = nodes.Hyperlink()
         node.link = link
         if link == content:
             tn = TextNode()
             tn.content = content
-            node.addChild(tn)
+            node.add_child(tn)
         else:
-            child_nodes = parse(content, self.registerMap, self.register)
+            child_nodes = parse(content, self.register_map, self.register)
             for n in child_nodes:
-                node.addChild(n)
+                node.add_child(n)
         return node
 
 
@@ -177,18 +167,18 @@ class TriTecky(CzechtileMacro):
     name = 'tri_tecky'
     help = '((tri_tecky))'
 
-    def expand(self):
+    def expand_to_nodes(self, *args):
         return nodes.TriTecky()
 
 class ListItem(CzechtileMacro):
     name = 'listitem'
     help = '((listitem text polozky))'
 
-    def expand(self, content):
+    def expand_to_nodes(self, content):
         node = nodes.ListItem()
-        child_nodes = parse(content, self.registerMap, self.register)
+        child_nodes = parse(content, self.register_map, self.register)
         for n in child_nodes:
-            node.addChild(n)
+            node.add_child(n)
         return node
 
 
@@ -196,13 +186,13 @@ class List(CzechtileMacro):
     name = 'list'
     help = '((list typ obsah seznamu))'
 
-    def expand(self, type_, content):
+    def expand_to_nodes(self, type_, content):
         node = nodes.List()
         node.type_ = type_
-        child_nodes = parse(content, self.registerMap, self.register)
+        child_nodes = parse(content, self.register_map, self.register)
         print self.register.parser_name_map
         for n in child_nodes:
             if isinstance(n, nodes.ListItem) or isinstance(n, nodes.List):                                                                                                                                                                                                 # this if statement is necessary because without it there
             # i-dont-know-why will occur textnodes
-                node.addChild(n)
+                node.add_child(n)
         return node

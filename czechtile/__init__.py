@@ -35,25 +35,26 @@ import expanders
 import parsers
 
 # map parsers to registers with nodes allowed
-registerMap = {
-    parsers.Document : Register([parsers.Macro, parsers.Book, parsers.Article]),
-    parsers.Book : Register([parsers.Macro, parsers.Sekce, parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText, parsers.List]),
-    parsers.Sekce : Register([parsers.Macro, parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText, parsers.List]),
-    parsers.Odstavec : Register([parsers.Macro, parsers.Zvyraznene, parsers.Silne,
-                       parsers.Hyperlink, parsers.TriTecky]),
-    # V makru nejsou zadna omezeni a muze v nem expandovat cokoli, proto registr obsahuje vsechny
-    # parsery, respektive makra
-    parsers.Macro : Register([parsers.Macro, parsers.Odstavec, parsers.Nadpis, parsers.NeformatovanyText,
-                    parsers.Zvyraznene, parsers.Silne, parsers.Hyperlink, parsers.TriTecky, parsers.List, parsers.ListItem]),
-    parsers.Hyperlink : Register([parsers.Macro]),
-    parsers.List : Register([parsers.Macro, parsers.ListItem, parsers.List])
-}
-registerMap[parsers.Article] = registerMap[parsers.Book]
+register_map = RegisterMap({
+    sneakylang.document.Document : Register([macros.Book, macros.Article], parsers.parsers),
+    macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List], parsers.parsers),
+    macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List], parsers.parsers),
+    macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
+                       macros.Hyperlink, macros.TriTecky], parsers.parsers),
+    macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene, macros.TriTecky], parsers.parsers),
+    macros.List : Register([macros.ListItem, macros.List], parsers.parsers),
+    macros.Nadpis : Register([], parsers.parsers),
+    macros.Zvyraznene : Register([], parsers.parsers),
+    macros.Silne : Register([], parsers.parsers),
+    macros.NeformatovanyText : Register([], parsers.parsers)
+})
+register_map[macros.Article] = register_map[macros.Book]
 
 
 # map nodes to expanders
-nodeMap = {
+expander_map = {
     'docbook4' : {
+        sneakylang.document.DocumentNode : expanders.DocumentDocbook4,
         nodes.Document : expanders.DocumentDocbook4,
         nodes.Book : expanders.BookDocbook4,
         nodes.Article : expanders.ArticleDocbook4,
@@ -72,6 +73,7 @@ nodeMap = {
     'docbook5' : {
     },
     'xhtml11' : {
+        sneakylang.document.DocumentNode : expanders.DocumentXhtml11,
         nodes.Document : expanders.DocumentXhtml11,
         nodes.Book : expanders.BookXhtml11,
         nodes.Article : expanders.ArticleXhtml11,
@@ -86,9 +88,10 @@ nodeMap = {
     }
 }
 
-### overwrite SneakyLang's parse method, we wont' everythink to be wrapped in Document
-def parse(stream, registerMap, documentType=parsers.Article):
-    parser = parsers.Document(documentType(stream, registerMap[documentType], '', registerMap), stream, registerMap[parsers.Document], '', registerMap)
-    documentNode = parser.parse()
-    return documentNode
-
+### overwrite SneakyLang's parse method, we want everything to be wrapped in document_type
+def parse(stream, register_map, document_type=parsers.Article):
+    dtype = document_type(stream, None, '', register_map[document_type.macro])
+    child_node = dtype.parse()
+    doc = sneakylang.document.DocumentNode()
+    doc.add_child(child_node)
+    return doc

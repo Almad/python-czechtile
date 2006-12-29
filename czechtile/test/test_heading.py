@@ -36,27 +36,27 @@ from module_test import *
 class TestHeadings(OutputTestCase):
 
     def testSimplest(self):
-        tree = parse('''= Nadpis =\n\nOdstavec\n\n''', registerMap)
+        tree = parse('''= Nadpis =\n\nOdstavec\n\n''', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[0].children[0].content, 'Nadpis')
         self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[1].children[0].content, 'Odstavec')
-        
-        result = expand(tree, 'docbook4', nodeMap)
+
+        result = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<title>Nadpis</title><para>Odstavec</para>', result)
 
-        result = expand(tree, 'xhtml11', nodeMap)
+        result = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<h1>Nadpis</h1><p>Odstavec</p>', result)
-    
+
     def testTwolevel(self):
-        tree = parse('= Nadpis =\nOdstavec\n== NadpisDva ==\nOdstavec', registerMap)
+        tree = parse('= Nadpis =\nOdstavec\n== NadpisDva ==\nOdstavec', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[0].children[0].content, 'Nadpis')
         self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[1].children[0].content, 'Odstavec')
  #       self.assertEquals(tree.children[0].children[2].__class__, nodes.Sekce)
-        
-        result = expand(tree, 'xhtml11', nodeMap)
+
+        result = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<h1>Nadpis</h1><p>Odstavec</p><h2>NadpisDva</h2><p>Odstavec</p>', result)
 
 

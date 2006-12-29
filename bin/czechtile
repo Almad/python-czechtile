@@ -36,7 +36,7 @@ import logging
 
 from optparse import OptionParser
 
-from czechtile import parse, expand, registerMap, nodeMap
+from czechtile import parse, expand, register_map, expander_map
 
 parser = OptionParser()
 
@@ -88,13 +88,13 @@ def main():
     txt = readFile(options.in_file)
     logging.debug('File readed: %s' % txt)
 
-    tree = parse(txt, registerMap)
+    tree = parse(txt, register_map)
 
     if options.xhtml_file is not None:
-        writeFile(options.xhtml_file, expand(tree, 'xhtml11', nodeMap))
+        writeFile(options.xhtml_file, expand(tree, 'xhtml11', expander_map))
 
     if options.docbook4_file is not None:
-        writeFile(options.docbook4_file, expand(tree, 'docbook4', nodeMap))
+        writeFile(options.docbook4_file, expand(tree, 'docbook4', expander_map))
 
 
 if __name__ == '__main__':

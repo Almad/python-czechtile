@@ -37,7 +37,7 @@ logging.basicConfig(level=logging.DEBUG)
 class TestList(OutputTestCase):
 
     def testItemizedList(self):
-        tree = parse('''\n\n - Polozka1\n - Polozka2\n\n''', registerMap)
+        tree = parse('''\n\n - Polozka1\n - Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'itemized')
@@ -48,10 +48,10 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('<itemizedlist><listitem>Polozka1</listitem><listitem>Polozka2</listitem></itemizedlist>', res)
-        
+
 
     def testNumberOrderedList(self):
-        tree = parse('''\n\n 1. Polozka1\n 1. Polozka2\n\n''', registerMap)
+        tree = parse('''\n\n 1. Polozka1\n 1. Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, '1-ordered')
@@ -64,9 +64,9 @@ class TestList(OutputTestCase):
         res = expand(tree, 'docbook4', nodeMap)
         self.assertDocbook4('<orderedlist numeration="arabic"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
 
-        
+
     def testAlphaOrderedList(self):
-        tree = parse('''\n\n a. Polozka1\n a. Polozka2\n\n''', registerMap)
+        tree = parse('''\n\n a. Polozka1\n a. Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'A-ordered')
@@ -80,7 +80,7 @@ class TestList(OutputTestCase):
         self.assertDocbook4('<orderedlist numeration="loweralpha"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
 
     def testRomanOrderedList(self):
-        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\n''', registerMap)
+        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'I-ordered')
@@ -95,7 +95,7 @@ class TestList(OutputTestCase):
 
 
     def testSublist(self):
-        tree = parse('''\n\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n  - VnorenaPolozka3\n - Polozka2\n\n''', registerMap)
+        tree = parse('''\n\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n  - VnorenaPolozka3\n - Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'itemized')

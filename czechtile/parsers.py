@@ -32,76 +32,26 @@ import macros
 
 ### "Global content" holders ###
 
-class Document(Parser):
-    start = None
-    macro = macros.Document
-
-    def __init__(self, documentType, *args, **kwargs):
-        self.parser = documentType
-        Parser.__init__(self, *args, **kwargs)
-
-    def resolveContent(self):
-        self.content = self.stream
-        self.stream = ''
-
-    def callMacro(self):
-        """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).expand(self.content, self.parser)
-
-class Macro(Parser):
-    start = ['^(\(){2}$']
-    end = '^(\)){2}$'
-    macro = macros.Macro
-
-    def __init__(self, *args, **kwargs):
-        Parser.__init__(self, *args, **kwargs)
-        self.register = self.registerMap[self.__class__]
-
-    def resolveContent(self):
-        endMatch = re.search(self.__class__.end[1:-1], self.stream)
-        if not endMatch:
-            raise ParserRollback
-
-        # content is splitted by commas
-
-        self.content = self.stream[0:endMatch.start()]
-        self.chunk_end = self.stream[endMatch.start():endMatch.end()]
-
-        self.args = self.content.split()
-        self.macroName = self.args.pop(0)
-
-        self.macro = self.register.get_macro(self.macroName)
-        if not self.macro:
-            raise ParserRollback
-
-        # finally, no rollback expected so we can update stream
-        self.stream = self.stream[endMatch.end():]
-
-    def callMacro(self):
-        """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).macroCall(*self.args)
-
-
 class Book(Parser):
     start = None
     macro = macros.Book
     end = ''
 
-    def resolveContent(self):
+    def resolve_argument_string(self):
         self.content = self.stream
         self.stream = ''
-        self.args = self.content
+        self.argument_string = self.content
 
 class Article(Parser):
     start = None
     macro = macros.Article
 
-    def resolveContent(self):
+    def resolve_argument_string(self):
         self.content = self.stream
         self.stream = ''
-        self.args = self.content
+        self.argument_string = self.content
 
-class Sekce(Document):
+class Sekce(Parser):
     start = None
     macro = macros.Sekce
 
@@ -114,37 +64,33 @@ class Odstavec(Parser):
     end = None
     macro = macros.Odstavec
 
-    def resolveContent(self):
+    def resolve_argument_string(self):
         """ Odstavec parser is called only and only on unbound TextNodes; thus,
         all content of TextNode is Paragraph
         """
         self.content = self.stream
         self.stream = ''
-        self.args = self.content
+        self.argument_string = self.content
 
 class NeformatovanyText(Parser):
-    start = ['^(\n§§\n){1}$']
-    end = '^(\n§§\n){1}$'
+    start = ['(\n§§\n){1}']
+    end = '(\n§§\n){1}'
     macro = macros.NeformatovanyText
 
-    def resolveContent(self):
-        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+    def resolve_argument_string(self):
+        endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
             raise ParserRollback
 
-        self.content = self.stream[0:endMatch.start()]
+        self.argument_string = self.stream[0:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
 
-    def callMacro(self):
-        """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).expand(self.content)
-
 class Nadpis(Parser):
-    start = ['^(\n)?(=){1,5}(\ ){1}$']
+    start = ['(\n)?(=){1,5}(\ ){1}']
     #end same as start match
     macro = macros.Nadpis
 
-    def resolveContent(self):
+    def resolve_argument_string(self):
         endPattern = self.chunk[:-1]
         if endPattern.startswith('\n'):
             endPattern = endPattern[1:]
@@ -159,84 +105,73 @@ class Nadpis(Parser):
         self.chunk_end = self.stream[endMatch.start():endMatch.end()-1]
         self.stream = self.stream[endMatch.end()-1:]
 
-    def callMacro(self):
-        """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).expand(self.level, self.content)
+        self.argument_string = ''.join([str(self.level), ' ', self.content])
 
 ### End of "block" elements ###
 
 ### Inline elements, mostly in Paragraphs ####
 
 class Silne(Parser):
-    start = ['^("""){1}$']
-    end = '^("""){1}$'
+    start = ['("){3}']
+    end = '("){3}'
     macro = macros.Silne
 
-    def resolveContent(self):
-        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+    def resolve_argument_string(self):
+        endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
             raise ParserRollback
-        self.content = self.stream[0:endMatch.start()]
+        self.argument_string = self.stream[0:endMatch.start()]
         self.chunk_end = self.stream[endMatch.start():endMatch.end()]
         self.stream = self.stream[endMatch.end():]
-
-    def callMacro(self):
-        """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).expand(self.content)
 
 class Zvyraznene(Parser):
-    start = ['^(""){1}$']
-    end = '^(""){1}$'
+    start = ['("){2}']
+    end = '("){2}'
     macro = macros.Zvyraznene
 
-    def resolveContent(self):
-        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+    def resolve_argument_string(self):
+        endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
             raise ParserRollback
-        self.content = self.stream[0:endMatch.start()]
+        self.argument_string = self.stream[0:endMatch.start()]
         self.chunk_end = self.stream[endMatch.start():endMatch.end()]
         self.stream = self.stream[endMatch.end():]
 
-    def callMacro(self):
-        """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).expand(self.content)
-
 class Hyperlink(Parser):
-    start = ['^http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*$', '^\(http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*$']
-    end = '^(\))$'
+    start = ['http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*$', '^\(http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*']
+    end = '(\))'
     macro = macros.Hyperlink
 
-    def resolveContent(self):
+    def resolve_argument_string(self):
         if not self.chunk.startswith('('):
             # Easy substitution of http://link
             self.link = self.chunk
-            self.content = self.chunk
+            self.argument_string = ''.join([self.chunk, ' ', self.chunk])
         else:
-            # Substitution with arguments, (http://link link text)
-            endMatch = re.search(self.__class__.end[1:-1], self.stream)
+            endMatch = re.search(self.__class__.end, self.stream)
             if not endMatch:
                 raise ParserRollback
             self.link = self.chunk[1:]
-            self.content = re.sub("^(\s)*", '', self.stream[0:endMatch.start()])
+            self.argument_string = ''.join([self.chunk[1:], ' ', re.sub("^(\s)*", '', self.stream[0:endMatch.start()])])
             self.chunk_end = self.stream[endMatch.start():endMatch.end()]
             self.stream = self.stream[endMatch.end():]
 
-    def callMacro(self):
+    def call_macro(self):
         """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).expand(self.link, self.content)
+        return self.macro(self.register, self.register_map).expand(self.link, self.content)
 
 ### Typographic parsers - transfer text to czech typographic customs ###
 
 class TriTecky(Parser):
-    start = ['^(\.){3}$']
+    start = ['(\.){3}']
     end = None
     macro = macros.TriTecky
 
-    def resolveContent(self):
+    def resolve_argument_string(self):
         pass
 
-    def callMacro(self):
-        return self.macro(self.register, self.registerMap).expand()
+    def call_macro(self):
+        return self.macro(self.register, self.register_map).expand()
 
 ### End of typographic parsers ###
 
@@ -246,12 +181,12 @@ class TriTecky(Parser):
 class List(Parser):
     # the '\n\n' start and end is only for now, later it can be removed
     # (when it'll be all right)
-    start = ['^(\n\n\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}$']
-    end = '^(\n){2}$'
+    start = ['(\n\n\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    end = '(\n){2}'
     macro = macros.List
 
-    def resolveContent(self):
-        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+    def resolve_argument_string(self):
+        endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
             raise ParserRollback
         self.content = self.stream[0:endMatch.start()]
@@ -271,20 +206,20 @@ class List(Parser):
                 self.type_ = types[i]
 
 
-    def callMacro(self):
+    def call_macro(self):
         """ Do proper call to related macro(s) """
-        return self.macro(self.register, self.registerMap).expand(self.type_, self.content)
+        return self.macro(self.register, self.register_map).expand(self.type_, self.content)
 
 class ListItem(Parser):
-    start = ['^(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}$']
-    end = '^(\n)$'
+    start = ['(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    end = '(\n)'
     macro = macros.ListItem
 
-    def resolveContent(self):
-        endMatch = re.search(self.__class__.end[1:-1], self.stream)
+    def resolve_argument_string(self):
+        endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
             raise ParserRollback
-            
+
         self.level = self.chunk.count(' ') - 2
         self.content = self.stream[0:endMatch.start()]
 #        self.content = self.stream[self.level:endMatch.start()]
@@ -304,9 +239,11 @@ class ListItem(Parser):
                 self.type_ = types[i]
 
 
-    def callMacro(self):
+    def call_macro(self):
         """ Do proper call to related macro(s) """
         if self.level > 0:
-            return macros.List(self.register, self.registerMap).expand(self.type_, self.content)
+            return macros.List(self.register, self.register_map).expand(self.type_, self.content)
         else:
-            return self.macro(self.register, self.registerMap).expand(self.content)
+            return self.macro(self.register, self.register_map).expand(self.content)
+
+parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene]

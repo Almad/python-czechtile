@@ -38,11 +38,11 @@ from module_test import *
 class TestCzechTypos(OutputTestCase):
 
     def testTriTecky(self):
-        tree = parse('''Typo hezky cesky...''', registerMap)
-        result = expand(tree, 'docbook4', nodeMap)
+        tree = parse('''Typo hezky cesky...''', register_map)
+        result = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('''<para>Typo hezky cesky&#8230</para>''', result)
 
-        result = expand(tree, 'xhtml11', nodeMap)
+        result = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p>Typo hezky cesky&#8230</p>''', result)
 
 

@@ -37,14 +37,14 @@ from module_test import *
 class TestResult(OutputTestCase):
 
     def testBasicArticle(self):
-        tree = parse('doc', registerMap)
-        res = expand(tree, 'docbook4', nodeMap)
+        tree = parse('doc', register_map)
+        res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('''<para>doc</para>''', res)
 
     def testBasicBook(self):
-        tree = parse('doc', registerMap, parsers.Book)
-        self.assertEquals(isinstance(tree.children[0], nodes.Book), True)
-        res = expand(tree, 'docbook4', nodeMap)
+        tree = parse('doc', register_map, parsers.Book)
+        self.assertEquals(tree.children[0].__class__, nodes.Book)
+        res = expand(tree, 'docbook4', expander_map)
         self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book><para>doc</para></book>''')
 
