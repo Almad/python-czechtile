@@ -95,18 +95,18 @@ class TestOdkaz(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><a href="http://rpgplanet.cz">Stranky materskeho projektu</a></p>''', res)
 
-#    def testOdkazBadSyntax(self):
-#        tree = parse('''(http://rpgplanet.cz Stranky materskeho projektu''', register_map)
-#        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
-#        self.assertEquals(tree.children[0].children[0].children[0].__class__, TextNode)
-#        self.assertEquals(tree.children[0].children[0].children[0].content, '(')
-#        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.Hyperlink)
-#
-#        res = expand(tree, 'docbook4', expander_map)
-#        self.assertDocbook4('''<para>(<ulink url="http://rpgplanet.cz">http://rpgplanet.cz</ulink> Stranky materskeho projektu</para>''', res)
-#
-#        res = expand(tree, 'xhtml11', expander_map)
-#        self.assertXhtml('''<p>(<a href="http://rpgplanet.cz">http://rpgplanet.cz</a> Stranky materskeho projektu</p>''', res)
+    def testOdkazBadSyntax(self):
+        tree = parse('''(http://rpgplanet.cz Stranky materskeho projektu''', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, TextNode)
+        self.assertEquals(tree.children[0].children[0].children[0].content, '(')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.Hyperlink)
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para>(<ulink url="http://rpgplanet.cz">http://rpgplanet.cz</ulink> Stranky materskeho projektu</para>''', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p>(<a href="http://rpgplanet.cz">http://rpgplanet.cz</a> Stranky materskeho projektu</p>''', res)
 
     def testOdkazWithEmpansedParts(self):
         tree = parse('''(http://rpgplanet.cz Stranky ""materskeho"" """projektu""")''', register_map)

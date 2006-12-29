@@ -138,7 +138,7 @@ class Zvyraznene(Parser):
         self.stream = self.stream[endMatch.end():]
 
 class Hyperlink(Parser):
-    start = ['http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*$', '^\(http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*']
+    start = ['http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*', '\(http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*']
     end = '(\))'
     macro = macros.Hyperlink
 
