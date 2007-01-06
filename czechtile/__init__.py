@@ -37,12 +37,11 @@ import parsers
 # map parsers to registers with nodes allowed
 register_map = RegisterMap({
     sneakylang.document.Document : Register([macros.Book, macros.Article], parsers.parsers),
-    macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List], parsers.parsers),
-    macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List], parsers.parsers),
+    macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText], parsers.parsers),
+    macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText], parsers.parsers),
     macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
                        macros.Hyperlink, macros.TriTecky], parsers.parsers),
     macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene, macros.TriTecky], parsers.parsers),
-    macros.List : Register([macros.ListItem, macros.List], parsers.parsers),
     macros.Nadpis : Register([macros.Hyperlink], parsers.parsers),
     macros.Zvyraznene : Register([macros.Hyperlink], parsers.parsers),
     macros.Silne : Register([macros.Hyperlink], parsers.parsers),
