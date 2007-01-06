@@ -86,7 +86,7 @@ class NeformatovanyText(Parser):
         self.stream = self.stream[endMatch.end():]
 
 class Nadpis(Parser):
-    start = ['(\n)?(=){1,5}(\ ){1}']
+    start = ['(\n)?(=){1,5}(\ )?']
     #end same as start match
     macro = macros.Nadpis
 
