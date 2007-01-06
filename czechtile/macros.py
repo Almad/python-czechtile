@@ -96,9 +96,9 @@ class Nadpis(CzechtileMacro):
     def expand_to_nodes(self, level, content):
         node = nodes.Nadpis()
         node.level = level
-        tn = TextNode()
-        tn.content = content
-        node.add_child(tn)
+        child_nodes = parse(content, self.register_map, self.register)
+        for n in child_nodes:
+            node.add_child(n)
         return node
 
 class Odstavec(CzechtileMacro):

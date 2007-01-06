@@ -125,6 +125,29 @@ class TestOdkaz(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><a href="http://rpgplanet.cz">Stranky <em>materskeho</em> <strong>projektu</strong></a></p>''', res)
 
+    def testConversionInHeading(self):
+        tree = parse('''= (http://rpgplanet.cz Stranky materskeho projektu) =\n''', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Hyperlink)
+        self.assertEquals(tree.children[0].children[0].children[0].link, 'http://rpgplanet.cz')
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Stranky materskeho projektu')
+
+    def testConversionInZvyraznene(self):
+        tree = parse('''""(http://rpgplanet.cz Stranky materskeho projektu)""''', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Zvyraznene)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].__class__, nodes.Hyperlink)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].link, 'http://rpgplanet.cz')
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].children[0].content, 'Stranky materskeho projektu')
+
+    def testConversionInSilne(self):
+        tree = parse('''"""(http://rpgplanet.cz Stranky materskeho projektu)"""''', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Silne)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].__class__, nodes.Hyperlink)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].link, 'http://rpgplanet.cz')
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].children[0].content, 'Stranky materskeho projektu')
+
 class TestFixedText(OutputTestCase):
 
     def testSimple(self):
