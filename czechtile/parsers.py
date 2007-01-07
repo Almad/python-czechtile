@@ -152,7 +152,13 @@ class Hyperlink(Parser):
             if not endMatch:
                 raise ParserRollback
             self.link = self.chunk[1:]
-            self.argument_string = ''.join([self.chunk[1:], ' ', re.sub("^(\s)*", '', self.stream[0:endMatch.start()])])
+            text = re.sub("^(\s)*", '', self.stream[0:endMatch.start()])
+            # empty text, we should avoid this because of hyperlink in parenthesis,
+            # see bug #39
+            if text == '':
+                raise ParserRollback
+            self.argument_string = ''.join([self.link, ' ', text])
+
             self.chunk_end = self.stream[endMatch.start():endMatch.end()]
             self.stream = self.stream[endMatch.end():]
 
