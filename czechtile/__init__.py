@@ -86,7 +86,9 @@ expander_map = {
         nodes.Silne : expanders.SilneXhtml11,
         nodes.Zvyraznene : expanders.ZvyrazneneXhtml11,
         nodes.TriTecky : expanders.TriTeckyEntity,
-        nodes.Hyperlink : expanders.HyperlinkXhtml11
+        nodes.Hyperlink : expanders.HyperlinkXhtml11,
+        nodes.List : expanders.ListXhtml11,
+        nodes.ListItem : expanders.ListItemXhtml11
     }
 }
 

@@ -48,6 +48,9 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<itemizedlist><listitem>Polozka1</listitem><listitem>Polozka2</listitem></itemizedlist>', res)
+        
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<ul><li>Polozka1</li><li>Polozka2</li></ul>', res)
 
 
     def testNumberOrderedList(self):
@@ -63,6 +66,9 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<orderedlist numeration="arabic"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
+        
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<ol type="1"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
 
     def testAlphaOrderedList(self):
@@ -78,6 +84,9 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<orderedlist numeration="loweralpha"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
+        
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<ol type="a"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
     def testRomanOrderedList(self):
         tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\n''', register_map)
@@ -92,6 +101,9 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<orderedlist numeration="lowerroman"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
+        
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
 
     def testSublist(self):
