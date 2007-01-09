@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 """ Parsers
 """
@@ -28,7 +28,6 @@ import re
 
 from sneakylang import Parser, ParserRollback
 import macros
-
 
 ### "Global content" holders ###
 
@@ -187,29 +186,31 @@ class List(Parser):
     end = '(\n){2}'
     macro = macros.List
 
-    def resolve_argument_string(self):
-        endMatch = re.search(self.__class__.end, self.stream)
-        if not endMatch:
-            raise ParserRollback
-        self.content = self.stream[0:endMatch.start()]
-        self.stream = ''
-        self.content = self.chunk[2:] + self.content
-        #self.args = self.content
-        self.content += '\n'
-
-        types = {
+    types = {
             ' - ' : 'itemized',
             ' 1. ' : '1-ordered',
             ' a. ' : 'A-ordered',
             ' i. ' : 'I-ordered'
         }
-        for i in types.keys():
+
+    def resolve_argument_string(self):
+
+        endMatch = re.search(self.__class__.end, self.stream)
+        if not endMatch:
+            raise ParserRollback
+        self.content = self.chunk[2:] + self.stream[0:endMatch.start()]
+        self.stream = ''
+        self.content += '\n'
+
+        for i in self.types.keys():
             if re.search(i, self.chunk[2:]):
-                self.type_ = types[i]
+                self.type_ = self.types[i]
+
+        self.argument_string = ''.join([self.type_, '!::', self.content])
 
 class ListItem(Parser):
-    start = ['(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
-    end = '(\n)'
+    start = ['(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    end = '(\n){1}'
     macro = macros.ListItem
 
     def resolve_argument_string(self):
@@ -217,30 +218,7 @@ class ListItem(Parser):
         if not endMatch:
             raise ParserRollback
 
-        self.level = self.chunk.count(' ') - 2
         self.content = self.stream[0:endMatch.start()]
-#        self.content = self.stream[self.level:endMatch.start()]
-#        re.search('\n', self.content)
-
-        # copied from list parser
-        # can we make somehow a link to types in the list parser,
-        # so we won't have the same on two places?
-        types = {
-            ' - ' : 'itemized',
-            ' 1. ' : '1-ordered',
-            ' a. ' : 'A-ordered',
-            ' i. ' : 'I-ordered'
-        }
-        for i in types.keys():
-            if re.search(i, self.chunk):
-                self.type_ = types[i]
-
-#
-#    def call_macro(self):
-#        """ Do proper call to related macro(s) """
-#        if self.level > 0:
-#            return macros.List(self.register, self.register_map).expand(self.type_, self.content)
-#        else:
-#            return self.macro(self.register, self.register_map).expand(self.content)
+        self.argument_string = self.content
 
 parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene]

@@ -32,7 +32,7 @@ from czechtile import *
 
 from module_test import *
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 class TestList(OutputTestCase):
 
@@ -46,7 +46,7 @@ class TestList(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
 
-        res = expand(tree, 'docbook4', nodeMap)
+        res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<itemizedlist><listitem>Polozka1</listitem><listitem>Polozka2</listitem></itemizedlist>', res)
 
 
@@ -61,7 +61,7 @@ class TestList(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
 
 
-        res = expand(tree, 'docbook4', nodeMap)
+        res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<orderedlist numeration="arabic"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
 
 
@@ -76,7 +76,7 @@ class TestList(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
 
 
-        res = expand(tree, 'docbook4', nodeMap)
+        res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<orderedlist numeration="loweralpha"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
 
     def testRomanOrderedList(self):
@@ -90,7 +90,7 @@ class TestList(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
 
 
-        res = expand(tree, 'docbook4', nodeMap)
+        res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<orderedlist numeration="lowerroman"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
 
 

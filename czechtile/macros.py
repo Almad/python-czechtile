@@ -191,13 +191,19 @@ class List(CzechtileMacro):
     name = 'list'
     help = '((list typ obsah seznamu))'
 
+    def parse_argument_string(self, argument_string):
+        args = argument_string.split('!::')
+        type_ = args[0]
+        self.arguments = [type_, ''.join([''.join([arg, ' ']) for arg in args[1:]])[:-1]]
+
     def expand_to_nodes(self, type_, content):
         node = nodes.List()
         node.type_ = type_
         child_nodes = parse(content, self.register_map, self.register)
-        print self.register.parser_name_map
         for n in child_nodes:
-            if isinstance(n, nodes.ListItem) or isinstance(n, nodes.List):                                                                                                                                                                                                 # this if statement is necessary because without it there
+            if isinstance(n, nodes.ListItem) or isinstance(n, nodes.List):
+            # this if statement is necessary because without it there
             # i-dont-know-why will occur textnodes
+            # -- that was before sl upgrade, i don't know if it occur now too
                 node.add_child(n)
         return node
