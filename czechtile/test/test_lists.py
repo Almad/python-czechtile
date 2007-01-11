@@ -48,7 +48,7 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<itemizedlist><listitem>Polozka1</listitem><listitem>Polozka2</listitem></itemizedlist>', res)
-        
+
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ul><li>Polozka1</li><li>Polozka2</li></ul>', res)
 
@@ -66,7 +66,7 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<orderedlist numeration="arabic"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
-        
+
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ol type="1"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
@@ -84,7 +84,7 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<orderedlist numeration="loweralpha"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
-        
+
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ol type="a"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
@@ -101,7 +101,7 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<orderedlist numeration="lowerroman"><listitem>Polozka1</listitem><listitem>Polozka2</listitem></orderedlist>', res)
-        
+
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
@@ -127,6 +127,22 @@ class TestList(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[2].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[0].children[2].children[0].content, 'Polozka2')
 
+
+    def testLeaveDocumentToContinue(self):
+        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\nNormalni odstavec''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, 'I-ordered')
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
+        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[1].children[0].content, 'Normalni odstavec')
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol><p>Normalni odstavec</p>', res)
 
 if __name__ == "__main__":
     main()
