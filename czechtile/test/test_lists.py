@@ -143,6 +143,13 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol><p>Normalni odstavec</p>', res)
+        
+    def testIfDashIsNotParseredAsList(self): # it is not very nice name for test class ;)
+        tree = parse('''jeden - dva tri-styri''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].content, 'jeden - dva tri-styri')
 
 if __name__ == "__main__":
     main()
