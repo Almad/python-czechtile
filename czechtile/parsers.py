@@ -199,7 +199,7 @@ class List(Parser):
         if not endMatch:
             raise ParserRollback
         self.content = self.chunk[2:] + self.stream[0:endMatch.start()]
-        self.stream = ''
+        self.stream = self.stream[endMatch.end():]
         self.content += '\n'
 
         for i in self.types.keys():
