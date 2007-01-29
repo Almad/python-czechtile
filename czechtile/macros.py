@@ -179,8 +179,16 @@ class ListItem(CzechtileMacro):
     name = 'listitem'
     help = '((listitem text polozky))'
 
-    def expand_to_nodes(self, content):
+    def parse_argument_string(self, argument_string):
+        args = argument_string.split()
+        level = int(args[0])
+        type_ = args[1]
+        self.arguments = [level, type_, ''.join([''.join([arg, ' ']) for arg in args[2:]])[:-1]]
+
+    def expand_to_nodes(self, level, type_, content):
         node = nodes.ListItem()
+        node.level = level
+        node.type_ = type_
         child_nodes = parse(content, self.register_map, self.register)
         for n in child_nodes:
             node.add_child(n)
@@ -201,7 +209,7 @@ class List(CzechtileMacro):
         node.type_ = type_
         child_nodes = parse(content, self.register_map, self.register)
         for n in child_nodes:
-            if isinstance(n, nodes.ListItem) or isinstance(n, nodes.List):
+            if isinstance(n, nodes.ListItem):
             # this if statement is necessary because without it there
             # i-dont-know-why will occur textnodes
             # -- that was before sl upgrade, i don't know if it occur now too

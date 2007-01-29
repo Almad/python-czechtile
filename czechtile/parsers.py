@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """ Parsers
 """
@@ -178,6 +178,12 @@ class TriTecky(Parser):
 
 ### End of inline elements ###
 
+types = {
+    ' - ' : 'itemized',
+    ' 1. ' : '1-ordered',
+    ' a. ' : 'A-ordered',
+    ' i. ' : 'I-ordered'
+}
 
 class List(Parser):
     # the '\n\n' start and end is only for now, later it can be removed
@@ -185,13 +191,6 @@ class List(Parser):
     start = ['(\n\n\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
     end = '(\n){2}'
     macro = macros.List
-
-    types = {
-            ' - ' : 'itemized',
-            ' 1. ' : '1-ordered',
-            ' a. ' : 'A-ordered',
-            ' i. ' : 'I-ordered'
-        }
 
     def resolve_argument_string(self):
 
@@ -202,14 +201,14 @@ class List(Parser):
         self.stream = self.stream[endMatch.end():]
         self.content += '\n'
 
-        for i in self.types.keys():
-            if re.search(i, self.chunk[2:]):
-                self.type_ = self.types[i]
+        for i in types.keys():
+            if re.search(i, self.chunk[self.chunk.count(' ') - 2:]):
+                self.type_ = types[i]
 
         self.argument_string = ''.join([self.type_, '!::', self.content])
 
 class ListItem(Parser):
-    start = ['(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    start = ['(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
     end = '(\n){1}'
     macro = macros.ListItem
 
@@ -218,7 +217,12 @@ class ListItem(Parser):
         if not endMatch:
             raise ParserRollback
 
+        self.level = self.chunk.count(' ') - 2
+        for i in types.keys():
+            if re.search(i, self.chunk[self.level:]):
+                self.type_ = types[i]
         self.content = self.stream[0:endMatch.start()]
-        self.argument_string = self.content
+        self.argument_string = ''.join([str(self.level), ' ', self.type_, ' ', self.content])
+        
 
 parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene]

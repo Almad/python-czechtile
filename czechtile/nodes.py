@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """ Czechtile: WikiHezky Cesky
 Set Nodes
@@ -44,3 +44,4 @@ class TriTecky(Node): pass
 
 class List(Node): pass
 class ListItem(Node): pass
+class Sublist(Node): pass

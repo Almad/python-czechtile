@@ -46,7 +46,7 @@ register_map = RegisterMap({
     macros.Zvyraznene : Register([macros.Hyperlink], parsers.parsers),
     macros.Silne : Register([macros.Hyperlink], parsers.parsers),
     macros.NeformatovanyText : Register([], parsers.parsers),
-    macros.List : Register([macros.List, macros.ListItem], parsers.parsers),
+    macros.List : Register([macros.ListItem], parsers.parsers),
     macros.ListItem : Register([macros.Zvyraznene, macros.Silne,
                        macros.Hyperlink, macros.TriTecky], parsers.parsers)
 })
