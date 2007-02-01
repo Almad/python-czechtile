@@ -130,6 +130,9 @@ class TestList(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[5].level, 0)
         self.assertEquals(tree.children[0].children[0].children[5].children[0].content, 'Polozka2')
 
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('<itemizedlist><listitem>Polozka1</listitem><itemizedlist><listitem>VnorenaPolozka1</listitem><listitem>VnorenaPolozka2</listitem><itemizedlist><listitem>DvojitoVnorenaPolozka1</listitem></itemizedlist><listitem>VnorenaPolozka3</listitem></itemizedlist><listitem>Polozka2</listitem></itemizedlist>', res)
+        
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ul><li>Polozka1</li><ul><li>VnorenaPolozka1</li><li>VnorenaPolozka2</li><ul><li>DvojitoVnorenaPolozka1</li></ul><li>VnorenaPolozka3</li></ul><li>Polozka2</li></ul>', res)
 
