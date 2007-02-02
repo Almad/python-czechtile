@@ -106,7 +106,60 @@ class TestList(OutputTestCase):
         self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
 
-    def testSublist(self):
+    def testLeaveDocumentToContinue(self):
+        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\nNormalni odstavec''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, 'I-ordered')
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
+        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[1].children[0].content, 'Normalni odstavec')
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol><p>Normalni odstavec</p>', res)
+        
+    def testIfDashIsNotParseredAsList(self): # it is not very nice name for test function ;)
+        tree = parse('''jeden - dva tri-styri''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].content, 'jeden - dva tri-styri')
+        
+# ---
+# start of sublist tests
+
+    def testEarlierEndingSublist(self):
+        tree = parse('''\n\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n - Polozka2\n\n''', register_map)
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, 'itemized')
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].level, 0)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].level, 1)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'VnorenaPolozka1')
+        self.assertEquals(tree.children[0].children[0].children[2].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[2].level, 1)
+        self.assertEquals(tree.children[0].children[0].children[2].children[0].content, 'VnorenaPolozka2')
+        self.assertEquals(tree.children[0].children[0].children[3].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[3].level, 2)
+        self.assertEquals(tree.children[0].children[0].children[3].children[0].content, 'DvojitoVnorenaPolozka1')
+        self.assertEquals(tree.children[0].children[0].children[4].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[4].level, 0)
+        self.assertEquals(tree.children[0].children[0].children[4].children[0].content, 'Polozka2')
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('<itemizedlist><listitem>Polozka1</listitem><itemizedlist><listitem>VnorenaPolozka1</listitem><listitem>VnorenaPolozka2</listitem><itemizedlist><listitem>DvojitoVnorenaPolozka1</listitem></itemizedlist></itemizedlist><listitem>Polozka2</listitem></itemizedlist>', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<ul><li>Polozka1</li><ul><li>VnorenaPolozka1</li><li>VnorenaPolozka2</li><ul><li>DvojitoVnorenaPolozka1</li></ul></ul><li>Polozka2</li></ul>', res)
+
+    def testDoubleSublist(self):
         tree = parse('''\n\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n  - VnorenaPolozka3\n - Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
@@ -132,33 +185,11 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<itemizedlist><listitem>Polozka1</listitem><itemizedlist><listitem>VnorenaPolozka1</listitem><listitem>VnorenaPolozka2</listitem><itemizedlist><listitem>DvojitoVnorenaPolozka1</listitem></itemizedlist><listitem>VnorenaPolozka3</listitem></itemizedlist><listitem>Polozka2</listitem></itemizedlist>', res)
-        
+
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ul><li>Polozka1</li><ul><li>VnorenaPolozka1</li><li>VnorenaPolozka2</li><ul><li>DvojitoVnorenaPolozka1</li></ul><li>VnorenaPolozka3</li></ul><li>Polozka2</li></ul>', res)
 
-
-    def testLeaveDocumentToContinue(self):
-        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\nNormalni odstavec''', register_map)
-
-        self.assertEquals(tree.children[0].__class__, nodes.Article)
-        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
-        self.assertEquals(tree.children[0].children[0].type_, 'I-ordered')
-        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
-        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
-        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
-        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
-        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[1].children[0].content, 'Normalni odstavec')
-
-        res = expand(tree, 'xhtml11', expander_map)
-        self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol><p>Normalni odstavec</p>', res)
-        
-    def testIfDashIsNotParseredAsList(self): # it is not very nice name for test function ;)
-        tree = parse('''jeden - dva tri-styri''', register_map)
-
-        self.assertEquals(tree.children[0].__class__, nodes.Article)
-        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[0].children[0].content, 'jeden - dva tri-styri')
+# end of sublist tests
 
 if __name__ == "__main__":
     main()
