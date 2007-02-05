@@ -121,6 +121,7 @@ class TriTeckyEntity(CzechtileExpander):
 
 list_levels = [0]
 last_level = 0
+last_type = ''
 
 class ListDocbook4(CzechtileExpander):
     types = {
@@ -141,16 +142,18 @@ class ListDocbook4(CzechtileExpander):
 class ListItemDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
         global last_level
+        global last_type
         if list_levels.count(node.level) == 0:
             list_levels.append(node.level)
             outer_list = ''.join(['<', ListDocbook4.types[node.type_][0], ListDocbook4.types[node.type_][1], '>'])
         else:
             outer_list = ''
         if list_levels.count(node.level + 1) != 0:
-            outer_list = ''.join(['</', ListDocbook4.types[node.type_][0], '>']) + outer_list
+            outer_list = ''.join(['</', ListDocbook4.types[last_type][0], '>']) + outer_list
         if node.level == 0 and list_levels != [0] and last_level > 1:
-            outer_list = ''.join(['</', ListDocbook4.types[node.type_][0], '>']) + outer_list
+            outer_list = ''.join(['</', ListDocbook4.types[last_type][0], '>']) + outer_list
         last_level = node.level
+        last_type = node.type_
         return self.expand_with_content(node, format, node_map, outer_list + '<listitem>', '</listitem>')
 
 class ListXhtml11(CzechtileExpander):
@@ -172,14 +175,16 @@ class ListXhtml11(CzechtileExpander):
 class ListItemXhtml11(CzechtileExpander):
     def expand(self, node, format, node_map):
         global last_level
+        global last_type
         if list_levels.count(node.level) == 0:
             list_levels.append(node.level)
             outer_list = ''.join(['<', ListXhtml11.types[node.type_][0], ListXhtml11.types[node.type_][1], '>'])
         else:
             outer_list = ''
         if list_levels.count(node.level + 1) != 0:
-            outer_list = ''.join(['</', ListXhtml11.types[node.type_][0], '>']) + outer_list
+            outer_list = ''.join(['</', ListXhtml11.types[last_type][0], '>']) + outer_list
         if node.level == 0 and list_levels != [0] and last_level > 1:
-            outer_list = ''.join(['</', ListXhtml11.types[node.type_][0], '>']) + outer_list
+            outer_list = ''.join(['</', ListXhtml11.types[last_type][0], '>']) + outer_list
         last_level = node.level
+        last_type = node.type_
         return self.expand_with_content(node, format, node_map, outer_list + '<li>', '</li>')

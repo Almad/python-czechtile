@@ -212,6 +212,30 @@ class TestList(OutputTestCase):
 
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ul><li>Polozka1</li><ul><li>VnorenaPolozka1</li><li>VnorenaPolozka2</li><ul><li>DvojitoVnorenaPolozka1</li></ul><li>VnorenaPolozka3</li></ul><li>Polozka2</li></ul>', res)
+        
+    def testMultiTypeSublist(self):
+        tree = parse('''\n\n - Polozka prva\n  i. Polozka vnorena prva\n  i. Polozka vnorena druha\n - Polozka druha\n\n''', register_map)
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, 'itemized')
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].level, 0)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka prva')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].level, 1)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka vnorena prva')
+        self.assertEquals(tree.children[0].children[0].children[2].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[2].level, 1)
+        self.assertEquals(tree.children[0].children[0].children[2].children[0].content, 'Polozka vnorena druha')
+        self.assertEquals(tree.children[0].children[0].children[3].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[3].level, 0)
+        self.assertEquals(tree.children[0].children[0].children[3].children[0].content, 'Polozka druha')
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<ul><li>Polozka prva</li><ol type="i"><li>Polozka vnorena prva</li><li>Polozka vnorena druha</li></ol><li>Polozka druha</li></ul>', res)
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('<itemizedlist><listitem>Polozka prva</listitem><orderedlist numeration="lowerroman"><listitem>Polozka vnorena prva</listitem><listitem>Polozka vnorena druha</listitem></orderedlist><listitem>Polozka druha</listitem></itemizedlist>', res)
 
 # end of sublist tests
 
