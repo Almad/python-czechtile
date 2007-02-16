@@ -199,6 +199,7 @@ class List(Parser):
             raise ParserRollback
         self.content = self.chunk[2:] + self.stream[0:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
+        self.content = '\n' + self.content
         self.content += '\n'
 
         for i in types.keys():
@@ -208,7 +209,7 @@ class List(Parser):
         self.argument_string = ''.join([self.type_, '!::', self.content])
 
 class ListItem(Parser):
-    start = ['(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    start = ['(\n){1}(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
     end = '(\n){1}'
     macro = macros.ListItem
 

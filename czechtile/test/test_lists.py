@@ -129,6 +129,15 @@ class TestList(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[0].children[0].content, 'jeden - dva tri-styri')
         
+    def testIfDashInIsNotParseredAsList2(self):
+        # in this test we are finding out if dash is not parserd as list in listitem too
+        tree = parse('''\n\n - jeden - dva tri-styri\n\n''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden - dva tri-styri')
+        
 # ---
 # start of sublist tests
 
