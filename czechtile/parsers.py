@@ -199,8 +199,7 @@ class List(Parser):
             raise ParserRollback
         self.content = self.chunk[2:] + self.stream[0:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
-        self.content = '\n' + self.content
-        self.content += '\n'
+        self.content = '\n' + self.content + '\n'
 
         for i in types.keys():
             if re.search(i, self.chunk[self.chunk.count(' ') - 2:]):
