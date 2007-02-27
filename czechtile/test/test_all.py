@@ -76,7 +76,7 @@ class TestAll(OutputTestCase):
  - """panely""" - také mohou být obdobně zpracovány pro jednotlivé prezentované celky a témata - """sekce Ekostanu"""
  - plakátky k """Dobrovolníkům""", """Ekostany""" - distribuce k začátku letního semestru
 
-= Databáze & Maily =
+= Databáze & Maily =
 
  - je na webu, nasázet dobrovolníky, Cody potřebuje poslat na Síťku pro výkaz
  - zavést paralelní offline systém - pro případ havárie
@@ -154,7 +154,7 @@ class TestAll(OutputTestCase):
  - slavnostní otevření v půlce února - program
 
 '''
- 
+
         tree = parse(string, register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
@@ -181,7 +181,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[1].children[3].children[0].__class__, nodes.Silne)
         self.assertEquals(tree.children[0].children[1].children[3].children[0].children[0].content, 'vytvořit sekci na brontowebu')
         self.assertEquals(tree.children[0].children[1].children[3].children[1].content, ' - nabídník nárazové i dlouhodobé věci, vyčlenit novou pro sponzory, konkrétní nabídky, co jim může naše činnost dát')
-        
+
         self.assertEquals(tree.children[0].children[2].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[2].children[0].content, 'WWW Stránky')
         self.assertEquals(tree.children[0].children[3].__class__, nodes.List)
@@ -220,7 +220,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[3].children[8].children[0].content, 'nová sekce - ')
         self.assertEquals(tree.children[0].children[3].children[8].children[1].__class__, nodes.Silne)
         self.assertEquals(tree.children[0].children[3].children[8].children[1].children[0].content, 'Podporují nás')
-        
+
         self.assertEquals(tree.children[0].children[4].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[4].children[0].content, 'Zpravodaj')
         self.assertEquals(tree.children[0].children[5].__class__, nodes.List)
@@ -234,7 +234,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[5].children[1].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[5].children[1].level, 1)
         self.assertEquals(tree.children[0].children[5].children[1].children[0].content, 'nápady na obsah, informace o akcích, příspěvky')
-        
+
         self.assertEquals(tree.children[0].children[6].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[6].children[0].content, 'Válná Hromada')
         self.assertEquals(tree.children[0].children[7].__class__, nodes.List)
@@ -247,7 +247,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[7].children[1].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[7].children[1].level, 0)
         self.assertEquals(tree.children[0].children[7].children[1].children[0].content, 'program, jídlo - Áďa, Cody')
-        
+
         self.assertEquals(tree.children[0].children[8].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[8].children[0].content, 'Tiskoviny')
         self.assertEquals(tree.children[0].children[9].__class__, nodes.List)
@@ -287,7 +287,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[9].children[5].children[4].content, ' - distribuce k začátku letního semestru')
 
         self.assertEquals(tree.children[0].children[10].__class__, nodes.Nadpis)
-        self.assertEquals(tree.children[0].children[10].children[0].content, 'Databáze & Maily')
+        self.assertEquals(tree.children[0].children[10].children[0].content, 'Databáze & Maily')
         self.assertEquals(tree.children[0].children[11].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[11].type_, 'itemized')
         self.assertEquals(tree.children[0].children[11].children[0].__class__, nodes.ListItem)
@@ -330,7 +330,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[15].children[3].children[0].__class__, nodes.Silne)
         self.assertEquals(tree.children[0].children[15].children[3].children[0].children[0].content, 'seznam článků')
         self.assertEquals(tree.children[0].children[15].children[3].children[1].content, ' - aktualizace změn, obnovené, změněné a zaniklé články, články ať si zkontrolují údaje')
-        
+
         self.assertEquals(tree.children[0].children[16].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[16].children[0].content, 'Projetky')
         self.assertEquals(tree.children[0].children[17].__class__, nodes.List)
@@ -409,7 +409,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[17].children[16].children[0].children[0].content, 'malé granty')
         self.assertEquals(tree.children[0].children[17].children[16].children[1].content, ' na konkrétní akce - nářadí, propagace konkrétní akce')
         self.assertEquals(tree.children[0].children[17].children[16].children[2].__class__, nodes.TriTecky)
-        
+
         self.assertEquals(tree.children[0].children[18].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[18].children[0].content, 'Sponzoři')
         self.assertEquals(tree.children[0].children[19].__class__, nodes.List)
@@ -426,7 +426,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[19].children[3].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[19].children[3].level, 0)
         self.assertEquals(tree.children[0].children[19].children[3].children[0].content, 'JMP')
-        
+
         self.assertEquals(tree.children[0].children[20].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[20].children[0].content, 'Závěrečné zprávy')
         self.assertEquals(tree.children[0].children[21].__class__, nodes.List)
@@ -437,7 +437,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[21].children[1].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[21].children[1].level, 0)
         self.assertEquals(tree.children[0].children[21].children[1].children[0].content, 'Katarína - sponozři (Ekostan 2006)')
-        
+
         self.assertEquals(tree.children[0].children[22].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[22].children[0].content, 'Soutěž plakátků PsB')
         self.assertEquals(tree.children[0].children[23].__class__, nodes.List)
@@ -451,7 +451,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[23].children[2].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[23].children[2].level, 0)
         self.assertEquals(tree.children[0].children[23].children[2].children[0].content, 'ceny pro lidi, co vytvořili trička')
-        
+
         self.assertEquals(tree.children[0].children[24].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[24].children[0].content, 'Ekokvíz')
         self.assertEquals(tree.children[0].children[25].__class__, nodes.List)
@@ -462,7 +462,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[25].children[1].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[25].children[1].level, 0)
         self.assertEquals(tree.children[0].children[25].children[1].children[0].content, 'vítězům dat cenu - poslat jim něco z inventáře kanceláře (knížka :-))')
-        
+
         self.assertEquals(tree.children[0].children[26].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[26].children[0].content, 'Nový pracovník')
         self.assertEquals(tree.children[0].children[27].__class__, nodes.List)
@@ -473,7 +473,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[27].children[1].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[27].children[1].level, 0)
         self.assertEquals(tree.children[0].children[27].children[1].children[0].content, 'administrační funkce, pravidlený dochoz, systematičnost práce')
-        
+
         self.assertEquals(tree.children[0].children[28].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[28].children[0].content, 'Adresa kanceláře')
         self.assertEquals(tree.children[0].children[29].__class__, nodes.List)
@@ -484,7 +484,7 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[29].children[1].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[29].children[1].level, 0)
         self.assertEquals(tree.children[0].children[29].children[1].children[0].content, 'přeposílání pošty')
-        
+
         self.assertEquals(tree.children[0].children[30].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[30].children[0].content, 'Kancelář')
         self.assertEquals(tree.children[0].children[31].__class__, nodes.List)
@@ -502,13 +502,13 @@ class TestAll(OutputTestCase):
         self.assertEquals(tree.children[0].children[31].children[3].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[31].children[3].level, 0)
         self.assertEquals(tree.children[0].children[31].children[3].children[0].content, 'slavnostní otevření v půlce února - program')
-        
+
         res = expand(tree, 'xhtml11', expander_map)
 #        self.assertXhtml('<h1>Plány programů a akcí</h1><ul><li>každý za svůj program zpracuje <strong>koncepci</strong>, která bude sloužit k lepšímu plánování - cíle tohoto roku, konkrétní aktivity, průběh tohoto roku</li><li>zaměřit na možnost <strong>zapojení dobrovolníků</strong> - nabídka konkrétních činností</li><li>bude propráno a mozkovybouřeno na příští poradě</li><li><strong>vytvořit sekci na brontowebu</strong> - nabídník nárazové i dlouhodobé věci, vyčlenit novou pro sponzory, konkrétní nabídky, co jim může naše činnost dát</li></ul><h1>WWW Stránky</h1><ul><li>otázka bannerů</li><li>zprávy z kanceláře</li><li>článek o přestěhování kanclu do aktualit, upravit mapu, celkově projít celý web a zkontrolovat</li><li>kontaktovat webmastery ostatních portálů a informovat je o změně a zařídit</li><li>představení článků - texty od nich, umístit dosavadně vytvořené - redigovat je&#8230</li><li>korektury - měl by dělat někdo jiný, než text tvoří - <strong>práce pro dobrovolníka</strong></li><li>profily zaměstnanců kanceláře - jejich pracovní náplň, fotografie&#8230</li><li>podpora jinému, než automobilovému způsobu dopravy - baner, nálepky&#8230</li><li>nová sekce - <strong>Podporují nás</strong></li></ul><h1>Zpravodaj</h1><ul><li>vyjde zpravodaj <strong>KAM?</strong> - uzávěrka 16.1. - do konce ledna vyjde, jeho působnost je do konce dubna, ke Dni Země vyjde nové číslo</li><ul><li>nápady na obsah, informace o akcích, příspěvky</li></ul></ul><h1>Válná Hromada</h1><ul><li>ještě před ní (23. - 25.2.) udělat schůzku a vyzkoumat, co je třeba nadnést, <strong>podněty z praxe</strong></li><li>program, jídlo - Áďa, Cody</li></ul><h1>Tiskoviny</h1><ul><li>průkazky členské a OHB - vymyslet jejich dotisk</li><li>samolepky - Michal Žižka</li><li>propagační letáky - jednotná forma skládanky, v prvé fázi obecná o Hnutí (Cody [ještě více zapůsobit na možnost volného členství, za týden se sejít a přinést návrhy {od 16.00, umístit na web, rozeslat na brontl}]), Akci Příroda (Žblebt) a BRĎu (Ctibor [probrat na sekci BRĎO]) - zpracovat a vydat do Dnů Země, grafika (Michal Žižka, pokud někdo jiný - koordinace, aby byl podobný vzhled a forma</li><li>přidat <strong>návratku</strong> pro toho, kdo chce podpořit - možnost vyplnění na <strong>Ekostanu</strong></li><li><strong>panely</strong> - také mohou být obdobně zpracovány pro jednotlivé prezentované celky a témata - <strong>sekce Ekostanu</strong></li><li>plakátky k <strong>Dobrovolníkům</strong>, <strong>Ekostany</strong> - distribuce k začátku letního semestru</li></ul><h1>Databáze & Maily</h1><ul><li>je na webu, nasázet dobrovolníky, Cody potřebuje poslat na Síťku pro výkaz</li><li>zavést paralelní offline systém - pro případ havárie</li><li><strong>správce serveru</strong> - vyřešit některé důležité problémy, spam, přeposílání, záloha databáze</li></ul><h1>Trička & Kabele</h1><ul><li>zjistit a nechat vyrobit, pevnější materiál, dlouhé uši pouze - Katarína, Lenka</li></ul><h1>Organizace práce</h1><ul><li>rozvrh toho, kdo kdy bude na kanceláři - zatím stejný, změní se dle rozvrhů</li><li>sešit na vzkazy u telefonu</li><ul><li><strong>adresář</strong> - dokompletit a rozeslat, doplnit ICQ</li></ul><li><strong>seznam článků</strong> - aktualizace změn, obnovené, změněné a zaniklé články, články ať si zkontrolují údaje</li></ul><h1>Projetky</h1><ul><li>MŽP (?), Partnerství (nevyšlo), MŠMT (je v procesu)</li><li>projekty v zahraničí - problémy se zadáním</li><li><strong>Ekostan jako akce</strong> - výkazy, náklady (evidovat během tohoto roku) - možnost dotací MŠMT</li><li><strong>Vzdělávání</strong></li><li>Co je na <strong>Jižní Moravě</strong> financovat z <strong>ESF</strong>, zbytek z <strong>MŠMT</strong></li><li>na <strong>MŠMT</strong> 70% lidí do 26 let je třeba</li><li>projekty k podání</li><ul><li><strong>Nadace rozvoje občanské společnosti</strong> - Norské peníze</li><ul><li>víc malých projektů</li><li>přidat návrhy na aktivity</li></ul><li>do března</li></ul><li><strong>Krajský úřad</strong> - životní prostředí</li><li><strong>Partnerství</strong></li><ul><li><strong>Strom života</strong></li><ul><li>problém Skansky</li><li>uzávěrka je do 19.1.</li><li><strong>malé granty</strong> na konkrétní akce - nářadí, propagace konkrétní akce&#8230</li></ul></ul></ul><h1>Sponzoři</h1><ul><li>Jihomoravská energetika</li><li>Cenin</li><li>Lesy ČR</li><li>JMP</li></ul><h1>Závěrečné zprávy</h1><ul><li>do konce ledna uzávěrky</li><li>Katarína - sponozři (Ekostan 2006)</li></ul><h1>Soutěž plakátků PsB</h1><ul><li>málo kandidátů</li><li>nehlasovat na webu, ale pouze na Valné Hromadě</li><li>ceny pro lidi, co vytvořili trička</li></ul><h1>Ekokvíz</h1><ul><li>uveřejnit vylosované vítěze</li><li>vítězům dat cenu<li>poslat jim něco z inventáře kanceláře (knížka :-))</li></ul><h1>Nový pracovník</h1><ul><li>několik kandidátů - dva jsou vyloženě vhodní - pozvat a vybrat</li><li>administrační funkce, pravidlený dochoz, systematičnost práce</li></ul><h1>Adresa kanceláře</h1><ul><li>změnit v dokumentech</li><li>přeposílání pošty</li></ul><h1>Kancelář</h1><ul><li>dodělání zvonků, jmenovek, nálepek, zvonků&#8230</li><li>nábytek, police - spojit s promítáním nebo jinou švandou</li><li>zavedení nějakých večerů - vzdělávačně-zábavných</li><li>slavnostní otevření v půlce února - program</li></ul>', res)
         string2 = '''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs"><body class="article"><h1>Plány programů a akcí</h1><ul><li>každý za svůj program zpracuje <strong>koncepci</strong>, která bude sloužit k lepšímu plánování - cíle tohoto roku, konkrétní aktivity, průběh tohoto roku</li><li>zaměřit na možnost <strong>zapojení dobrovolníků</strong> - nabídka konkrétních činností</li><li>bude propráno a mozkovybouřeno na příští poradě</li><li><strong>vytvořit sekci na brontowebu</strong> - nabídník nárazové i dlouhodobé věci, vyčlenit novou pro sponzory, konkrétní nabídky, co jim může naše činnost dát</li></ul><h1>WWW Stránky</h1><ul><li>otázka bannerů</li><li>zprávy z kanceláře</li><li>článek o přestěhování kanclu do aktualit, upravit mapu, celkově projít celý web a zkontrolovat</li><li>kontaktovat webmastery ostatních portálů a informovat je o změně a zařídit</li><li>představení článků - texty od nich, umístit dosavadně vytvořené - redigovat je&#8230</li><li>korektury - měl by dělat někdo jiný, než text tvoří - <strong>práce pro dobrovolníka</strong></li><li>profily zaměstnanců kanceláře - jejich pracovní náplň, fotografie&#8230</li><li>podpora jinému, než automobilovému způsobu dopravy - baner, nálepky&#8230</li><li>nová sekce - <strong>Podporují nás</strong></li></ul><h1>Zpravodaj</h1><ul><li>vyjde zpravodaj <strong>KAM?</strong> - uzávěrka 16.1. - do konce ledna vyjde, jeho působnost je do konce dubna, ke Dni Země vyjde nové číslo</li><ul><li>nápady na obsah, informace o akcích, příspěvky</li></ul></ul><h1>Válná Hromada</h1><ul><li>ještě před ní (23. - 25.2.) udělat schůzku a vyzkoumat, co je třeba nadnést, <strong>podněty z praxe</strong></li><li>program, jídlo - Áďa, Cody</li></ul><h1>Tiskoviny</h1><ul><li>průkazky členské a OHB - vymyslet jejich dotisk</li><li>samolepky - Michal Žižka</li><li>propagační letáky - jednotná forma skládanky, v prvé fázi obecná o Hnutí (Cody [ještě více zapůsobit na možnost volného členství, za týden se sejít a přinést návrhy {od 16.00, umístit na web, rozeslat na brontl}]), Akci Příroda (Žblebt) a BRĎu (Ctibor [probrat na sekci BRĎO]) - zpracovat a vydat do Dnů Země, grafika (Michal Žižka, pokud někdo jiný - koordinace, aby byl podobný vzhled a forma</li><li>přidat <strong>návratku</strong> pro toho, kdo chce podpořit - možnost vyplnění na <strong>Ekostanu</strong></li><li><strong>panely</strong> - také mohou být obdobně zpracovány pro jednotlivé prezentované celky a témata - <strong>sekce Ekostanu</strong></li><li>plakátky k <strong>Dobrovolníkům</strong>, <strong>Ekostany</strong> - distribuce k začátku letního semestru</li></ul><h1>Databáze &amp; Maily</h1><ul><li>je na webu, nasázet dobrovolníky, Cody potřebuje poslat na Síťku pro výkaz</li><li>zavést paralelní offline systém - pro případ havárie</li><li><strong>správce serveru</strong> - vyřešit některé důležité problémy, spam, přeposílání, záloha databáze</li></ul><h1>Trička &amp; Kabele</h1><ul><li>zjistit a nechat vyrobit, pevnější materiál, dlouhé uši pouze - Katarína, Lenka</li></ul><h1>Organizace práce</h1><ul><li>rozvrh toho, kdo kdy bude na kanceláři - zatím stejný, změní se dle rozvrhů</li><li>sešit na vzkazy u telefonu</li><ul><li><strong>adresář</strong> - dokompletit a rozeslat, doplnit ICQ</li></ul><li><strong>seznam článků</strong> - aktualizace změn, obnovené, změněné a zaniklé články, články ať si zkontrolují údaje</li></ul><h1>Projetky</h1><ul><li>MŽP (?), Partnerství (nevyšlo), MŠMT (je v procesu)</li><li>projekty v zahraničí - problémy se zadáním</li><li><strong>Ekostan jako akce</strong> - výkazy, náklady (evidovat během tohoto roku) - možnost dotací MŠMT</li><li><strong>Vzdělávání</strong></li><li>Co je na <strong>Jižní Moravě</strong> financovat z <strong>ESF</strong>, zbytek z <strong>MŠMT</strong></li><li>na <strong>MŠMT</strong> 70% lidí do 26 let je třeba</li><li>projekty k podání</li><ul><li><strong>Nadace rozvoje občanské společnosti</strong> - Norské peníze</li><ul><li>víc malých projektů</li><li>přidat návrhy na aktivity</li></ul><li>do března</li></ul><li><strong>Krajský úřad</strong> - životní prostředí</li><li><strong>Partnerství</strong></li><ul><li><strong>Strom života</strong></li><ul><li>problém Skansky</li><li>uzávěrka je do 19.1.</li><li><strong>malé granty</strong> na konkrétní akce - nářadí, propagace konkrétní akce&#8230</li></ul></ul></ul><h1>Sponzoři</h1><ul><li>Jihomoravská energetika</li><li>Cenin</li><li>Lesy ČR</li><li>JMP</li></ul><h1>Závěrečné zprávy</h1><ul><li>do konce ledna uzávěrky</li><li>Katarína - sponozři (Ekostan 2006)</li></ul><h1>Soutěž plakátků PsB</h1><ul><li>málo kandidátů</li><li>nehlasovat na webu, ale pouze na Valné Hromadě</li><li>ceny pro lidi, co vytvořili trička</li></ul><h1>Ekokvíz</h1><ul><li>uveřejnit vylosované vítěze</li><li>vítězům dat cenu<li>poslat jim něco z inventáře kanceláře (knížka :-))</li></ul><h1>Nový pracovník</h1><ul><li>několik kandidátů - dva jsou vyloženě vhodní - pozvat a vybrat</li><li>administrační funkce, pravidlený dochoz, systematičnost práce</li></ul><h1>Adresa kanceláře</h1><ul><li>změnit v dokumentech</li><li>přeposílání pošty</li></ul><h1>Kancelář</h1><ul><li>dodělání zvonků, jmenovek, nálepek, zvonků&#8230</li><li>nábytek, police - spojit s promítáním nebo jinou švandou</li><li>zavedení nějakých večerů - vzdělávačně-zábavných</li><li>slavnostní otevření v půlce února - program</li></ul></body></html>'''
         i = 2900
         j = 2975
-        self.assertEquals(string2[i:j], res[i:j])
+        self.assertEquals(string2[i:j], res[i-5:j-5])
 
 if __name__ == "__main__":
     main()
