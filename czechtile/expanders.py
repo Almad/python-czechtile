@@ -151,8 +151,11 @@ class ListDocbook4(CzechtileExpander):
 class ListItemDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
         global last_level
+        global list_levels
         global last_type
         global list_types
+        if list_levels != [0] and last_level == 0:
+            list_levels = [0]
         if list_levels.count(node.level) == 0:
             list_levels.append(node.level)
             outer_list = ''.join(['<', ListDocbook4.types[node.type_][0], ListDocbook4.types[node.type_][1], '>'])
@@ -196,8 +199,11 @@ class ListXhtml11(CzechtileExpander):
 class ListItemXhtml11(CzechtileExpander):
     def expand(self, node, format, node_map):
         global last_level
+        global list_levels
         global last_type
         global list_types
+        if list_levels != [0] and last_level == 0:
+            list_levels = [0]
         if list_levels.count(node.level) == 0:
             list_levels.append(node.level)
             outer_list = ''.join(['<', ListXhtml11.types[node.type_][0], ListXhtml11.types[node.type_][1], '>'])
