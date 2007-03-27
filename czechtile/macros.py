@@ -35,6 +35,7 @@ def _wrap_text(text_node, register, register_map):
     text = re.sub("^(\s)*", "", re.sub("(\s)*$", "", text_node.content))
     result_tree = []
     for para_content in text.split('\n\n'):
+#        if para_content != '':
         para = Odstavec.argument_call(para_content, register)
         result_tree.append(para.expand())
     return result_tree

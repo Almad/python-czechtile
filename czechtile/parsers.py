@@ -86,24 +86,42 @@ class NeformatovanyText(Parser):
 
 class Nadpis(Parser):
     start = ['(\n)?(=){1,5}(\ )?']
-    #end same as start match
     macro = macros.Nadpis
+    
+    
+    def get_stripped_line(self, line, level):
+        chunk_end = ''
+        
+        while line.endswith(' '):
+            chunk_end += line[:-1]
+            line = line[:-1]
+        
+        if line.endswith('='*level):
+            chunk_end += '='*level
+            line = line[:-level]
 
+        while line.endswith(' '):
+            chunk_end += line[:-1]
+            line = line[:-1]
+        
+        return line, chunk_end
+    
+    
     def resolve_argument_string(self):
-        endPattern = self.chunk[:-1]
-        if endPattern.startswith('\n'):
-            endPattern = endPattern[1:]
-        # chunk is \n={n}[whitespace],
-        # end is [whitespace]={n}\n
-        endMatch = re.search(''.join([' ', endPattern, '\n']), self.stream)
-        if not endMatch:
-            raise ParserRollback
-        self.level = len(endPattern)
-        self.content = self.stream[0:endMatch.start()]
-        # end()-1 because we won't eat trailing newline
-        self.chunk_end = self.stream[endMatch.start():endMatch.end()-1]
-        self.stream = self.stream[endMatch.end()-1:]
+        # we're interested only in this line
+        
+        line = self.stream.split('\n')[0]
+        eqls = re.search('(=)+', self.chunk)
+        level = len(eqls.group())
 
+        content, chunk_end = self.get_stripped_line(line, level)
+        
+        self.level = level
+        self.content = content
+        self.chunk_end = chunk_end
+        # TODO: Eat also newline by len(line+'\n')
+        # this is confusing lists after headings now 
+        self.stream = self.stream[len(line):]
         self.argument_string = ''.join([str(self.level), ' ', self.content])
 
 ### End of "block" elements ###
@@ -193,7 +211,6 @@ class List(Parser):
     macro = macros.List
 
     def resolve_argument_string(self):
-
         endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
             raise ParserRollback
