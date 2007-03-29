@@ -116,7 +116,7 @@ class HyperlinkXhtml11(CzechtileExpander):
 
 class TriTeckyEntity(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return '&#8230'
+        return '&#8230;'
 
 
 last_level = 0
