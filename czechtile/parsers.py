@@ -129,12 +129,11 @@ class Nadpis(Parser):
 ### Inline elements, mostly in Paragraphs ####
 
 class Silne(Parser):
-    start = ['("){3}']
-    end = '("){3}'
+    start = ['("){3}', '(\*){1}']
     macro = macros.Silne
 
     def resolve_argument_string(self):
-        endMatch = re.search(self.__class__.end, self.stream)
+        endMatch = re.search(re.escape(self.chunk), self.stream)
         if not endMatch:
             raise ParserRollback
         self.argument_string = self.stream[0:endMatch.start()]
@@ -240,6 +239,6 @@ class ListItem(Parser):
                 self.type_ = types[i]
         self.content = self.stream[0:endMatch.start()]
         self.argument_string = ''.join([str(self.level), ' ', self.type_, ' ', self.content])
-        
+
 
 parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene]

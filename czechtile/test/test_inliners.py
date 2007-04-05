@@ -47,6 +47,18 @@ class TestSilne(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><strong>silne</strong></p>''', res)
 
+    def testSilneWithAlternativeSyntax(self):
+        tree = parse('*silne*', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Silne)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'silne')
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para><emphasis role="bold">silne</emphasis></para>''', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p><strong>silne</strong></p>''', res)
+
     def testSilneWithPrefix(self):
         tree = parse('" nic """silne"""', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
