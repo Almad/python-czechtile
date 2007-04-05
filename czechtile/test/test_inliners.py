@@ -83,6 +83,17 @@ class TestZvyraznene(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><em>zvyraznene</em></p>''', res)
 
+    def testZvyrazneneAlternativeSyntax(self):
+        tree = parse('//zvyraznene//', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Zvyraznene)
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para><emphasis>zvyraznene</emphasis></para>''', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p><em>zvyraznene</em></p>''', res)
+
 class TestOdkaz(OutputTestCase):
     def testOdkazEasyNahrazovani(self):
         tree = parse('''http://rpgplanet.cz''', register_map)

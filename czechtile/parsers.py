@@ -87,15 +87,15 @@ class NeformatovanyText(Parser):
 class Nadpis(Parser):
     start = ['(\n)?(=){1,5}(\ )?']
     macro = macros.Nadpis
-    
-    
+
+
     def get_stripped_line(self, line, level):
         chunk_end = ''
-        
+
         while line.endswith(' '):
             chunk_end += line[:-1]
             line = line[:-1]
-        
+
         if line.endswith('='*level):
             chunk_end += '='*level
             line = line[:-level]
@@ -103,24 +103,24 @@ class Nadpis(Parser):
         while line.endswith(' '):
             chunk_end += line[:-1]
             line = line[:-1]
-        
+
         return line, chunk_end
-    
-    
+
+
     def resolve_argument_string(self):
         # we're interested only in this line
-        
+
         line = self.stream.split('\n')[0]
         eqls = re.search('(=)+', self.chunk)
         level = len(eqls.group())
 
         content, chunk_end = self.get_stripped_line(line, level)
-        
+
         self.level = level
         self.content = content
         self.chunk_end = chunk_end
         # TODO: Eat also newline by len(line+'\n')
-        # this is confusing lists after headings now 
+        # this is confusing lists after headings now
         self.stream = self.stream[len(line):]
         self.argument_string = ''.join([str(self.level), ' ', self.content])
 
@@ -128,10 +128,7 @@ class Nadpis(Parser):
 
 ### Inline elements, mostly in Paragraphs ####
 
-class Silne(Parser):
-    start = ['("){3}', '(\*){1}']
-    macro = macros.Silne
-
+class InlineParserEndingWithBegin(Parser):
     def resolve_argument_string(self):
         endMatch = re.search(re.escape(self.chunk), self.stream)
         if not endMatch:
@@ -140,18 +137,13 @@ class Silne(Parser):
         self.chunk_end = self.stream[endMatch.start():endMatch.end()]
         self.stream = self.stream[endMatch.end():]
 
-class Zvyraznene(Parser):
-    start = ['("){2}']
-    end = '("){2}'
-    macro = macros.Zvyraznene
+class Silne(InlineParserEndingWithBegin):
+    start = ['("){3}', '(\*){1}']
+    macro = macros.Silne
 
-    def resolve_argument_string(self):
-        endMatch = re.search(self.__class__.end, self.stream)
-        if not endMatch:
-            raise ParserRollback
-        self.argument_string = self.stream[0:endMatch.start()]
-        self.chunk_end = self.stream[endMatch.start():endMatch.end()]
-        self.stream = self.stream[endMatch.end():]
+class Zvyraznene(InlineParserEndingWithBegin):
+    start = ['("){2}', '(/){2}']
+    macro = macros.Zvyraznene
 
 class Hyperlink(Parser):
     start = ['http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*', '\(http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.a-z0-9]*)*']
