@@ -147,8 +147,8 @@ class Silne(CzechtileMacro):
         return node
 
 class Hyperlink(CzechtileMacro):
-    name = 'link'
-    help = '((link http://adresa/linku text linku))'
+    name = 'odkaz'
+    help = '((odkaz http://adresa/linku text linku))'
 
     def parse_argument_string(self, argument_string):
         args = argument_string.split()
