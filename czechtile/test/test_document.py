@@ -42,7 +42,7 @@ class TestResult(OutputTestCase):
         self.assertDocbook4('''<para>doc</para>''', res)
 
     def testBasicBook(self):
-        tree = parse('doc', register_map, parsers.Book)
+        tree = parse('doc', register_map, macros.Book)
         self.assertEquals(tree.children[0].__class__, nodes.Book)
         res = expand(tree, 'docbook4', expander_map)
         self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>

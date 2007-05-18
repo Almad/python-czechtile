@@ -26,19 +26,16 @@ __version__ = 0.1
 
 import re
 
-from sneakylang import Macro, parse, TextNode, Document
+from sneakylang import Macro, parse, TextNode, Document, treebuilder
 import nodes
 
-def _wrap_text(text_node, register, register_map):
+def _wrap_text(text_node, register, register_map, builder, state):
     """ Wrap unbound TextNode to Paragraph """
     #FIXME: This is considered to be a hack, overwrite register_map
     text = re.sub("^(\s)*", "", re.sub("(\s)*$", "", text_node.content))
-    result_tree = []
     for para_content in text.split('\n\n'):
-#        if para_content != '':
-        para = Odstavec.argument_call(para_content, register)
-        result_tree.append(para.expand())
-    return result_tree
+        macro = Odstavec.argument_call(para_content, register, builder, state)
+        macro.expand()
 
 class CzechtileMacro(Macro):
 
@@ -49,36 +46,45 @@ class CzechtileMacro(Macro):
     def parse_argument_string(self, argument_string):
         self.arguments = [argument_string]
 
-class Book(CzechtileMacro):
+class MacroWrappingParagraph(CzechtileMacro):
+
+    def wrap_text_nodes(self, node):
+        # we must go with numbers as we must replace textnode with it's tree on same position
+        new_children = []
+        for child in node.children:
+            if isinstance(child, TextNode):
+                builder = treebuilder.TreeBuilder()
+                # set fake root
+                builder.set_root(TextNode())
+                _wrap_text(child, self.register, self.register_map, builder, self.state)
+                for n in builder.root.children:
+                    new_children.append(n)
+            else:
+                new_children.append(child)
+        node.children = new_children
+
+
+class Book(MacroWrappingParagraph):
     name = 'kniha'
     help = '((kniha text knihy))'
 
     def expand_to_nodes(self, content):
-        doc = nodes.Book()
-        child_nodes = parse(content, self.register_map)
-        for n in child_nodes:
-            if isinstance(n, TextNode):
-                for node in _wrap_text(n, self.register, self.register_map):
-                    doc.add_child(node)
-            else:
-                doc.add_child(n)
-        return doc
+        node = nodes.Book()
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder)
+        self.wrap_text_nodes(node)
+        self.builder.move_up()
 
-class Article(CzechtileMacro):
+class Article(MacroWrappingParagraph):
     name = 'clanek'
     help = '((clanek text clanku))'
 
     def expand_to_nodes(self, content):
-        doc = nodes.Article()
-        child_nodes = parse(content, self.register_map, self.register)
-        for n in child_nodes:
-            if isinstance(n, TextNode):
-                for node in _wrap_text(n, self.register, self.register_map):
-                    doc.add_child(node)
-            else:
-                doc.add_child(n)
-
-        return doc
+        node = nodes.Article()
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder)
+        self.wrap_text_nodes(node)
+        self.builder.move_up()
 
 
 class Sekce(Document):
@@ -108,10 +114,9 @@ class Odstavec(CzechtileMacro):
 
     def expand_to_nodes(self, content):
         node = nodes.Odstavec()
-        child_nodes = parse(content, self.register_map, self.register)
-        for n in child_nodes:
-            node.add_child(n)
-        return node
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder)
+        self.builder.move_up()
 
 class NeformatovanyText(CzechtileMacro):
     name = 'neformatovany-text'

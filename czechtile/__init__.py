@@ -93,9 +93,12 @@ expander_map = {
 }
 
 ### overwrite SneakyLang's parse method, we want everything to be wrapped in document_type
-def parse(stream, register_map, document_type=parsers.Article):
-    dtype = document_type(stream, None, '', register_map[document_type.macro])
-    child_node = dtype.parse()
-    doc = sneakylang.document.DocumentNode()
-    doc.add_child(child_node)
-    return doc
+def parse(stream, register_map, document_type=macros.Article, state=None):
+    builder = sneakylang.treebuilder.TreeBuilder()
+    builder.set_root(sneakylang.document.DocumentNode())
+    #dtype = document_type(stream, None, '', register_map[document_type.macro])
+    dtype = document_type(register_map, builder, state)
+    dtype.arguments = [stream]
+    dtype.expand()
+
+    return builder.root
