@@ -103,10 +103,9 @@ class Nadpis(CzechtileMacro):
     def expand_to_nodes(self, level, content):
         node = nodes.Nadpis()
         node.level = level
-        child_nodes = parse(content, self.register_map, self.register)
-        for n in child_nodes:
-            node.add_child(n)
-        return node
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder)
+        self.builder.move_up()
 
 class Odstavec(CzechtileMacro):
     name = 'odstavec'
@@ -124,10 +123,11 @@ class NeformatovanyText(CzechtileMacro):
 
     def expand_to_nodes(self, content):
         node = nodes.NeformatovanyText()
+        self.builder.append(node, move_actual=True)
         tn = TextNode()
         tn.content = content
-        node.add_child(tn)
-        return node
+        self.builder.append(tn, move_actual=False)
+        self.builder.move_up()
 
 class Zvyraznene(CzechtileMacro):
     name = 'zvyraznene'
@@ -135,10 +135,9 @@ class Zvyraznene(CzechtileMacro):
 
     def expand_to_nodes(self, content):
         node = nodes.Zvyraznene()
-        child_nodes = parse(content, self.register_map, self.register)
-        for n in child_nodes:
-            node.add_child(n)
-        return node
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder)
+        self.builder.move_up()
 
 class Silne(CzechtileMacro):
     name = 'silne'
@@ -146,10 +145,9 @@ class Silne(CzechtileMacro):
 
     def expand_to_nodes(self, content):
         node = nodes.Silne()
-        child_nodes = parse(content, self.register_map, self.register)
-        for n in child_nodes:
-            node.add_child(n)
-        return node
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder)
+        self.builder.move_up()
 
 class Hyperlink(CzechtileMacro):
     name = 'odkaz'
@@ -163,15 +161,14 @@ class Hyperlink(CzechtileMacro):
     def expand_to_nodes(self, link, content):
         node = nodes.Hyperlink()
         node.link = link
+        self.builder.append(node, move_actual = True)
         if link == content:
             tn = TextNode()
             tn.content = content
-            node.add_child(tn)
+            self.builder.append(tn, move_actual=False)
         else:
-            child_nodes = parse(content, self.register_map, self.register)
-            for n in child_nodes:
-                node.add_child(n)
-        return node
+            parse(content, self.register_map, self.register, builder=self.builder)
+        self.builder.move_up()
 
 
 class TriTecky(CzechtileMacro):
@@ -179,7 +176,7 @@ class TriTecky(CzechtileMacro):
     help = '((tri_tecky))'
 
     def expand_to_nodes(self, *args):
-        return nodes.TriTecky()
+        self.builder.append(nodes.TriTecky(), move_actual=False)
 
 class ListItem(CzechtileMacro):
     name = 'listitem'
@@ -195,10 +192,9 @@ class ListItem(CzechtileMacro):
         node = nodes.ListItem()
         node.level = level
         node.type_ = type_
-        child_nodes = parse(content, self.register_map, self.register)
-        for n in child_nodes:
-            node.add_child(n)
-        return node
+        self.builder.append(node, move_actual=True)
+        parse(content, self.register_map, self.register, builder=self.builder)
+        self.builder.move_up()
 
 
 class List(CzechtileMacro):
@@ -213,11 +209,13 @@ class List(CzechtileMacro):
     def expand_to_nodes(self, type_, content):
         node = nodes.List()
         node.type_ = type_
-        child_nodes = parse(content, self.register_map, self.register)
-        for n in child_nodes:
+        self.builder.append(node, move_actual=True)
+        parse(content, self.register_map, self.register, builder=self.builder)
+        self.builder.move_up()
+        # hack: inspect my children and check if there are textnodes - if yes, remove them
+        # this is because of badly resolved items, must be changed with list upgrade
+        new_children = []
+        for n in node.children:
             if isinstance(n, nodes.ListItem):
-            # this if statement is necessary because without it there
-            # i-dont-know-why will occur textnodes
-            # -- that was before sl upgrade, i don't know if it occur now too
-                node.add_child(n)
-        return node
+                new_children.append(n)
+        node.children = new_children
