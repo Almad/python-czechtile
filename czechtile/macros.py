@@ -29,14 +29,6 @@ import re
 from sneakylang import Macro, parse, TextNode, Document, treebuilder
 import nodes
 
-def _wrap_text(text_node, register, register_map, builder, state):
-    """ Wrap unbound TextNode to Paragraph """
-    #FIXME: This is considered to be a hack, overwrite register_map
-    text = re.sub("^(\s)*", "", re.sub("(\s)*$", "", text_node.content))
-    for para_content in text.split('\n\n'):
-        macro = Odstavec.argument_call(para_content, register, builder, state)
-        macro.expand()
-
 class CzechtileMacro(Macro):
 
     def _macroCallWithoutRequiredQuotes(self, *args):
@@ -50,18 +42,13 @@ class MacroWrappingParagraph(CzechtileMacro):
 
     def wrap_text_nodes(self, node):
         # we must go with numbers as we must replace textnode with it's tree on same position
-        new_children = []
         for child in node.children:
             if isinstance(child, TextNode):
-                builder = treebuilder.TreeBuilder()
-                # set fake root
-                builder.set_root(TextNode())
-                _wrap_text(child, self.register, self.register_map, builder, self.state)
-                for n in builder.root.children:
-                    new_children.append(n)
-            else:
-                new_children.append(child)
-        node.children = new_children
+                self.builder.set_actual_node(child)
+                text = re.sub("^(\s)*", "", re.sub("(\s)*$", "", child.content))
+                for para_content in text.split('\n\n'):
+                    macro = Odstavec.argument_call(para_content, self.register, self.builder, self.state)
+                    macro.expand()
 
 
 class Book(MacroWrappingParagraph):
@@ -105,6 +92,7 @@ class Nadpis(CzechtileMacro):
         node.level = level
         self.builder.append(node, move_actual = True)
         parse(content, self.register_map, self.register, builder=self.builder)
+        assert node == self.builder.actual_node
         self.builder.move_up()
 
 class Odstavec(CzechtileMacro):
@@ -113,8 +101,12 @@ class Odstavec(CzechtileMacro):
 
     def expand_to_nodes(self, content):
         node = nodes.Odstavec()
-        self.builder.append(node, move_actual = True)
+        self.builder.append(node, move_actual=False)
+        if isinstance(node.parent, TextNode):
+            self.builder.replace(node)
+        self.builder.set_actual_node(node)
         parse(content, self.register_map, self.register, builder=self.builder)
+        assert node == self.builder.actual_node
         self.builder.move_up()
 
 class NeformatovanyText(CzechtileMacro):
