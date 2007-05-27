@@ -133,6 +133,18 @@ class TestOdkaz(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><a href="http://rpgplanet.cz">Stranky materskeho projektu</a></p>''', res)
 
+    def testOdkazWithAlternateSyntax(self):
+        tree = parse('''(http://www.dracidoupe.cz/index.php?rub=forum&skin=dark Stranky materskeho projektu)''', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Hyperlink)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Stranky materskeho projektu')
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para><ulink url="http://www.dracidoupe.cz/index.php?rub=forum&skin=dark">Stranky materskeho projektu</ulink></para>''', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p><a href="http://www.dracidoupe.cz/index.php?rub=forum&skin=dark">Stranky materskeho projektu</a></p>''', res)
+
     def testOdkazMakro(self):
         tree = parse('''((odkaz http://rpgplanet.cz Stranky materskeho projektu))''', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)

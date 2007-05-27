@@ -110,15 +110,22 @@ class Nadpis(Parser):
     def resolve_argument_string(self):
         # we're interested only in this line
 
+
         line = self.stream.split('\n')[0]
         eqls = re.search('(=)+', self.chunk)
         level = len(eqls.group())
 
         content, chunk_end = self.get_stripped_line(line, level)
 
+        # heading must either be after newline \n, or have the right side, otherwise
+        # they're found inside any line with two =, lik in hyperlinks
+        if not self.chunk.startswith('\n') and chunk_end == '':
+            raise ParserRollback
+
         self.level = level
         self.content = content
         self.chunk_end = chunk_end
+
         # TODO: Eat also newline by len(line+'\n')
         # this is confusing lists after headings now
         self.stream = self.stream[len(line):]

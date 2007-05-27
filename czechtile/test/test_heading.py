@@ -56,14 +56,20 @@ class TestHeadings(OutputTestCase):
         self._testTree(tree)
 
     def testUnneededRightSide(self):
-        tree = parse('''=Nadpis\nOdstavec\n\n''', register_map)
+        tree = parse('''\n=Nadpis\nOdstavec\n\n''', register_map)
         self._testTree(tree)
-        tree = parse('''= Nadpis\nOdstavec\n\n''', register_map)
+        tree = parse('''\n= Nadpis\nOdstavec\n\n''', register_map)
         self._testTree(tree)
-        tree = parse('''= Nadpis\nOdstavec \n\n''', register_map)
+        tree = parse('''\n= Nadpis\nOdstavec \n\n''', register_map)
         self._testTree(tree)
-        tree = parse('''= Nadpis\nOdstavec \n''', register_map)
+        tree = parse('''\n= Nadpis\nOdstavec \n''', register_map)
         self._testTree(tree)
+
+    def testBadlyResolved(self):
+        tree = parse('''blahblah=not heading = blah blah''', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, TextNode)
+        self.assertEquals(tree.children[0].children[0].children[0].content, '''blahblah=not heading = blah blah''')
 
     def testTwolevel(self):
         tree = parse('= Nadpis =\nOdstavec\n== NadpisDva ==\nOdstavec', register_map)
