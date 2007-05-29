@@ -50,7 +50,6 @@ class MacroWrappingParagraph(CzechtileMacro):
                     macro = Odstavec.argument_call(para_content, self.register, self.builder, self.state)
                     macro.expand()
 
-
 class Book(MacroWrappingParagraph):
     name = 'kniha'
     help = '((kniha text knihy))'
