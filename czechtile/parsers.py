@@ -205,7 +205,7 @@ class List(Parser):
     # the '\n\n' start and end is only for now, later it can be removed
     # (when it'll be all right)
     start = ['(\n\n\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
-    end = '(\n){2}'
+    end = '(\n){2}|$'
     macro = macros.List
 
     def resolve_argument_string(self):

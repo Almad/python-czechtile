@@ -137,7 +137,17 @@ class TestList(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden - dva tri-styri')
-        
+
+    def testListInEOF(self):
+        tree = parse('''\n\n - jeden\n - dva''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'dva')
+
 # ---
 # start of sublist tests
 
