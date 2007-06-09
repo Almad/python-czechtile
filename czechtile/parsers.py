@@ -153,7 +153,7 @@ class Zvyraznene(InlineParserEndingWithBegin):
     macro = macros.Zvyraznene
 
 class Hyperlink(Parser):
-    hyperlink_pattern = 'http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.\w%]*)*'
+    hyperlink_pattern = 'http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.\w%]*)*(#{1}[-_~&=\?\.\w%]*)?'
     start = [hyperlink_pattern, '\('+hyperlink_pattern]
     end = '(\))'
     macro = macros.Hyperlink
