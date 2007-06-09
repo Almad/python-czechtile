@@ -26,6 +26,9 @@ __version__ = 0.1
 
 from sneakylang import Expander, expand
 
+class ExpanderMap(dict):
+    """Just wraps expander map into object """
+
 class CzechtileExpander:
     """ Expander wrapper."""
 

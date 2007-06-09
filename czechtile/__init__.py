@@ -54,7 +54,8 @@ register_map[macros.Article] = register_map[macros.Book]
 
 
 # map nodes to expanders
-expander_map = {
+expander_map = expanders.ExpanderMap()
+expander_map.update({
     'docbook4' : {
         sneakylang.document.DocumentNode : expanders.DocumentDocbook4,
         nodes.Document : expanders.DocumentDocbook4,
@@ -90,7 +91,7 @@ expander_map = {
         nodes.List : expanders.ListXhtml11,
         nodes.ListItem : expanders.ListItemXhtml11
     }
-}
+})
 
 ### overwrite SneakyLang's parse method, we want everything to be wrapped in document_type
 def parse(stream, register_map, document_type=macros.Article, state=None):
