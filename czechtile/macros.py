@@ -57,7 +57,7 @@ class Book(MacroWrappingParagraph):
     def expand_to_nodes(self, content):
         node = nodes.Book()
         self.builder.append(node, move_actual = True)
-        parse(content, self.register_map, self.register, builder=self.builder)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.wrap_text_nodes(node)
         self.builder.move_up()
 
@@ -68,7 +68,7 @@ class Article(MacroWrappingParagraph):
     def expand_to_nodes(self, content):
         node = nodes.Article()
         self.builder.append(node, move_actual = True)
-        parse(content, self.register_map, self.register, builder=self.builder)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.wrap_text_nodes(node)
         self.builder.move_up()
 
@@ -90,7 +90,7 @@ class Nadpis(CzechtileMacro):
         node = nodes.Nadpis()
         node.level = level
         self.builder.append(node, move_actual = True)
-        parse(content, self.register_map, self.register, builder=self.builder)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         assert node == self.builder.actual_node
         self.builder.move_up()
 
@@ -104,7 +104,7 @@ class Odstavec(CzechtileMacro):
         if isinstance(node.parent, TextNode):
             self.builder.replace(node)
         self.builder.set_actual_node(node)
-        parse(content, self.register_map, self.register, builder=self.builder)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         assert node == self.builder.actual_node
         self.builder.move_up()
 
@@ -127,7 +127,7 @@ class Zvyraznene(CzechtileMacro):
     def expand_to_nodes(self, content):
         node = nodes.Zvyraznene()
         self.builder.append(node, move_actual = True)
-        parse(content, self.register_map, self.register, builder=self.builder)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
 
 class Silne(CzechtileMacro):
@@ -137,7 +137,7 @@ class Silne(CzechtileMacro):
     def expand_to_nodes(self, content):
         node = nodes.Silne()
         self.builder.append(node, move_actual = True)
-        parse(content, self.register_map, self.register, builder=self.builder)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
 
 class Hyperlink(CzechtileMacro):
@@ -158,7 +158,7 @@ class Hyperlink(CzechtileMacro):
             tn.content = content
             self.builder.append(tn, move_actual=False)
         else:
-            parse(content, self.register_map, self.register, builder=self.builder)
+            parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
 
 
@@ -184,7 +184,7 @@ class ListItem(CzechtileMacro):
         node.level = level
         node.type_ = type_
         self.builder.append(node, move_actual=True)
-        parse(content, self.register_map, self.register, builder=self.builder)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
 
 
@@ -201,7 +201,7 @@ class List(CzechtileMacro):
         node = nodes.List()
         node.type_ = type_
         self.builder.append(node, move_actual=True)
-        parse(content, self.register_map, self.register, builder=self.builder)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
         # hack: inspect my children and check if there are textnodes - if yes, remove them
         # this is because of badly resolved items, must be changed with list upgrade
