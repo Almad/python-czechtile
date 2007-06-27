@@ -121,6 +121,10 @@ class TriTeckyEntity(CzechtileExpander):
     def expand(self, node, format, node_map):
         return '&#8230;'
 
+class UvodzovkyEntity(CzechtileExpander):
+    def expand(self, node, format, node_map):
+	    return self.expand_with_content(node, format, node_map, '&#8222;', '&#8220;')
+
 
 last_level = 0
 list_levels = [0]

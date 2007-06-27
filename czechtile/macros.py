@@ -169,6 +169,16 @@ class TriTecky(CzechtileMacro):
     def expand_to_nodes(self, *args):
         self.builder.append(nodes.TriTecky(), move_actual=False)
 
+class Uvodzovky(CzechtileMacro):
+    name = 'uvodzovky'
+    help = '((uvodzovky text v uvodzovkach))'
+
+    def expand_to_nodes(self, content):
+        node = nodes.Uvodzovky()
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
+        self.builder.move_up()
+
 class ListItem(CzechtileMacro):
     name = 'listitem'
     help = '((listitem text polozky))'

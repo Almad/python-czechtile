@@ -40,15 +40,15 @@ register_map = RegisterMap({
     macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List], parsers.parsers),
     macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText], parsers.parsers),
     macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
-                       macros.Hyperlink, macros.TriTecky], parsers.parsers),
-    macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene, macros.TriTecky], parsers.parsers),
-    macros.Nadpis : Register([macros.Hyperlink], parsers.parsers),
-    macros.Zvyraznene : Register([macros.Hyperlink], parsers.parsers),
-    macros.Silne : Register([macros.Hyperlink], parsers.parsers),
+                       macros.Hyperlink, macros.TriTecky, macros.Uvodzovky], parsers.parsers),
+    macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene, macros.TriTecky, macros.Uvodzovky], parsers.parsers),
+    macros.Nadpis : Register([macros.Hyperlink, macros.Uvodzovky], parsers.parsers),
+    macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvodzovky], parsers.parsers),
+    macros.Silne : Register([macros.Hyperlink, macros.Uvodzovky], parsers.parsers),
     macros.NeformatovanyText : Register([], parsers.parsers),
     macros.List : Register([macros.ListItem], parsers.parsers),
     macros.ListItem : Register([macros.Zvyraznene, macros.Silne,
-                       macros.Hyperlink, macros.TriTecky], parsers.parsers)
+	    macros.Hyperlink, macros.TriTecky, macros.Uvodzovky], parsers.parsers)
 })
 register_map[macros.Article] = register_map[macros.Book]
 
@@ -71,7 +71,8 @@ expander_map.update({
         nodes.TriTecky : expanders.TriTeckyEntity,
         nodes.Hyperlink : expanders.HyperlinkDocbook4,
         nodes.List : expanders.ListDocbook4,
-        nodes.ListItem : expanders.ListItemDocbook4
+        nodes.ListItem : expanders.ListItemDocbook4,
+	nodes.Uvodzovky : expanders.UvodzovkyEntity
     },
     'docbook5' : {
     },
@@ -89,7 +90,8 @@ expander_map.update({
         nodes.TriTecky : expanders.TriTeckyEntity,
         nodes.Hyperlink : expanders.HyperlinkXhtml11,
         nodes.List : expanders.ListXhtml11,
-        nodes.ListItem : expanders.ListItemXhtml11
+        nodes.ListItem : expanders.ListItemXhtml11,
+        nodes.Uvodzovky : expanders.UvodzovkyEntity
     }
 })
 

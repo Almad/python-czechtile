@@ -45,6 +45,13 @@ class TestCzechTypos(OutputTestCase):
         result = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p>Typo hezky cesky&#8230;</p>''', result)
 
+    def testUvodzovky(self):
+        tree = parse('''"Uvodzovkujem"''', register_map)
+        result = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para>&#8222;Uvodzovkujem&#8220;</para>''', result)
+
+        result = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p>&#8222;Uvodzovkujem&#8220;</p>''', result)
 
 if __name__ == "__main__":
     main()

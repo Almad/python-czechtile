@@ -70,7 +70,7 @@ class Odstavec(Parser):
         self.content = self.stream
         self.stream = ''
         self.argument_string = self.content
-
+	
 class NeformatovanyText(Parser):
     start = ['(\n§§\n){1}']
     end = '(\n§§\n){1}'
@@ -84,10 +84,10 @@ class NeformatovanyText(Parser):
         self.argument_string = self.stream[0:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
 
+
 class Nadpis(Parser):
     start = ['(\n)?(=){1,5}(\ )?']
     macro = macros.Nadpis
-
 
     def get_stripped_line(self, line, level):
         chunk_end = ''
@@ -109,8 +109,7 @@ class Nadpis(Parser):
 
     def resolve_argument_string(self):
         # we're interested only in this line
-
-
+	
         line = self.stream.split('\n')[0]
         eqls = re.search('(=)+', self.chunk)
         level = len(eqls.group())
@@ -191,6 +190,22 @@ class TriTecky(Parser):
     def call_macro(self):
         return self.macro(self.register, self.register_map).expand()
 
+class Uvodzovky(Parser):
+    start = ['("){1}']
+    end = '("){1}'
+    macro = macros.Uvodzovky
+
+    def resolve_argument_string(self):
+        endMatch = re.search(self.__class__.end, self.stream)
+        if not endMatch:
+            raise ParserRollback
+
+        self.argument_string = self.stream[0:endMatch.start()]
+        self.stream = self.stream[endMatch.end():]
+
+	if self.stream[:2] == '""':
+	    raise ParserRollback
+
 ### End of typographic parsers ###
 
 ### End of inline elements ###
@@ -241,4 +256,4 @@ class ListItem(Parser):
         self.argument_string = ''.join([str(self.level), ' ', self.type_, ' ', self.content])
 
 
-parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene]
+parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene, Uvodzovky]
