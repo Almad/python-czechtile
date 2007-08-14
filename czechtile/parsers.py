@@ -220,7 +220,7 @@ types = {
 class List(Parser):
     # the '\n\n' start and end is only for now, later it can be removed
     # (when it'll be all right)
-    start = ['(\n\n\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    start = ['^( ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n\n\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
     end = '(\n){2}|$'
     macro = macros.List
 
@@ -228,7 +228,12 @@ class List(Parser):
         endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
             raise ParserRollback
-        self.content = self.chunk[2:] + self.stream[0:endMatch.start()]
+
+        i = 2
+	if re.search('^', self.chunk):
+            i = 0
+
+        self.content = self.chunk[i:] + self.stream[0:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
         self.content = '\n' + self.content + '\n'
 

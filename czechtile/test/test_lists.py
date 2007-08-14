@@ -34,7 +34,7 @@ from module_test import *
 
 #logging.basicConfig(level=logging.DEBUG)
 
-class TestList(OutputTestCase):
+class TestBasicLists(OutputTestCase):
 
     def testItemizedList(self):
         tree = parse('''\n\n - Polozka1\n - Polozka2\n\n''', register_map)
@@ -105,51 +105,7 @@ class TestList(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
-
-    def testLeaveDocumentToContinue(self):
-        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\nNormalni odstavec''', register_map)
-
-        self.assertEquals(tree.children[0].__class__, nodes.Article)
-        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
-        self.assertEquals(tree.children[0].children[0].type_, 'I-ordered')
-        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
-        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
-        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
-        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
-        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[1].children[0].content, 'Normalni odstavec')
-
-        res = expand(tree, 'xhtml11', expander_map)
-        self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol><p>Normalni odstavec</p>', res)
-        
-    def testIfDashIsNotParseredAsList(self): # it is not very nice name for test function ;)
-        tree = parse('''jeden - dva tri-styri''', register_map)
-
-        self.assertEquals(tree.children[0].__class__, nodes.Article)
-        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[0].children[0].content, 'jeden - dva tri-styri')
-        
-    def testIfDashInIsNotParseredAsList2(self):
-        # in this test we are finding out if dash is not parserd as list in listitem too
-        tree = parse('''\n\n - jeden - dva tri-styri\n\n''', register_map)
-
-        self.assertEquals(tree.children[0].__class__, nodes.Article)
-        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
-        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
-        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden - dva tri-styri')
-
-    def testListInEOF(self):
-        tree = parse('''\n\n - jeden\n - dva''', register_map)
-
-        self.assertEquals(tree.children[0].__class__, nodes.Article)
-        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
-        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
-        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden')
-        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
-        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'dva')
-
-# ---
-# start of sublist tests
+class TestBasicLists(OutputTestCase):
 
     def testEarlierEndingSublist(self):
         tree = parse('''\n\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n - Polozka2\n\n''', register_map)
@@ -256,7 +212,71 @@ class TestList(OutputTestCase):
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4('<itemizedlist><listitem>Polozka prva</listitem><orderedlist numeration="lowerroman"><listitem>Polozka vnorena prva</listitem><listitem>Polozka vnorena druha</listitem></orderedlist><listitem>Polozka druha</listitem></itemizedlist>', res)
 
-# end of sublist tests
+class TestSpecialCases(OutputTestCase):
+
+    def testLeaveDocumentToContinue(self):
+        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\nNormalni odstavec''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].type_, 'I-ordered')
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'Polozka1')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'Polozka2')
+        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[1].children[0].content, 'Normalni odstavec')
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol><p>Normalni odstavec</p>', res)
+        
+    def testIfDashIsNotParseredAsList(self): # it is not very nice name for test function ;)
+        tree = parse('''jeden - dva tri-styri''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].content, 'jeden - dva tri-styri')
+        
+    def testIfDashInIsNotParseredAsList2(self):
+        # in this test we are finding out if dash is not parsered as list in listitem too
+        tree = parse('''\n\n - jeden - dva tri-styri\n\n''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden - dva tri-styri')
+
+    def testListAtEOF(self):
+        tree = parse('''\n\n - jeden\n - dva''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'dva')
+
+    def testListAtBOF(self):
+        tree = parse(''' - jeden\n - dva\n\n''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'dva')
+
+
+    def testListAtBOFAndAtEOF(self):
+        tree = parse(''' - jeden\n - dva''', register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'dva')
+
 
 if __name__ == "__main__":
     main()
