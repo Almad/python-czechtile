@@ -216,16 +216,16 @@ class TestOdkaz(OutputTestCase):
 class TestFixedText(OutputTestCase):
 
     def testSimple(self):
-        tree = parse('\n§§\nTohle je ""nenaparsovaný"" text\nKterý je fixní.\n§§\n', register_map)
+        tree = parse(u'\n§§\nTohle je ""nenaparsovaný"" text\nKterý je fixní.\n§§\n', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.NeformatovanyText)
         self.assertEquals(len(tree.children[0].children), 1)
-        self.assertEquals(tree.children[0].children[0].children[0].content, 'Tohle je ""nenaparsovaný"" text\nKterý je fixní.')
+        self.assertEquals(tree.children[0].children[0].children[0].content, u'Tohle je ""nenaparsovaný"" text\nKterý je fixní.')
 
         res = expand(tree, 'xhtml11', expander_map)
-        self.assertXhtml('<pre>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</pre>', res)
+        self.assertXhtml(u'<pre>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</pre>', res)
 
         res = expand(tree, 'docbook4', expander_map)
-        self.assertDocbook4('<literallayout>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</literallayout>', res)
+        self.assertDocbook4(u'<literallayout>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</literallayout>', res)
 
 if __name__ == "__main__":
     main()
