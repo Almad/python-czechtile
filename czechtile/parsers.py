@@ -70,10 +70,10 @@ class Odstavec(Parser):
         self.content = self.stream
         self.stream = ''
         self.argument_string = self.content
-	
+
 class NeformatovanyText(Parser):
-    start = ['(\n§§\n){1}']
-    end = '(\n§§\n){1}'
+    start = [u'(\n§§\n){1}']
+    end = u'(\n§§\n){1}'
     macro = macros.NeformatovanyText
 
     def resolve_argument_string(self):
@@ -109,7 +109,7 @@ class Nadpis(Parser):
 
     def resolve_argument_string(self):
         # we're interested only in this line
-	
+
         line = self.stream.split('\n')[0]
         eqls = re.search('(=)+', self.chunk)
         level = len(eqls.group())

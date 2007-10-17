@@ -4,7 +4,7 @@
 Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
 """
 
-__version__ = [0.2, "alpha", 1]
+__version__ = [0.2, "alpha", 2]
 
 ###
 #Czechtile: WikiHezkyCesky
