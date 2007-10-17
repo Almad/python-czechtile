@@ -37,7 +37,7 @@ required_python_version = '2.4'
 # arguments for the setup command
 ###############################################################################
 name = "czechtile"
-version = "0.2_alpha1"
+version = "0.2_alpha2"
 desc = "Python implementation of Czechtile WikiSyntax"
 long_desc = """Czechtile is WikiSyntax intended to be used on Czech keyboard layout: this is Python module for
 handling Czechtile input and transformation into DocBook and XHTML."""
