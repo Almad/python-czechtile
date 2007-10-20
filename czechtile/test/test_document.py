@@ -42,30 +42,30 @@ class TestResult(OutputTestCase):
         self.assertDocbook4('''<para>doc</para>''', res)
 
     def testBasicBook(self):
-        tree = parse('doc', register_map, macros.Book)
+        tree = parse(u'doc', register_map, macros.Book)
         self.assertEquals(tree.children[0].__class__, nodes.Book)
         res = expand(tree, 'docbook4', expander_map)
-        self.assertEquals(res, '''<?xml version="1.0" encoding="UTF-8"?>
+        self.assertEquals(res, u'''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book><para>doc</para></book>''')
 
 class TestParagraph(OutputTestCase):
     def testSimplestPara(self):
-        tree = parse('doc', register_map)
+        tree = parse(u'docфыва', register_map)
 
         res = expand(tree, 'docbook4', expander_map)
-        self.assertDocbook4('''<para>doc</para>''', res)
+        self.assertDocbook4(u'''<para>docфыва</para>''', res)
 
         res = expand(tree, 'xhtml11', expander_map)
-        self.assertXhtml('''<p>doc</p>''', res)
+        self.assertXhtml(u'''<p>docфыва</p>''', res)
 
     def testSimplestMultiplePara(self):
         tree = parse('doc\n\ndoc', register_map)
 
         res = expand(tree, 'docbook4', expander_map)
-        self.assertDocbook4('''<para>doc</para><para>doc</para>''', res)
+        self.assertDocbook4(u'''<para>doc</para><para>doc</para>''', res)
 
         res = expand(tree, 'xhtml11', expander_map)
-        self.assertXhtml('''<p>doc</p><p>doc</p>''', res)
+        self.assertXhtml(u'''<p>doc</p><p>doc</p>''', res)
 
 if __name__ == "__main__":
     main()

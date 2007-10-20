@@ -36,7 +36,7 @@ from module_test import *
 class TestParagraphRegression(OutputTestCase):
 
     def testMultipleParas(self):
-        tree = parse('''= Nadpis =
+        tree = parse('''= Nadpisž =
 Para 1
 
 Para 2
@@ -47,17 +47,17 @@ Para 3
 Para 4
 ''', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
-        self.assertEquals(tree.children[0].children[0].children[0].content, 'Nadpis')
+        self.assertEquals(tree.children[0].children[0].children[0].content, u'Nadpisž')
         self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[1].children[0].content, 'Para 1')
+        self.assertEquals(tree.children[0].children[1].children[0].content, u'Para 1')
         self.assertEquals(tree.children[0].children[2].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[2].children[0].content, 'Para 2')
+        self.assertEquals(tree.children[0].children[2].children[0].content, u'Para 2')
         self.assertEquals(tree.children[0].children[3].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[3].children[0].content, 'Para 3')
+        self.assertEquals(tree.children[0].children[3].children[0].content, u'Para 3')
         self.assertEquals(tree.children[0].children[4].__class__, nodes.Nadpis)
-        self.assertEquals(tree.children[0].children[4].children[0].content, 'Heading 2')
+        self.assertEquals(tree.children[0].children[4].children[0].content, u'Heading 2')
         self.assertEquals(tree.children[0].children[5].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[5].children[0].content, 'Para 4')
+        self.assertEquals(tree.children[0].children[5].children[0].content, u'Para 4')
         self.assertEquals(6, len(tree.children[0].children))
 
 if __name__ == "__main__":

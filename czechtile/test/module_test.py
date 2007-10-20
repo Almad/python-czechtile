@@ -27,10 +27,20 @@ from tempfile import mkstemp
 class OutputTestCase(unittest.TestCase):
 
     def assertXhtml(self, txt, out):
-        return self.assertEquals(''.join(['''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs"><body class="article">''', txt, '</body></html>']), out)
+        # result from CZT must be unicode string
+        self.assertEquals(unicode, type(out))
+        # for backward compatibility, tests assertEqals could be strings
+        if isinstance(txt, str):
+            txt.decode('utf-8')
+        return self.assertEquals(u''.join([u'''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs"><body class="article">''', txt, u'</body></html>']), out)
 
     def assertDocbook4(self, txt, out):
-        return self.assertEquals(''.join(['''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>''', txt, '</article>']), out)
+        # result from CZT must be unicode string
+        self.assertEquals(unicode, type(out))
+        # for backward compatibility, tests assertEqals could be strings
+        if isinstance(txt, str):
+            txt.decode('utf-8')
+        return self.assertEquals(u''.join([u'''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>''', txt, '</article>']), out)
 
 # slightly modified, taken from PyArticle
 def getPersistentTmpfile(suffix='.czt', prefix='czechtile_', object=False):

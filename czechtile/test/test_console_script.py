@@ -54,11 +54,11 @@ class TestConsoleScript(OutputTestCase):
         logging.debug('Called with exit code %s' % ec)
 
         f = open(xhtmlFile)
-        self.assertXhtml('<p>txt</p>', f.read())
+        self.assertXhtml(u'<p>txt</p>', f.read().decode('utf-8'))
         f.close()
 
         f = open(docbookFile)
-        self.assertDocbook4('<para>txt</para>', f.read())
+        self.assertDocbook4(u'<para>txt</para>', f.read().decode('utf-8'))
         f.close()
 
         remove(inFile)
