@@ -4,7 +4,12 @@
 Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
 """
 
-__version__ = [0.2, "alpha", 2]
+__version__ = [0.2, "alpha", 3]
+__versionstr__ = 'czechtile-'+str(__version__[0])
+
+if not (__version__[1] == "stable" and __version__[2] == 0):
+    __versionstr__ = __versionstr__+"_"+__version__[1]+str(__version__[2])
+
 
 ###
 #Czechtile: WikiHezkyCesky

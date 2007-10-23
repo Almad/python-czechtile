@@ -36,8 +36,9 @@ required_python_version = '2.4'
 ###############################################################################
 # arguments for the setup command
 ###############################################################################
+import czechtile
 name = "czechtile"
-version = "0.2_alpha2"
+version = czechtile.__versionstr__[len(name)+1:]
 desc = "Python implementation of Czechtile WikiSyntax"
 long_desc = """Czechtile is WikiSyntax intended to be used on Czech keyboard layout: this is Python module for
 handling Czechtile input and transformation into DocBook and XHTML."""
@@ -61,7 +62,7 @@ cp_license="LGPL"
 packages=[
     "czechtile"
 ]
-download_url="http://projects.almad.net/czechtile/wiki/Download"
+download_url="http://www.almad.net/download/czechtile/"+czechtile.__versionstr__+".tar.gz"
 data_files=[]
 scripts = ['bin/czechtile']
 
