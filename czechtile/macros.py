@@ -130,6 +130,17 @@ class Zvyraznene(CzechtileMacro):
         parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
 
+class FootNote(CzechtileMacro):
+    name = 'poznamka'
+    help = '((poznamka text pod carou))'
+
+    def expand_to_nodes(self, content):
+        node = nodes.FootNote()
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
+        self.builder.move_up()
+
+
 class Silne(CzechtileMacro):
     name = 'silne'
     help = '((silne zesilneny text))'

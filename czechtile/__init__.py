@@ -45,17 +45,18 @@ register_map = RegisterMap({
     macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List], parsers.parsers),
     macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText], parsers.parsers),
     macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
-                       macros.Hyperlink, macros.TriTecky, macros.Uvodzovky], parsers.parsers),
-    macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene, macros.TriTecky, macros.Uvodzovky], parsers.parsers),
-    macros.Nadpis : Register([macros.Hyperlink, macros.Uvodzovky], parsers.parsers),
-    macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvodzovky], parsers.parsers),
-    macros.Silne : Register([macros.Hyperlink, macros.Uvodzovky], parsers.parsers),
+                       macros.Hyperlink, macros.TriTecky, macros.Uvodzovky, macros.FootNote], parsers.parsers),
+    macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene, macros.FootNote, macros.TriTecky, macros.Uvodzovky], parsers.parsers),
+    macros.Nadpis : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote], parsers.parsers),
+    macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote], parsers.parsers),
+    macros.Silne : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote], parsers.parsers),
     macros.NeformatovanyText : Register([], parsers.parsers),
     macros.List : Register([macros.ListItem], parsers.parsers),
     macros.ListItem : Register([macros.Zvyraznene, macros.Silne,
-	    macros.Hyperlink, macros.TriTecky, macros.Uvodzovky], parsers.parsers)
+	    macros.Hyperlink, macros.TriTecky, macros.Uvodzovky, macros.FootNote], parsers.parsers)
 })
 register_map[macros.Article] = register_map[macros.Book]
+register_map[macros.FootNote] = register_map[macros.Odstavec]
 
 
 # map nodes to expanders
@@ -77,7 +78,8 @@ expander_map.update({
         nodes.Hyperlink : expanders.HyperlinkDocbook4,
         nodes.List : expanders.ListDocbook4,
         nodes.ListItem : expanders.ListItemDocbook4,
-	nodes.Uvodzovky : expanders.UvodzovkyEntity
+        nodes.Uvodzovky : expanders.UvodzovkyEntity,
+        nodes.FootNote : expanders.FootNoteDocbook4,
     },
     'docbook5' : {
     },

@@ -46,4 +46,6 @@ class List(Node): pass
 class ListItem(Node): pass
 class Sublist(Node): pass
 
+class FootNote(Node): pass
+
 class Uvodzovky(Node): pass

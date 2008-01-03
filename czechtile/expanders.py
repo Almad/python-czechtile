@@ -125,6 +125,10 @@ class UvodzovkyEntity(CzechtileExpander):
     def expand(self, node, format, node_map):
 	    return self.expand_with_content(node, format, node_map, u'&#8222;', u'&#8220;')
 
+class FootNoteDocbook4(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u'<footnote><para>', u'</para></footnote>')
+
 
 last_level = 0
 list_levels = [0]
