@@ -42,26 +42,27 @@ def runTests(tests):
     unittest.TextTestRunner(verbosity=1, descriptions=1).run(suite)
 
 def main():
-    try:
-        import nose
-        cover = False
-        if len(sys.argv) > 1 and sys.argv[1] == "-c":
-            import coverage
-            coverage.start()
-            cover = True
-            del sys.argv[1]
-        nose.run()
-        if cover:
-            coverage.stop()
-            moduleList = [mod for name, mod in sys.modules.copy().iteritems()
-            if getattr(mod, '__file__', None) and
-            name.startswith('czechtile.') and
-            'test' not in name
-            ]
-            moduleList.sort()
-            coverage.report(moduleList)
-
-    except ImportError:
+    #FIXME: not working with nose 0.10
+#    try:
+#        import nose
+#        cover = False
+#        if len(sys.argv) > 1 and sys.argv[1] == "-c":
+#            import coverage
+#            coverage.start()
+#            cover = True
+#            del sys.argv[1]
+#        nose.run()
+#        if cover:
+#            coverage.stop()
+#            moduleList = [mod for name, mod in sys.modules.copy().iteritems()
+#            if getattr(mod, '__file__', None) and
+#            name.startswith('czechtile.') and
+#            'test' not in name
+#            ]
+#            moduleList.sort()
+#            coverage.report(moduleList)
+#
+#    except ImportError:
         # dirty unittest run
         tests = getSuites()
         runTests(tests)
