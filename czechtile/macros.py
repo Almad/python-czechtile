@@ -191,8 +191,8 @@ class Uvodzovky(CzechtileMacro):
         self.builder.move_up()
 
 class ListItem(CzechtileMacro):
-    name = 'listitem'
-    help = '((listitem text polozky))'
+    name = 'polozka'
+    help = '((polozka text))'
 
     def parse_argument_string(self, argument_string):
         args = argument_string.split()
@@ -210,8 +210,8 @@ class ListItem(CzechtileMacro):
 
 
 class List(CzechtileMacro):
-    name = 'list'
-    help = '((list typ obsah seznamu))'
+    name = 'seznam'
+    help = '((seznam typ obsah))'
 
     def parse_argument_string(self, argument_string):
         args = argument_string.split('!::')
