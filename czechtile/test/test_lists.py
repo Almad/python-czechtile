@@ -277,5 +277,71 @@ class TestSpecialCases(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'dva')
 
 
+class TestStandardUsage(OutputTestCase):
+
+    def testZoznamPodNadpisom(self):
+        text = '''= nadpis =
+ - seznam1
+ - seznam2'''
+
+        tree = parse(text, register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
+        self.assertEquals(tree.children[0].children[0].children[0].content, 'nadpis')
+        self.assertEquals(tree.children[0].children[1].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[1].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[1].children[0].children[0].content, 'seznam1')
+        self.assertEquals(tree.children[0].children[1].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[1].children[1].children[0].content, 'seznam2')
+
+
+    def testZoznamPodNadpisomSTextom(self):
+        text = '''= nadpis =
+Ahooj - ludia..
+ 1. seznam1
+ 1. seznam2
+
+CzechTile ruleez.'''
+
+        tree = parse(text, register_map)
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
+        self.assertEquals(tree.children[0].children[0].children[0].content, 'nadpis')
+        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[1].children[0].content, 'Ahooj - ludia..')
+        self.assertEquals(tree.children[0].children[2].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[2].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[2].children[0].children[0].content, 'seznam1')
+        self.assertEquals(tree.children[0].children[2].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[2].children[1].children[0].content, 'seznam2')
+        self.assertEquals(tree.children[0].children[3].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[3].children[0].content, 'CzechTile ruleez.')
+
+
+
+    def testZoznamNaKonciPodNadpisomSTextom(self):
+        text = '''= nadpis =
+
+Ahooj, ludia..
+ - seznam1
+ - seznam2'''
+
+        tree = parse(text, register_map)
+
+
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
+        self.assertEquals(tree.children[0].children[0].children[0].content, 'nadpis')
+        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[1].children[0].content, u'Ahooj, ludia..')
+        self.assertEquals(tree.children[0].children[2].__class__, nodes.List)
+        self.assertEquals(tree.children[0].children[2].children[0].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[2].children[0].children[0].content, 'seznam1')
+        self.assertEquals(tree.children[0].children[2].children[1].__class__, nodes.ListItem)
+        self.assertEquals(tree.children[0].children[2].children[1].children[0].content, 'seznam2')
+
+
 if __name__ == "__main__":
     main()
