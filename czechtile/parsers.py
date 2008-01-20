@@ -217,7 +217,7 @@ types = {
 class List(Parser):
     # the '\n\n' start and end is only for now, later it can be removed
     # (when it'll be all right)
-    start = ['^( ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n\n\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    start = ['^( ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1,2}(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
     end = '(\n){2}|$'
     macro = macros.List
 
@@ -226,13 +226,9 @@ class List(Parser):
         if not endMatch:
             raise ParserRollback
 
-        i = 2
-	if re.search('^', self.chunk):
-            i = 0
-
-        self.content = self.chunk[i:] + self.stream[0:endMatch.start()]
+        self.content = self.chunk + self.stream[:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
-        self.content = '\n' + self.content + '\n'
+        #self.content = '\n' + self.content + '\n'
 
         for i in types.keys():
             if re.search(i, self.chunk[self.chunk.count(' ') - 2:]):
@@ -241,8 +237,9 @@ class List(Parser):
         self.argument_string = ''.join([self.type_, '!::', self.content])
 
 class ListItem(Parser):
-    start = ['(\n){1}(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
-    end = '(\n){1}'
+    start = ['^( ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1}(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    #start = List.start
+    end = '(\n){1}|$'
     macro = macros.ListItem
 
     def resolve_argument_string(self):
@@ -254,7 +251,8 @@ class ListItem(Parser):
         for i in types.keys():
             if re.search(i, self.chunk[self.level:]):
                 self.type_ = types[i]
-        self.content = self.stream[0:endMatch.start()]
+        self.content = self.stream[:endMatch.start()]
+        self.stream = self.stream[endMatch.start():]
         self.argument_string = ''.join([str(self.level), ' ', self.type_, ' ', self.content])
 
 

@@ -190,25 +190,6 @@ class Uvodzovky(CzechtileMacro):
         parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
 
-class ListItem(CzechtileMacro):
-    name = 'polozka'
-    help = '((polozka text))'
-
-    def parse_argument_string(self, argument_string):
-        args = argument_string.split()
-        level = int(args[0])
-        type_ = args[1]
-        self.arguments = [level, type_, ''.join([''.join([arg, ' ']) for arg in args[2:]])[:-1]]
-
-    def expand_to_nodes(self, level, type_, content):
-        node = nodes.ListItem()
-        node.level = level
-        node.type_ = type_
-        self.builder.append(node, move_actual=True)
-        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
-        self.builder.move_up()
-
-
 class List(CzechtileMacro):
     name = 'seznam'
     help = '((seznam typ obsah))'
@@ -231,3 +212,21 @@ class List(CzechtileMacro):
             if isinstance(n, nodes.ListItem):
                 new_children.append(n)
         node.children = new_children
+
+class ListItem(CzechtileMacro):
+    name = 'polozka'
+    help = '((polozka text))'
+
+    def parse_argument_string(self, argument_string):
+        args = argument_string.split()
+        level = int(args[0])
+        type_ = args[1]
+        self.arguments = [level, type_, ''.join([''.join([arg, ' ']) for arg in args[2:]])[:-1]]
+
+    def expand_to_nodes(self, level, type_, content):
+        node = nodes.ListItem()
+        node.level = level
+        node.type_ = type_
+        self.builder.append(node, move_actual=True)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
+        self.builder.move_up()

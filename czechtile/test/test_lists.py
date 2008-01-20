@@ -24,20 +24,19 @@ from os import pardir, tmpfile, remove
 from os.path import join
 import sys
 sys.path.insert(0, join(pardir, pardir))
-import logging
-import re
+import logging as pylog
 
 from unittest import main
 from czechtile import *
 
 from module_test import *
 
-#logging.basicConfig(level=logging.DEBUG)
+#pylog.basicConfig(level=pylog.DEBUG)
 
 class TestBasicLists(OutputTestCase):
 
     def testItemizedList(self):
-        tree = parse('''\n\n - Polozka1\n - Polozka2\n\n''', register_map)
+        tree = parse('''\n - Polozka1\n - Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'itemized')
@@ -54,7 +53,7 @@ class TestBasicLists(OutputTestCase):
 
 
     def testNumberOrderedList(self):
-        tree = parse('''\n\n 1. Polozka1\n 1. Polozka2\n\n''', register_map)
+        tree = parse('''\n 1. Polozka1\n 1. Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, '1-ordered')
@@ -72,7 +71,7 @@ class TestBasicLists(OutputTestCase):
 
 
     def testAlphaOrderedList(self):
-        tree = parse('''\n\n a. Polozka1\n a. Polozka2\n\n''', register_map)
+        tree = parse('''\n a. Polozka1\n a. Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'A-ordered')
@@ -89,7 +88,7 @@ class TestBasicLists(OutputTestCase):
         self.assertXhtml('<ol type="a"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
     def testRomanOrderedList(self):
-        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\n''', register_map)
+        tree = parse('''\n i. Polozka1\n i. Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'I-ordered')
@@ -105,10 +104,10 @@ class TestBasicLists(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
-class TestBasicLists(OutputTestCase):
+class TestSublists(OutputTestCase):
 
     def testEarlierEndingSublist(self):
-        tree = parse('''\n\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n - Polozka2\n\n''', register_map)
+        tree = parse('''\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n - Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'itemized')
@@ -135,7 +134,7 @@ class TestBasicLists(OutputTestCase):
         self.assertXhtml('<ul><li>Polozka1</li><ul><li>VnorenaPolozka1</li><li>VnorenaPolozka2</li><ul><li>DvojitoVnorenaPolozka1</li></ul></ul><li>Polozka2</li></ul>', res)
         
     def testSimpleSublist(self):
-        tree = parse('''\n\n - Polozka prva\n  - Polozka vnorena prva\n  - Polozka vnorena druha\n - Polozka druha\n\n''', register_map)
+        tree = parse('''\n - Polozka prva\n  - Polozka vnorena prva\n  - Polozka vnorena druha\n - Polozka druha\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'itemized')
@@ -159,7 +158,7 @@ class TestBasicLists(OutputTestCase):
         self.assertXhtml('<ul><li>Polozka prva</li><ul><li>Polozka vnorena prva</li><li>Polozka vnorena druha</li></ul><li>Polozka druha</li></ul>', res)
         
     def testDoubleSublist(self):
-        tree = parse('''\n\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n  - VnorenaPolozka3\n - Polozka2\n\n''', register_map)
+        tree = parse('''\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n  - VnorenaPolozka3\n - Polozka2\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'itemized')
@@ -189,7 +188,7 @@ class TestBasicLists(OutputTestCase):
         self.assertXhtml('<ul><li>Polozka1</li><ul><li>VnorenaPolozka1</li><li>VnorenaPolozka2</li><ul><li>DvojitoVnorenaPolozka1</li></ul><li>VnorenaPolozka3</li></ul><li>Polozka2</li></ul>', res)
         
     def testMultiTypeSublist(self):
-        tree = parse('''\n\n - Polozka prva\n  i. Polozka vnorena prva\n  i. Polozka vnorena druha\n - Polozka druha\n\n''', register_map)
+        tree = parse('''\n - Polozka prva\n  i. Polozka vnorena prva\n  i. Polozka vnorena druha\n - Polozka druha\n\n''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].type_, 'itemized')
@@ -215,7 +214,7 @@ class TestBasicLists(OutputTestCase):
 class TestSpecialCases(OutputTestCase):
 
     def testLeaveDocumentToContinue(self):
-        tree = parse('''\n\n i. Polozka1\n i. Polozka2\n\nNormalni odstavec''', register_map)
+        tree = parse('''\n i. Polozka1\n i. Polozka2\n\nNormalni odstavec''', register_map)
 
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
@@ -239,7 +238,7 @@ class TestSpecialCases(OutputTestCase):
         
     def testIfDashInIsNotParseredAsList2(self):
         # in this test we are finding out if dash is not parsered as list in listitem too
-        tree = parse('''\n\n - jeden - dva tri-styri\n\n''', register_map)
+        tree = parse('''\n - jeden - dva tri-styri\n\n''', register_map)
 
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
@@ -247,7 +246,7 @@ class TestSpecialCases(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden - dva tri-styri')
 
     def testListAtEOF(self):
-        tree = parse('''\n\n - jeden\n - dva''', register_map)
+        tree = parse('''\n - jeden\n - dva''', register_map)
 
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
