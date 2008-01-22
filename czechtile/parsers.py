@@ -207,21 +207,27 @@ class Uvodzovky(Parser):
 
 ### End of inline elements ###
 
+# FIXME: Global variables are dirty!
 types = {
-    ' - ' : 'itemized',
-    ' 1. ' : '1-ordered',
-    ' a. ' : 'A-ordered',
-    ' i. ' : 'I-ordered'
+    '- ' : 'itemized',
+    '1. ' : '1-ordered',
+    'a. ' : 'A-ordered',
+    'i. ' : 'I-ordered'
 }
+
+first_level = 0
 
 class List(Parser):
     # the '\n\n' start and end is only for now, later it can be removed
     # (when it'll be all right)
-    start = ['^( ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1,2}(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    start = ['^( ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1,2}(\ ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
     end = '(\n){2}|$'
     macro = macros.List
 
     def resolve_argument_string(self):
+        global first_level
+        first_level = 0
+
         endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
             raise ParserRollback
@@ -230,24 +236,38 @@ class List(Parser):
         self.stream = self.stream[endMatch.end():]
         #self.content = '\n' + self.content + '\n'
 
+        # FIXME: get just number of spaces before list token
+        spaces = self.chunk.count(' ') - 2
+        if spaces < 0:
+            spaces = 0
         for i in types.keys():
-            if re.search(i, self.chunk[self.chunk.count(' ') - 2:]):
+            if re.search(i, self.chunk[spaces:]):
                 self.type_ = types[i]
 
         self.argument_string = ''.join([self.type_, '!::', self.content])
 
+
 class ListItem(Parser):
-    start = ['^( ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1}(\ )*(\ ){1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
+    start = ['^( ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1}(\ )*(\ ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
     #start = List.start
     end = '(\n){1}|$'
     macro = macros.ListItem
 
     def resolve_argument_string(self):
+        global first_level
+
         endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
             raise ParserRollback
 
         self.level = self.chunk.count(' ') - 2
+
+        # determining list(item) level if there is no space before list token
+        if self.level < 0:
+            first_level = self.level
+        if first_level < 0:
+            self.level = self.level + 1
+
         for i in types.keys():
             if re.search(i, self.chunk[self.level:]):
                 self.type_ = types[i]
