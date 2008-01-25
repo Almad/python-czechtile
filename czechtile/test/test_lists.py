@@ -229,21 +229,30 @@ class TestSpecialCases(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol><p>Normalni odstavec</p>', res)
         
-    def testIfDashIsNotParseredAsList(self): # it is not very nice name for test function ;)
+    def testDash(self): # tests if dash is not parsered as list
         tree = parse('''jeden - dva tri-styri''', register_map)
 
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[0].children[0].content, 'jeden - dva tri-styri')
+        self.assertEquals(tree.children[0].children[0].children[0].content, 'jeden ')
+        self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.Pomlcka)
+        self.assertEquals(tree.children[0].children[0].children[2].content, ' dva tri')
+        self.assertEquals(tree.children[0].children[0].children[3].__class__, nodes.Pomlcka)
+        self.assertEquals(tree.children[0].children[0].children[4].content, 'styri')
+
         
-    def testIfDashInIsNotParseredAsList2(self):
-        # in this test we are finding out if dash is not parsered as list in listitem too
+    def testDashInListItem(self):
         tree = parse('''\n - jeden - dva tri-styri\n\n''', register_map)
 
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
-        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden - dva tri-styri')
+        self.assertEquals(tree.children[0].children[0].children[0].children[0].content, 'jeden ')
+        self.assertEquals(tree.children[0].children[0].children[0].children[1].__class__, nodes.Pomlcka)
+        self.assertEquals(tree.children[0].children[0].children[0].children[2].content, ' dva tri')
+        self.assertEquals(tree.children[0].children[0].children[0].children[3].__class__, nodes.Pomlcka)
+        self.assertEquals(tree.children[0].children[0].children[0].children[4].content, 'styri')
+
 
     def testListAtEOF(self):
         tree = parse('''\n - jeden\n - dva''', register_map)
@@ -310,7 +319,10 @@ CzechTile ruleez.'''
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[0].children[0].content, 'nadpis')
         self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[1].children[0].content, 'Ahooj - ludia..')
+        self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[1].children[0].content, 'Ahooj ')
+        self.assertEquals(tree.children[0].children[1].children[1].__class__, nodes.Pomlcka)
+        self.assertEquals(tree.children[0].children[1].children[2].content, ' ludia..') 
         self.assertEquals(tree.children[0].children[2].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[2].children[0].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[2].children[0].children[0].content, 'seznam1')
@@ -360,7 +372,9 @@ CzechTile ruleez.
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Nadpis)
         self.assertEquals(tree.children[0].children[0].children[0].content, 'nadpis')
         self.assertEquals(tree.children[0].children[1].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[1].children[0].content, 'Ahooj - ludia..')
+        self.assertEquals(tree.children[0].children[1].children[0].content, 'Ahooj ')
+        self.assertEquals(tree.children[0].children[1].children[1].__class__, nodes.Pomlcka)
+        self.assertEquals(tree.children[0].children[1].children[2].content, ' ludia..') 
         self.assertEquals(tree.children[0].children[2].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[2].children[0].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[2].children[0].children[0].content, 'seznam1')

@@ -187,6 +187,18 @@ class TriTecky(Parser):
     def call_macro(self):
         return self.macro(self.register, self.register_map).expand()
 
+class Pomlcka(Parser):
+    start = ['(?!(\n){1,}(\ )*)(\-){1}']  # be aware of that dash can be a list token (check if it isn't!)
+    end = None
+    macro = macros.Pomlcka
+
+    def resolve_argument_string(self):
+        pass
+
+    def call_macro(self):
+        return self.macro(self.register, self.register_map).expand()
+
+
 class Uvodzovky(Parser):
     start = ['("){1}']
     end = '("){1}'
@@ -276,4 +288,4 @@ class ListItem(Parser):
         self.argument_string = ''.join([str(self.level), ' ', self.type_, ' ', self.content])
 
 
-parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene, Uvodzovky]
+parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene, Uvodzovky, Pomlcka]

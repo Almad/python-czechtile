@@ -45,6 +45,15 @@ class TestCzechTypos(OutputTestCase):
         result = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p>Typo hezky cesky&#8230;</p>''', result)
 
+    def testPomlcka(self):
+        tree = parse('''Typo - hezky-cesky -''', register_map)
+        result = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para>Typo &#8211; hezky&#8211;cesky &#8211;</para>''', result)
+
+        result = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p>Typo &#8211; hezky&#8211;cesky &#8211;</p>''', result)
+
+
     def testUvodzovky(self):
         tree = parse('''"Uvodzovkujem"''', register_map)
         result = expand(tree, 'docbook4', expander_map)

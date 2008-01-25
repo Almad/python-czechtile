@@ -180,6 +180,14 @@ class TriTecky(CzechtileMacro):
     def expand_to_nodes(self, *args):
         self.builder.append(nodes.TriTecky(), move_actual=False)
 
+class Pomlcka(CzechtileMacro):
+    name = 'pomlcka'
+    help = '((pomlcka))'
+
+    def expand_to_nodes(self, *args):
+        self.builder.append(nodes.Pomlcka(), move_actual=False)
+
+
 class Uvodzovky(CzechtileMacro):
     name = 'uvodzovky'
     help = '((uvodzovky text v uvodzovkach))'
