@@ -123,7 +123,10 @@ class TriTeckyEntity(CzechtileExpander):
 
 class PomlckaEntity(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return u'&#8211;'
+        if node.spojovnik:
+            return u'&#173;'
+        else:
+            return u'&#8211;'
 
 class UvodzovkyEntity(CzechtileExpander):
     def expand(self, node, format, node_map):
