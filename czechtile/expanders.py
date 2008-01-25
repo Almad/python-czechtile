@@ -232,3 +232,8 @@ class ListItemXhtml11(CzechtileExpander):
         last_type = node.type_
         list_types.append(node.type_)
         return self.expand_with_content(node, format, node_map, outer_list + u'<li>', u'</li>')
+
+class PevnaMedzeraEntity(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return u'&nbsp;'
+

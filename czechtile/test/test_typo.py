@@ -48,10 +48,10 @@ class TestCzechTypos(OutputTestCase):
     def testPomlcka(self):
         tree = parse('''Typo - hezky-cesky -''', register_map)
         result = expand(tree, 'docbook4', expander_map)
-        self.assertDocbook4('''<para>Typo &#8211; hezky&#8211;cesky &#8211;</para>''', result)
+        self.assertDocbook4('''<para>Typo&nbsp;&#8211;&nbsp;hezky&#8211;cesky&nbsp;&#8211;</para>''', result)
 
         result = expand(tree, 'xhtml11', expander_map)
-        self.assertXhtml('''<p>Typo &#8211; hezky&#8211;cesky &#8211;</p>''', result)
+        self.assertXhtml('''<p>Typo&nbsp;&#8211;&nbsp;hezky&#8211;cesky&nbsp;&#8211;</p>''', result)
 
 
     def testUvodzovky(self):

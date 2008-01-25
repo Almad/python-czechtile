@@ -188,16 +188,17 @@ class TriTecky(Parser):
         return self.macro(self.register, self.register_map).expand()
 
 class Pomlcka(Parser):
-    start = ['(?!(\n){1,}(\ )*)(\-){1}']  # be aware of that dash can be a list token (check if it isn't!)
-    end = None
+    start = ['(?!(\n){1,}(\ )*)(\ ){0,1}(\-){1}']  # be aware of that dash can be a list token (check if it isn't!)
+    end = '(\ ){0,1}'
     macro = macros.Pomlcka
 
     def resolve_argument_string(self):
-        pass
+        endMatch = re.search(self.__class__.end, self.stream)
+        if not endMatch:
+            raise ParserRollback
 
-    def call_macro(self):
-        return self.macro(self.register, self.register_map).expand()
-
+        self.argument_string = self.chunk + self.stream[0:endMatch.end()]
+        self.stream = self.stream[endMatch.end():]
 
 class Uvodzovky(Parser):
     start = ['("){1}']

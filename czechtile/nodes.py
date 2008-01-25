@@ -50,3 +50,5 @@ class Sublist(Node): pass
 class FootNote(Node): pass
 
 class Uvodzovky(Node): pass
+
+class PevnaMedzera(Node): pass

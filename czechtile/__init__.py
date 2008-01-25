@@ -47,9 +47,9 @@ register_map = RegisterMap({
     macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
                        macros.Hyperlink, macros.TriTecky, macros.Pomlcka, macros.Uvodzovky, macros.FootNote], parsers.parsers),
     macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene, macros.FootNote, macros.TriTecky, macros.Pomlcka, macros.Uvodzovky], parsers.parsers),
-    macros.Nadpis : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote], parsers.parsers),
-    macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote], parsers.parsers),
-    macros.Silne : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote], parsers.parsers),
+    macros.Nadpis : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
+    macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
+    macros.Silne : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
     macros.NeformatovanyText : Register([], parsers.parsers),
     macros.List : Register([macros.ListItem], parsers.parsers),
     macros.ListItem : Register([macros.Zvyraznene, macros.Silne,
@@ -81,6 +81,7 @@ expander_map.update({
         nodes.ListItem : expanders.ListItemDocbook4,
         nodes.Uvodzovky : expanders.UvodzovkyEntity,
         nodes.FootNote : expanders.FootNoteDocbook4,
+        nodes.PevnaMedzera : expanders.PevnaMedzeraEntity
     },
     'docbook5' : {
     },
@@ -100,7 +101,8 @@ expander_map.update({
         nodes.Hyperlink : expanders.HyperlinkXhtml11,
         nodes.List : expanders.ListXhtml11,
         nodes.ListItem : expanders.ListItemXhtml11,
-        nodes.Uvodzovky : expanders.UvodzovkyEntity
+        nodes.Uvodzovky : expanders.UvodzovkyEntity,
+        nodes.PevnaMedzera : expanders.PevnaMedzeraEntity,
     }
 })
 

@@ -184,8 +184,19 @@ class Pomlcka(CzechtileMacro):
     name = 'pomlcka'
     help = '((pomlcka))'
 
-    def expand_to_nodes(self, *args):
+    def expand_to_nodes(self, string):
+        signals = [0, 1]
+        spaces = []
+        if string.startswith(u' '):
+            spaces.append(signals[0])
+        if string.endswith(u' '):
+            spaces.append(signals[1])
+
+        if signals[0] in spaces:
+            self.builder.append(nodes.PevnaMedzera(), move_actual=False)
         self.builder.append(nodes.Pomlcka(), move_actual=False)
+        if signals[1] in spaces:
+            self.builder.append(nodes.PevnaMedzera(), move_actual=False)
 
 
 class Uvodzovky(CzechtileMacro):
