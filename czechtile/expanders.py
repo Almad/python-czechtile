@@ -150,14 +150,7 @@ class ListDocbook4(CzechtileExpander):
     last_type = ''
     list_types = []
 
-    def __init__(self):
-        """Recover default values of some vars with new instance creating
-        """
-        self.__class__.list_levels = [0]
-
-
     def expand(self, node, format, node_map):
-
         res = u''.join([u'<', self.types[node.type_][0], self.types[node.type_][1], u'>'])
         for child in node.children:
             res = res + expand(child, format, node_map)
