@@ -220,7 +220,7 @@ class List(CzechtileMacro):
     help = '((seznam typ obsah))'
 
     def parse_argument_string(self, argument_string):
-        args = argument_string.split('!::')
+        args = argument_string.split(' ')
         type_ = args[0]
         self.arguments = [type_, ''.join([''.join([arg, ' ']) for arg in args[1:]])[:-1]]
 

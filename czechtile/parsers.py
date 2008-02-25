@@ -220,26 +220,25 @@ class Uvodzovky(Parser):
 
 ### End of inline elements ###
 
-# FIXME: Global variables are dirty!
-types = {
-    '- ' : 'itemized',
-    '1. ' : '1-ordered',
-    'a. ' : 'A-ordered',
-    'i. ' : 'I-ordered'
-}
-
-first_level = 0
+### ---
+### List/listitem parsers ###
 
 class List(Parser):
-    # the '\n\n' start and end is only for now, later it can be removed
-    # (when it'll be all right)
     start = ['^( ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1,2}(\ ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
     end = '(\n){2}|$'
     macro = macros.List
 
+    # required variables
+    types = {
+        '- ' : 'itemized',
+        '1. ' : '1-ordered',
+        'a. ' : 'A-ordered',
+        'i. ' : 'I-ordered'
+    }
+    first_level = 0
+
     def resolve_argument_string(self):
-        global first_level
-        first_level = 0
+        self.__class__.first_level = 0  # new list, first_level with old value unwanted
 
         endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
@@ -247,18 +246,18 @@ class List(Parser):
 
         self.content = self.chunk + self.stream[:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
-        #self.content = '\n' + self.content + '\n'
 
-        # FIXME: get just number of spaces before list token
+        # lists without space before list token...
         spaces = self.chunk.count(' ') - 2
         if spaces < 0:
             spaces = 0
-        for i in types.keys():
+
+        # determining list type
+        for i in self.__class__.types.keys():
             if re.search(i, self.chunk[spaces:]):
-                self.type_ = types[i]
+                self.type_ = self.__class__.types[i]
 
-        self.argument_string = ''.join([self.type_, '!::', self.content])
-
+        self.argument_string = ''.join([self.type_, ' ', self.content])
 
 class ListItem(Parser):
     start = ['^( ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1}(\ )*(\ ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
@@ -267,7 +266,6 @@ class ListItem(Parser):
     macro = macros.ListItem
 
     def resolve_argument_string(self):
-        global first_level
 
         endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
@@ -277,16 +275,17 @@ class ListItem(Parser):
 
         # determining list(item) level if there is no space before list token
         if self.level < 0:
-            first_level = self.level
-        if first_level < 0:
+            List.first_level = self.level
+        if List.first_level < 0:
             self.level = self.level + 1
 
-        for i in types.keys():
+        for i in List.types.keys():
             if re.search(i, self.chunk[self.level:]):
-                self.type_ = types[i]
+                self.type_ = List.types[i]
         self.content = self.stream[:endMatch.start()]
         self.stream = self.stream[endMatch.start():]
         self.argument_string = ''.join([str(self.level), ' ', self.type_, ' ', self.content])
 
+### End of list/listitem parsers ###
 
 parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene, Uvodzovky, Pomlcka]
