@@ -128,6 +128,10 @@ class PomlckaEntity(CzechtileExpander):
         else:
             return u'&#8211;'
 
+class PevnaMedzeraEntity(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return u'&nbsp;'
+
 class UvodzovkyEntity(CzechtileExpander):
     def expand(self, node, format, node_map):
 	    return self.expand_with_content(node, format, node_map, u'&#8222;', u'&#8220;')
@@ -145,10 +149,11 @@ class ListDocbook4(CzechtileExpander):
         'A-ordered' : [u'orderedlist', u' numeration="loweralpha"'],
         'I-ordered' : [u'orderedlist', u' numeration="lowerroman"']
     }
+
     last_level = 0
-    list_levels = [0]
+    levels_list = [0]
     last_type = ''
-    list_types = []
+    types_list = []
 
     def expand(self, node, format, node_map):
         res = u''.join([u'<', self.types[node.type_][0], self.types[node.type_][1], u'>'])
@@ -156,80 +161,49 @@ class ListDocbook4(CzechtileExpander):
             res = res + expand(child, format, node_map)
 
         if self.__class__.last_level != 0:
-            for type_ in self.__class__.list_types[len(self.__class__.list_types) - self.__class__.last_level:]:
+            for type_ in self.__class__.types_list[len(self.__class__.types_list) - self.__class__.last_level:]:
                 res = u''.join([res, u'</', self.types[type_][0], u'>'])
         res = u''.join([res, u'</', self.types[node.type_][0], u'>'])
         return res
 
 class ListItemDocbook4(CzechtileExpander):
 
+    list_expander = ListDocbook4
+    tag = 'listitem'
+
     def expand(self, node, format, node_map):
 
-        if ListDocbook4.list_levels != [0] and ListDocbook4.last_level == 0:
-            ListDocbook4.list_levels = [0]
+        if self.list_expander.levels_list != [0] and self.list_expander.last_level == 0:
+            self.list_expander.levels_list = [0]
 
-        if ListDocbook4.list_levels.count(node.level) == 0:
-            ListDocbook4.list_levels.append(node.level)
-            outer_list = u''.join([u'<', ListDocbook4.types[node.type_][0], ListDocbook4.types[node.type_][1], u'>'])
+        if self.list_expander.levels_list.count(node.level) == 0:
+            self.list_expander.levels_list.append(node.level)
+            outer_list = u''.join([u'<', self.list_expander.types[node.type_][0], self.list_expander.types[node.type_][1], u'>'])
         else:
             outer_list = u''
 
-        if ListDocbook4.list_levels.count(node.level + 1) != 0:
-            outer_list = u''.join([u'</', ListDocbook4.types[ListDocbook4.last_type][0], u'>', outer_list])
-        if node.level == 0 and ListDocbook4.list_levels != [0] and ListDocbook4.last_level > 1:
-            outer_list = u''.join([u'</', ListDocbook4.types[ListDocbook4.last_type][0], u'>', outer_list])
+        if self.list_expander.levels_list.count(node.level + 1) != 0:
+            outer_list = u''.join([u'</', self.list_expander.types[self.list_expander.last_type][0], u'>', outer_list])
+        if node.level == 0 and self.list_expander.levels_list != [0] and self.list_expander.last_level > 1:
+            outer_list = u''.join([u'</', self.list_expander.types[self.list_expander.last_type][0], u'>', outer_list])
 
-        ListDocbook4.last_level = node.level
-        ListDocbook4.last_type = node.type_
-        ListDocbook4.list_types.append(node.type_)
-        return self.expand_with_content(node, format, node_map, outer_list + u'<listitem>', u'</listitem>')
+        self.list_expander.last_level = node.level
+        self.list_expander.last_type = node.type_
+        self.list_expander.types_list.append(node.type_)
+        return self.expand_with_content(node, format, node_map, outer_list + u'<' + self.tag + u'>', u'</' + self.tag + u'>')
 
 class ListXhtml11(ListDocbook4):
-# inheriting __init__ function and last_*, list_* variables
+# inheriting last_*, *_list variables and the expand function
 
     types = {
-        'itemized' : ['ul', ''],
-        '1-ordered' : ['ol', ' type="1"'],
-        'A-ordered' : ['ol', ' type="a"'],
-        'I-ordered' : ['ol', ' type="i"']
+        'itemized' : [u'ul', u''],
+        '1-ordered' : [u'ol', u' type="1"'],
+        'A-ordered' : [u'ol', u' type="a"'],
+        'I-ordered' : [u'ol', u' type="i"']
     }
 
-    def expand(self, node, format, node_map):
+class ListItemXhtml11(ListItemDocbook4):
+# inheriting the expand function
 
-        res = u''.join([u'<', self.types[node.type_][0], self.types[node.type_][1], u'>'])
-
-        for child in node.children:
-            res = res + expand(child, format, node_map)
-
-        if self.__class__.last_level != 0:
-            for type_ in self.__class__.list_types[len(self.__class__.list_types) - self.__class__.last_level:]:
-                res = u''.join([res, u'</', self.types[type_][0], u'>'])
-        res = u''.join([res, u'</', self.types[node.type_][0], u'>'])
-
-        return res
-
-class ListItemXhtml11(CzechtileExpander):
-
-    def expand(self, node, format, node_map):
-        if ListXhtml11.list_levels != [0] and ListXhtml11.last_level == 0:
-            ListXhtml11.list_levels = [0]
-        if ListXhtml11.list_levels.count(node.level) == 0:
-            ListXhtml11.list_levels.append(node.level)
-            outer_list = u''.join([u'<', ListXhtml11.types[node.type_][0], ListXhtml11.types[node.type_][1], u'>'])
-        else:
-            outer_list = u''
-
-        if ListXhtml11.list_levels.count(node.level + 1) != 0:
-            outer_list = u''.join([u'</', ListXhtml11.types[ListXhtml11.last_type][0], u'>']) + outer_list
-        if node.level == 0 and ListXhtml11.list_levels != [0] and ListXhtml11.last_level > 1:
-            outer_list = u''.join([u'</', ListXhtml11.types[ListXhtml11.last_type][0], u'>']) + outer_list
-
-        ListXhtml11.last_level = node.level
-        ListXhtml11.last_type = node.type_
-        ListXhtml11.list_types.append(node.type_)
-        return self.expand_with_content(node, format, node_map, outer_list + u'<li>', u'</li>')
-
-class PevnaMedzeraEntity(CzechtileExpander):
-    def expand(self, node, format, node_map):
-        return u'&nbsp;'
-
+    list_expander = ListXhtml11
+    tag = 'li'
