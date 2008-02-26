@@ -371,7 +371,7 @@ CzechTile ruleez.
 
 - xyz
  - abc
-- def'''
+- dfj'''
 
         tree = parse(text, register_map)
 
@@ -400,8 +400,13 @@ CzechTile ruleez.
         self.assertEquals(tree.children[0].children[4].children[1].children[0].content, 'abc')
         self.assertEquals(tree.children[0].children[4].children[2].__class__, nodes.ListItem)
         self.assertEquals(tree.children[0].children[4].children[2].level, 0)
-        self.assertEquals(tree.children[0].children[4].children[2].children[0].content, 'def')
+        self.assertEquals(tree.children[0].children[4].children[2].children[0].content, 'dfj')
 
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('<title>nadpis</title><para>Ahooj&nbsp;&#8211;&nbsp;ludia..</para><orderedlist numeration="arabic"><listitem>seznam1</listitem><listitem>seznam2</listitem></orderedlist><para>CzechTile ruleez.</para><itemizedlist><listitem>xyz</listitem><itemizedlist><listitem>abc</listitem></itemizedlist><listitem>dfj</listitem></itemizedlist>', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('<h1>nadpis</h1><p>Ahooj&nbsp;&#8211;&nbsp;ludia..</p><ol type="1"><li>seznam1</li><li>seznam2</li></ol><p>CzechTile ruleez.</p><ul><li>xyz</li><ul><li>abc</li></ul><li>dfj</li></ul>', res)
 
 if __name__ == "__main__":
     main()
