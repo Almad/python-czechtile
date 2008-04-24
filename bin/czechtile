@@ -72,15 +72,16 @@ def _check_options(options, args):
         logging.basicConfig(level=logging.DEBUG)
 
 def readFile(fn):
-	f = open(fn)
-	t = f.read()
-	f.close()
-	return t
+    f = open(fn)
+    t = f.read()
+    f.close()
+    return t
 
 def writeFile(fn, content):
-	f = open(fn, 'wb')
-	f.write(content)
-	f.close()
+    f = open(fn, 'wb')
+    f.write(content.encode('utf-8'))
+    f.close()
+
 def main():
     (options, args) = parser.parse_args()
     _check_options(options, args)
