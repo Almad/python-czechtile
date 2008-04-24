@@ -40,8 +40,7 @@ scriptFile = join(pardir, pardir, 'bin', 'czechtile')
 
 class TestConsoleScript(OutputTestCase):
 
-    def testXhtmlTransform(self):
-        txt = 'txt'
+    def _testTransform(self, txt='txtš'):
         inFile = getPersistentTmpfile()
         f = open(inFile, 'w')
         f.write(txt)
@@ -54,17 +53,22 @@ class TestConsoleScript(OutputTestCase):
         logging.debug('Called with exit code %s' % ec)
 
         f = open(xhtmlFile)
-        self.assertXhtml(u'<p>txt</p>', f.read().decode('utf-8'))
+        self.assertXhtml(''.join([u'<p>', unicode(txt), u'</p>']), f.read().decode('utf-8'))
         f.close()
 
         f = open(docbookFile)
-        self.assertDocbook4(u'<para>txt</para>', f.read().decode('utf-8'))
+        self.assertDocbook4(''.join([u'<para>', unicode(txt), u'</para>']), f.read().decode('utf-8'))
         f.close()
 
         remove(inFile)
         remove(xhtmlFile)
         remove(docbookFile)
+    
+    def testBasicTransform(self):
+        self._testTransform('test text')
 
+    def testBasicTransformWithAccents(self):
+        self._testTransform('živoťudarňý test')
 
 if __name__ == "__main__":
     main()
