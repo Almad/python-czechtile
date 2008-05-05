@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """Installs package using distutils
 
 Run:
