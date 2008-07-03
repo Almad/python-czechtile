@@ -227,5 +227,17 @@ class TestFixedText(OutputTestCase):
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4(u'<literallayout>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</literallayout>', res)
 
+class TestPreskrtnute(OutputTestCase):
+    def testPreskrtnuteMakro(self):
+        tree = parse(u'((preskrtnute preciarknuty text))', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Preskrtnute)
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para><emphasis role="strikethrough">preciarknuty text</emphasis></para>''', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p><strike>preciarknuty text</strike></p>''', res)
+
 if __name__ == "__main__":
     main()
