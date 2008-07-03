@@ -29,15 +29,16 @@ from sneakylang import Node, Document
 
 class Book(Node): pass
 class Article(Node): pass
-class Sekce(Node):pass
+class Sekce(Node): pass
 
-class Nadpis(Node):pass
+class Nadpis(Node): pass
 
-class Odstavec(Node):pass
-class NeformatovanyText(Node):pass
+class Odstavec(Node): pass
+class NeformatovanyText(Node): pass
 
-class Silne(Node):pass
-class Zvyraznene(Node):pass
+class Silne(Node): pass
+class Zvyraznene(Node): pass
+class Preskrtnute(Node): pass
 class Hyperlink(Node): pass
 
 class TriTecky(Node): pass
@@ -50,5 +51,4 @@ class Sublist(Node): pass
 class FootNote(Node): pass
 
 class Uvodzovky(Node): pass
-
 class PevnaMedzera(Node): pass

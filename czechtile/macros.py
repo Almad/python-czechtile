@@ -255,3 +255,16 @@ class ListItem(CzechtileMacro):
         self.builder.append(node, move_actual=True)
         parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
+
+class Preskrtnute(CzechtileMacro):
+    name = 'preskrtnute'
+    help = '((preskrtnute preskrtnuty text))'
+
+    def expand_to_nodes(self, content):
+        node = nodes.Preskrtnute()
+        self.builder.append(node, move_actual=True)
+        parse(content, self.register_map, self.register, \
+          builder=self.builder, state=self.state)
+        self.builder.move_up()
+
+

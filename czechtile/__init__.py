@@ -45,15 +45,20 @@ register_map = RegisterMap({
     macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List], parsers.parsers),
     macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText], parsers.parsers),
     macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
-                       macros.Hyperlink, macros.TriTecky, macros.Pomlcka, macros.Uvodzovky, macros.FootNote], parsers.parsers),
-    macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene, macros.FootNote, macros.TriTecky, macros.Pomlcka, macros.Uvodzovky], parsers.parsers),
+      macros.Hyperlink, macros.TriTecky, macros.Pomlcka,
+      macros.Uvodzovky, macros.FootNote, macros.Preskrtnute],
+      parsers.parsers),
+    macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene,
+      macros.FootNote, macros.TriTecky, macros.Pomlcka, macros.Uvodzovky,
+      macros.Preskrtnute], parsers.parsers),
     macros.Nadpis : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
     macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
     macros.Silne : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
     macros.NeformatovanyText : Register([], parsers.parsers),
     macros.List : Register([macros.ListItem], parsers.parsers),
     macros.ListItem : Register([macros.Zvyraznene, macros.Silne,
-	    macros.Hyperlink, macros.TriTecky, macros.Pomlcka, macros.Uvodzovky, macros.FootNote], parsers.parsers)
+      macros.Hyperlink, macros.TriTecky, macros.Pomlcka, macros.Uvodzovky,
+      macros.FootNote, macros.Preskrtnute], parsers.parsers)
 })
 register_map[macros.Article] = register_map[macros.Book]
 register_map[macros.FootNote] = register_map[macros.Odstavec]
@@ -81,7 +86,8 @@ expander_map.update({
         nodes.ListItem : expanders.ListItemDocbook4,
         nodes.Uvodzovky : expanders.UvodzovkyEntity,
         nodes.FootNote : expanders.FootNoteDocbook4,
-        nodes.PevnaMedzera : expanders.PevnaMedzeraEntity
+        nodes.PevnaMedzera : expanders.PevnaMedzeraEntity,
+        nodes.Preskrtnute : expanders.PreskrtnuteDocbook4
     },
     'docbook5' : {
     },
@@ -103,6 +109,7 @@ expander_map.update({
         nodes.ListItem : expanders.ListItemXhtml11,
         nodes.Uvodzovky : expanders.UvodzovkyEntity,
         nodes.PevnaMedzera : expanders.PevnaMedzeraEntity,
+        nodes.Preskrtnute : expanders.PreskrtnuteXhtml11
     }
 })
 

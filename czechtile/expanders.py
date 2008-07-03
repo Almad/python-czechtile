@@ -91,7 +91,7 @@ class NeformatovanyTextXhtml11(CzechtileExpander):
     def expand(self, node, format, node_map):
         return self.expand_with_content(node, format, node_map, u'<pre>', u'</pre>')
 
-#TODO: zesilene vs. silne v docbook
+# TODO: zesilene vs. silne v docbook
 
 class SilneDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
@@ -134,7 +134,7 @@ class PevnaMedzeraEntity(CzechtileExpander):
 
 class UvodzovkyEntity(CzechtileExpander):
     def expand(self, node, format, node_map):
-	    return self.expand_with_content(node, format, node_map, u'&#8222;', u'&#8220;')
+        return self.expand_with_content(node, format, node_map, u'&#8222;', u'&#8220;')
 
 class FootNoteDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
@@ -207,3 +207,14 @@ class ListItemXhtml11(ListItemDocbook4):
 
     list_expander = ListXhtml11
     tag = 'li'
+
+# XXX: overit docbook tag
+class PreskrtnuteDocbook4(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map,
+          u'<emphasis role="strikethrough">', u'</emphasis>')
+
+class PreskrtnuteXhtml11(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map,
+          u'<strike>', u'</strike>')
