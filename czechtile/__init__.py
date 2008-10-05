@@ -42,8 +42,8 @@ import parsers
 # map parsers to registers with nodes allowed
 register_map = RegisterMap({
     sneakylang.document.Document : Register([macros.Book, macros.Article], parsers.parsers),
-    macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List], parsers.parsers),
-    macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText], parsers.parsers),
+    macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
+    macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
     macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
       macros.Hyperlink, macros.TriTecky, macros.Pomlcka,
       macros.Uvodzovky, macros.FootNote, macros.Preskrtnute],
@@ -87,7 +87,8 @@ expander_map.update({
         nodes.Uvodzovky : expanders.UvodzovkyEntity,
         nodes.FootNote : expanders.FootNoteDocbook4,
         nodes.PevnaMedzera : expanders.PevnaMedzeraEntity,
-        nodes.Preskrtnute : expanders.PreskrtnuteDocbook4
+        nodes.Preskrtnute : expanders.PreskrtnuteDocbook4,
+        nodes.Obrazek : expanders.ObrazekDocbook4
     },
     'docbook5' : {
     },
@@ -109,7 +110,8 @@ expander_map.update({
         nodes.ListItem : expanders.ListItemXhtml11,
         nodes.Uvodzovky : expanders.UvodzovkyEntity,
         nodes.PevnaMedzera : expanders.PevnaMedzeraEntity,
-        nodes.Preskrtnute : expanders.PreskrtnuteXhtml11
+        nodes.Preskrtnute : expanders.PreskrtnuteXhtml11,
+        nodes.Obrazek : expanders.ObrazekXhtml11
     }
 })
 

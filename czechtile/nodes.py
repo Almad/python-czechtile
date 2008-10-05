@@ -52,3 +52,5 @@ class FootNote(Node): pass
 
 class Uvodzovky(Node): pass
 class PevnaMedzera(Node): pass
+
+class Obrazek(Node): pass

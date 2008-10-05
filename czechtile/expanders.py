@@ -208,9 +208,9 @@ class ListItemXhtml11(ListItemDocbook4):
     list_expander = ListXhtml11
     tag = 'li'
 
-# XXX: overit docbook tag
 class PreskrtnuteDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
+        # XXX: overit docbook tag
         return self.expand_with_content(node, format, node_map,
           u'<emphasis role="strikethrough">', u'</emphasis>')
 
@@ -218,3 +218,13 @@ class PreskrtnuteXhtml11(CzechtileExpander):
     def expand(self, node, format, node_map):
         return self.expand_with_content(node, format, node_map,
           u'<strike>', u'</strike>')
+
+class ObrazekDocbook4(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        # XXX: overit docbook tag
+        return u''.join([u'<mediaobject><imageobject><imagedata fileref="',
+          node.source, '" /></imageobject></mediaobject>'])
+
+class ObrazekXhtml11(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return u''.join([u'<img src="', node.source, '" />'])

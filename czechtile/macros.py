@@ -267,4 +267,13 @@ class Preskrtnute(CzechtileMacro):
           builder=self.builder, state=self.state)
         self.builder.move_up()
 
+class Obrazek(CzechtileMacro):
+    name = 'obrazek'
+    help = '((obrazek lokace))'
+
+    def expand_to_nodes(self, source):
+        node = nodes.Obrazek()
+        node.source = source
+        self.builder.append(node, move_actual=True)
+        self.builder.move_up()
 
