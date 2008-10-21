@@ -29,7 +29,7 @@ from sneakylang import Expander, expand
 class ExpanderMap(dict):
     """Just wraps expander map into object """
 
-class CzechtileExpander:
+class CzechtileExpander(object):
     """ Expander wrapper."""
 
     def expand_with_content(self, node, format, node_map, prefix=u'', suffix=u''):
@@ -141,72 +141,82 @@ class FootNoteDocbook4(CzechtileExpander):
         return self.expand_with_content(node, format, node_map, u'<footnote><para>', u'</para></footnote>')
 
 
-class ListDocbook4(CzechtileExpander):
-
-    types = {
-        'itemized' : [u'itemizedlist', u''],
-        '1-ordered' : [u'orderedlist', u' numeration="arabic"'],
-        'A-ordered' : [u'orderedlist', u' numeration="loweralpha"'],
-        'I-ordered' : [u'orderedlist', u' numeration="lowerroman"']
-    }
-
+class ListExpander(CzechtileExpander):
     last_level = 0
     levels_list = [0]
     last_type = ''
     types_list = []
 
+    tag_formats = {'start': u'<%s>', 'end': u'</%s>'}
+
     def expand(self, node, format, node_map):
-        res = u''.join([u'<', self.types[node.type_][0], self.types[node.type_][1], u'>'])
+        res = self.tag_formats['start'] % u' '.join(self.types[node.type_])
         for child in node.children:
             res = res + expand(child, format, node_map)
 
         if self.__class__.last_level != 0:
             for type_ in self.__class__.types_list[len(self.__class__.types_list) - self.__class__.last_level:]:
-                res = u''.join([res, u'</', self.types[type_][0], u'>'])
-        res = u''.join([res, u'</', self.types[node.type_][0], u'>'])
+                res += self.tag_formats['end'] % self.types[type_][:1]
+
+        res += self.tag_formats['end'] % self.types[node.type_][:1]
         return res
 
-class ListItemDocbook4(CzechtileExpander):
-
-    list_expander = ListDocbook4
-    tag = 'listitem'
+class ListItemExpander(CzechtileExpander):
+    def __init__(self, *args, **kwargs):
+        self.tag_formats = getattr(self, 'tag_formats', self.list_expander.tag_formats)
 
     def expand(self, node, format, node_map):
-
         if self.list_expander.levels_list != [0] and self.list_expander.last_level == 0:
             self.list_expander.levels_list = [0]
 
+        outer_list = u''
         if self.list_expander.levels_list.count(node.level) == 0:
             self.list_expander.levels_list.append(node.level)
-            outer_list = u''.join([u'<', self.list_expander.types[node.type_][0], self.list_expander.types[node.type_][1], u'>'])
-        else:
-            outer_list = u''
+            outer_list = self.tag_formats['start'] % \
+                    u' '.join(self.list_expander.types[node.type_])
+
+        def prepend_list_end_regarding_last_type(list):
+            return u''.join([self.tag_formats['end'] % \
+                    self.list_expander.types[self.list_expander.last_type][:1], list])
 
         if self.list_expander.levels_list.count(node.level + 1) != 0:
-            outer_list = u''.join([u'</', self.list_expander.types[self.list_expander.last_type][0], u'>', outer_list])
-        if node.level == 0 and self.list_expander.levels_list != [0] and self.list_expander.last_level > 1:
-            outer_list = u''.join([u'</', self.list_expander.types[self.list_expander.last_type][0], u'>', outer_list])
+            outer_list = prepend_list_end_regarding_last_type(outer_list)
+
+        if node.level == 0 and self.list_expander.levels_list != [0] and \
+                self.list_expander.last_level > 1:
+            outer_list = prepend_list_end_regarding_last_type(outer_list)
 
         self.list_expander.last_level = node.level
         self.list_expander.last_type = node.type_
         self.list_expander.types_list.append(node.type_)
-        return self.expand_with_content(node, format, node_map, outer_list + u'<' + self.tag + u'>', u'</' + self.tag + u'>')
+        return self.expand_with_content(node, format, node_map,
+                u''.join([outer_list, self.tag_formats['start'] % self.tag]),
+                self.tag_formats['end'] % self.tag[:1])
 
-class ListXhtml11(ListDocbook4):
-# inheriting last_*, *_list variables and the expand function
 
+class ListDocbook4(ListExpander):
     types = {
-        'itemized' : [u'ul', u''],
-        '1-ordered' : [u'ol', u' type="1"'],
-        'A-ordered' : [u'ol', u' type="a"'],
-        'I-ordered' : [u'ol', u' type="i"']
+        'itemized' : (u'itemizedlist',),
+        '1-ordered' : (u'orderedlist', u'numeration="arabic"'),
+        'A-ordered' : (u'orderedlist', u'numeration="loweralpha"'),
+        'I-ordered' : (u'orderedlist', u'numeration="lowerroman"')
     }
 
-class ListItemXhtml11(ListItemDocbook4):
-# inheriting the expand function
+class ListXhtml11(ListExpander):
+    types = {
+        'itemized' : (u'ul',),
+        '1-ordered' : (u'ol', u'type="1"'),
+        'A-ordered' : (u'ol', u'type="a"'),
+        'I-ordered' : (u'ol', u'type="i"')
+    }
 
+class ListItemDocbook4(ListItemExpander):
+    list_expander = ListDocbook4
+    tag = (u'listitem',)
+
+class ListItemXhtml11(ListItemExpander):
     list_expander = ListXhtml11
-    tag = 'li'
+    tag = (u'li',)
 
 class PreskrtnuteDocbook4(CzechtileExpander):
     def expand(self, node, format, node_map):
