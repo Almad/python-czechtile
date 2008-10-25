@@ -238,3 +238,17 @@ class ObrazekDocbook4(CzechtileExpander):
 class ObrazekXhtml11(CzechtileExpander):
     def expand(self, node, format, node_map):
         return u''.join([u'<img src="', node.source, '" />'])
+
+### BBCode expanders
+
+class SilneBbcode(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u'[b]', u'[/b]')
+
+class ZvyrazneneBbcode(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u'[i]', u'[/i]')
+
+class HyperlinkBbcode(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u''.join([u'[url=', unicode(node.link), u']']), u'[/url]')

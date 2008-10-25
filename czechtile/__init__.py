@@ -112,6 +112,12 @@ expander_map.update({
         nodes.PevnaMedzera : expanders.PevnaMedzeraEntity,
         nodes.Preskrtnute : expanders.PreskrtnuteXhtml11,
         nodes.Obrazek : expanders.ObrazekXhtml11
+    },
+    'bbcode' : {
+        TextNode : TextNodeExpander,
+        nodes.Silne : expanders.SilneBbcode,
+        nodes.Zvyraznene : expanders.ZvyrazneneBbcode,
+        nodes.Hyperlink : expanders.HyperlinkBbcode,
     }
 })
 
