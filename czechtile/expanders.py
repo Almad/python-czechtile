@@ -27,10 +27,10 @@ __version__ = 0.1
 from sneakylang import Expander, expand
 
 class ExpanderMap(dict):
-    """Just wraps expander map into object """
+    """Just wraps expander map into object."""
 
-class CzechtileExpander(object):
-    """ Expander wrapper."""
+class CzechtileExpander(Expander):
+    """Expander wrapper."""
 
     def expand_with_content(self, node, format, node_map, prefix=u'', suffix=u''):
         return u''.join([prefix] + [expand(child, format, node_map) for child in node.children] + [suffix])
