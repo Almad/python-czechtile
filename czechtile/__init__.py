@@ -30,18 +30,19 @@ if not (__version__[1] == "stable" and __version__[2] == 0):
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
+# TODO: move node imports to nodes.py
+from sneakylang import Document, DocumentNode, Register, RegisterMap, TextNode, TreeBuilder
 
-from sneakylang import *
-import sneakylang
-
+import expanders
 import nodes
 import macros
-import expanders
 import parsers
+
+expand = expanders.expand  # FIXME?
 
 # map parsers to registers with nodes allowed
 register_map = RegisterMap({
-    sneakylang.document.Document : Register([macros.Book, macros.Article], parsers.parsers),
+    Document : Register([macros.Book, macros.Article], parsers.parsers),
     macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
     macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
     macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
@@ -67,64 +68,16 @@ register_map[macros.FootNote] = register_map[macros.Odstavec]
 # map nodes to expanders
 expander_map = expanders.ExpanderMap()
 expander_map.update({
-    'docbook4' : {
-        sneakylang.document.DocumentNode : expanders.DocumentDocbook4,
-        nodes.Document : expanders.DocumentDocbook4,
-        nodes.Book : expanders.BookDocbook4,
-        nodes.Article : expanders.ArticleDocbook4,
-        nodes.Sekce : expanders.SekceDocbook4,
-        TextNode : TextNodeExpander,
-        nodes.Nadpis : expanders.NadpisDocbook4,
-        nodes.Odstavec : expanders.OdstavecDocbook4,
-        nodes.NeformatovanyText : expanders.NeformatovanyTextDocbook4,
-        nodes.Silne : expanders.SilneDocbook4,
-        nodes.Zvyraznene : expanders.ZvyrazneneDocbook4,
-        nodes.TriTecky : expanders.TriTeckyEntity,
-        nodes.Pomlcka : expanders.PomlckaEntity,
-        nodes.Hyperlink : expanders.HyperlinkDocbook4,
-        nodes.List : expanders.ListDocbook4,
-        nodes.ListItem : expanders.ListItemDocbook4,
-        nodes.Uvodzovky : expanders.UvodzovkyEntity,
-        nodes.FootNote : expanders.FootNoteDocbook4,
-        nodes.PevnaMedzera : expanders.PevnaMedzeraEntity,
-        nodes.Preskrtnute : expanders.PreskrtnuteDocbook4,
-        nodes.Obrazek : expanders.ObrazekDocbook4
-    },
-    'docbook5' : {
-    },
-    'xhtml11' : {
-        sneakylang.document.DocumentNode : expanders.DocumentXhtml11,
-        nodes.Document : expanders.DocumentXhtml11,
-        nodes.Book : expanders.BookXhtml11,
-        nodes.Article : expanders.ArticleXhtml11,
-        TextNode : TextNodeExpander,
-        nodes.Nadpis : expanders.NadpisXhtml11,
-        nodes.Odstavec : expanders.OdstavecXhtml11,
-        nodes.NeformatovanyText : expanders.NeformatovanyTextXhtml11,
-        nodes.Silne : expanders.SilneXhtml11,
-        nodes.Zvyraznene : expanders.ZvyrazneneXhtml11,
-        nodes.TriTecky : expanders.TriTeckyEntity,
-        nodes.Pomlcka : expanders.PomlckaEntity,
-        nodes.Hyperlink : expanders.HyperlinkXhtml11,
-        nodes.List : expanders.ListXhtml11,
-        nodes.ListItem : expanders.ListItemXhtml11,
-        nodes.Uvodzovky : expanders.UvodzovkyEntity,
-        nodes.PevnaMedzera : expanders.PevnaMedzeraEntity,
-        nodes.Preskrtnute : expanders.PreskrtnuteXhtml11,
-        nodes.Obrazek : expanders.ObrazekXhtml11
-    },
-    'bbcode' : {
-        TextNode : TextNodeExpander,
-        nodes.Silne : expanders.SilneBbcode,
-        nodes.Zvyraznene : expanders.ZvyrazneneBbcode,
-        nodes.Hyperlink : expanders.HyperlinkBbcode,
-    }
+    'docbook4': expanders.docbook4.map,
+    'docbook5': expanders.docbook5.map,
+    'xhtml11': expanders.xhtml11.map,
+    'bbcode' : expanders.bbcode.map
 })
 
 ### overwrite SneakyLang's parse method, we want everything to be wrapped in document_type
 def parse(stream, register_map, document_type=macros.Article, state=None):
-    builder = sneakylang.treebuilder.TreeBuilder()
-    builder.set_root(sneakylang.document.DocumentNode())
+    builder = TreeBuilder()
+    builder.set_root(DocumentNode())
     #dtype = document_type(stream, None, '', register_map[document_type.macro])
     dtype = document_type(register_map, builder, state)
     dtype.arguments = [stream]
