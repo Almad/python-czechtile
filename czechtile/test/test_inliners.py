@@ -163,7 +163,7 @@ class TestOdkaz(OutputTestCase):
     def testOdkazBadSyntax(self):
         tree = parse('''(http://rpgplanet.cz Stranky materskeho projektu''', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
-        self.assertEquals(tree.children[0].children[0].children[0].__class__, TextNode)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.TextNode)
         self.assertEquals(tree.children[0].children[0].children[0].content, '(')
         self.assertEquals(tree.children[0].children[0].children[1].__class__, nodes.Hyperlink)
 

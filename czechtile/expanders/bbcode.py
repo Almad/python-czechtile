@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from czechtile import nodes, TextNode
+from czechtile import nodes
 from czechtile.expanders.base import CzechtileExpander, ExpanderMap, TextNodeExpander
 
 class Silne(CzechtileExpander):
@@ -33,7 +33,7 @@ class Hyperlink(CzechtileExpander):
         return self.expand_with_content(node, format, node_map, u''.join([u'[url=', unicode(node.link), u']']), u'[/url]')
 
 map = ExpanderMap({
-    TextNode : TextNodeExpander,
+    nodes.TextNode : TextNodeExpander,
     nodes.Silne : Silne,
     nodes.Zvyraznene : Zvyraznene,
     nodes.Hyperlink : Hyperlink

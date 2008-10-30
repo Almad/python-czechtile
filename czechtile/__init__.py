@@ -30,19 +30,16 @@ if not (__version__[1] == "stable" and __version__[2] == 0):
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-# TODO: move node imports to nodes.py
-from sneakylang import Document, DocumentNode, Register, RegisterMap, TextNode, TreeBuilder
+from sneakylang import Register, RegisterMap, TreeBuilder
 
 import expanders
 import nodes
 import macros
 import parsers
 
-expand = expanders.expand  # FIXME?
-
 # map parsers to registers with nodes allowed
 register_map = RegisterMap({
-    Document : Register([macros.Book, macros.Article], parsers.parsers),
+    macros.Document : Register([macros.Book, macros.Article], parsers.parsers),
     macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
     macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
     macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
@@ -64,7 +61,6 @@ register_map = RegisterMap({
 register_map[macros.Article] = register_map[macros.Book]
 register_map[macros.FootNote] = register_map[macros.Odstavec]
 
-
 # map nodes to expanders
 expander_map = expanders.ExpanderMap()
 expander_map.update({
@@ -74,10 +70,12 @@ expander_map.update({
     'bbcode' : expanders.bbcode.map
 })
 
+expand = expanders.expand
+
 ### overwrite SneakyLang's parse method, we want everything to be wrapped in document_type
 def parse(stream, register_map, document_type=macros.Article, state=None):
     builder = TreeBuilder()
-    builder.set_root(DocumentNode())
+    builder.set_root(nodes.DocumentNode())
     #dtype = document_type(stream, None, '', register_map[document_type.macro])
     dtype = document_type(register_map, builder, state)
     dtype.arguments = [stream]

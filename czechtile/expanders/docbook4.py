@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from czechtile import nodes, Document, DocumentNode, TextNode
+from czechtile import nodes
 from czechtile.expanders import entities
 from czechtile.expanders.base import CzechtileExpander, ExpanderMap, ListExpander, ListItemExpander, TextNodeExpander
 
@@ -94,11 +94,12 @@ class ListItem(ListItemExpander):
 
 
 map = ExpanderMap({
-    DocumentNode: Document,
+    nodes.DocumentNode: Document,
+    nodes.TextNode: TextNodeExpander,
+
     nodes.Book: Book,
     nodes.Article: Article,
     nodes.Sekce: Sekce,
-    TextNode: TextNodeExpander,
     nodes.Nadpis: Nadpis,
     nodes.Odstavec: Odstavec,
     nodes.NeformatovanyText: NeformatovanyText,

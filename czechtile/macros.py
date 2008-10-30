@@ -26,8 +26,8 @@ __version__ = 0.1
 
 import re
 
-from sneakylang import Macro, parse, TextNode, Document, treebuilder
-import nodes
+from sneakylang import parse, Macro, Document
+from czechtile import nodes
 
 class CzechtileMacro(Macro):
 
@@ -43,7 +43,7 @@ class MacroWrappingParagraph(CzechtileMacro):
     def wrap_text_nodes(self, node):
         # we must go with numbers as we must replace textnode with it's tree on same position
         for child in node.children:
-            if isinstance(child, TextNode):
+            if isinstance(child, nodes.TextNode):
                 self.builder.set_actual_node(child)
                 text = re.sub("^(\s)*", "", re.sub("(\s)*$", "", child.content))
                 for para_content in text.split('\n\n'):
@@ -101,7 +101,7 @@ class Odstavec(CzechtileMacro):
     def expand_to_nodes(self, content):
         node = nodes.Odstavec()
         self.builder.append(node, move_actual=False)
-        if isinstance(node.parent, TextNode):
+        if isinstance(node.parent, nodes.TextNode):
             self.builder.replace(node)
         self.builder.set_actual_node(node)
         parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
@@ -115,7 +115,7 @@ class NeformatovanyText(CzechtileMacro):
     def expand_to_nodes(self, content):
         node = nodes.NeformatovanyText()
         self.builder.append(node, move_actual=True)
-        tn = TextNode()
+        tn = nodes.TextNode()
         tn.content = content
         self.builder.append(tn, move_actual=False)
         self.builder.move_up()
@@ -165,7 +165,7 @@ class Hyperlink(CzechtileMacro):
         node.link = link
         self.builder.append(node, move_actual = True)
         if link == content:
-            tn = TextNode()
+            tn = nodes.TextNode()
             tn.content = content
             self.builder.append(tn, move_actual=False)
         else:
