@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 import re
 
-from sneakylang import Parser, ParserRollback
+from sneakylang.parser import Parser, ParserRollback
 import macros
 
 ### "Global content" holders ###

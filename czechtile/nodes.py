@@ -25,7 +25,8 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from sneakylang import Node, DocumentNode, TextNode
+from sneakylang.document import DocumentNode
+from sneakylang.node import Node, TextNode
 
 class Book(Node): pass
 class Article(Node): pass
