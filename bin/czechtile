@@ -60,6 +60,13 @@ parser.add_option("", "--xhtml",
     dest="xhtml_file",
     help="File to store XHTML in")
 
+parser.add_option("", "--html",
+    action="store",
+    default=None,
+    metavar='FILE',
+    dest="html_file",
+    help="File to store XHTML in")
+
 parser.add_option("", "--docbook4",
     action="store",
     metavar='FILE',
@@ -93,6 +100,9 @@ def main():
 
     if options.xhtml_file is not None:
         writeFile(options.xhtml_file, expand(tree, 'xhtml11', expander_map))
+
+    if options.html_file is not None:
+        writeFile(options.html_file, expand(tree, 'xhtml11', expander_map))
 
     if options.docbook4_file is not None:
         writeFile(options.docbook4_file, expand(tree, 'docbook4', expander_map))
