@@ -32,10 +32,10 @@ if not (__version__[1] == "stable" and __version__[2] == 0):
 
 from sneakylang import Register, RegisterMap, TreeBuilder
 
-import expanders
-import nodes
-import macros
-import parsers
+from czechtile import expanders
+from czechtile import nodes
+from czechtile import macros
+from czechtile import parsers
 
 # map parsers to registers with nodes allowed
 register_map = RegisterMap({
