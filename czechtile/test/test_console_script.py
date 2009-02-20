@@ -1,25 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-###
-#Czechtile: WikiHezkyCesky
-#Copyright (C) 2006 Lukas "Almad" Linhart http://www.almad.net/
-#
-#This library is free software; you can redistribute it and/or
-#modify it under the terms of the GNU Lesser General Public
-#License as published by the Free Software Foundation; either
-#version 2.1 of the License, or (at your option) any later version.
-#
-#This library is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#Lesser General Public License for more details.
-#
-#You should have received a copy of the GNU Lesser General Public
-#License along with this library; if not, write to the Free Software
-#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-###
-
 from os import pardir, tmpfile, remove
 from os.path import join
 import sys
@@ -40,35 +20,36 @@ scriptFile = join(pardir, pardir, 'bin', 'czechtile')
 
 class TestConsoleScript(OutputTestCase):
 
-    def _testTransform(self, txt=u'txt'):
+    def _test_transform(self, txt=u'txt', format='xhtml', wrap_tag='p'):
         inFile = getPersistentTmpfile()
         f = open(inFile, 'w')
         f.write(txt.encode('utf-8'))
         f.close()
 
-        xhtmlFile = getPersistentTmpfile(suffix='.html')
-        docbookFile = getPersistentTmpfile(suffix='.xml')
+        output_file = getPersistentTmpfile(suffix='.'+format)
 
-        ec = call([scriptFile, '-i', inFile, '--xhtml', xhtmlFile, '--docbook4', docbookFile])
+        ec = call([scriptFile, inFile, '-f', format, '-o', output_file, '--nowrap'])
         logging.debug('Called with exit code %s' % ec)
 
-        f = open(xhtmlFile)
-        self.assertXhtml(''.join([u'<p>', txt, u'</p>']), f.read().decode('utf-8'))
+        f = open(output_file)
+        output = f.read().decode('utf-8')
         f.close()
 
-        f = open(docbookFile)
-        self.assertDocbook4(''.join([u'<para>', txt, u'</para>']), f.read().decode('utf-8'))
-        f.close()
-
+        self.assertEquals(u''.join([u'<%s>' % wrap_tag, txt, u'</%s>' % wrap_tag]), output)
         remove(inFile)
-        remove(xhtmlFile)
-        remove(docbookFile)
+        remove(output_file)
     
-    def testBasicTransform(self):
-        self._testTransform(u'test text')
+    def test_basic_transform_xhtml(self):
+        self._test_transform(u'test text', format='xhtml', wrap_tag='p')
 
-    def testBasicTransformWithAccents(self):
-        self._testTransform(u'živoťudarňý test')
+    def test_basic_transform_docbook4(self):
+        self._test_transform(u'test text', format='docbook4', wrap_tag='para')
+        
+    def test_transform_with_accents_xhtml(self):
+        self._test_transform(u'živoťudarňý test', format='xhtml', wrap_tag='p')
+
+    def test_transform_with_accents_docbook4(self):
+        self._test_transform(u'živoťudarňý test', format='docbook4', wrap_tag='para')
 
 if __name__ == "__main__":
     main()

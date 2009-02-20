@@ -1,29 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" Czechtile: File conversion tool.
-
-Copyright (C) 2006 Lukas Almad Linhart
-"""
-
-###
-#Czechtile: WikiHezkyCesky
-#Copyright (C) 2006 Lukas "Almad" Linhart http://www.almad.net/
-#
-#This library is free software; you can redistribute it and/or
-#modify it under the terms of the GNU Lesser General Public
-#License as published by the Free Software Foundation; either
-#version 2.1 of the License, or (at your option) any later version.
-#
-#This library is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#Lesser General Public License for more details.
-#
-#You should have received a copy of the GNU Lesser General Public
-#License along with this library; if not, write to the Free Software
-#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-###
+""" Czechtile: File conversion tool. """
 
 import os
 from os import pardir
@@ -46,43 +24,45 @@ parser.add_option("", "--debug",
     dest="debug",
     help="Vypsat chybove hlasky")
 
-parser.add_option("-i", "--input-file",
-    action="store",
-    default=None,
-    metavar='FILE',
-    dest="in_file",
-    help="Input file")
-
 parser.add_option("", "--xhtml",
     action="store",
     default=None,
     metavar='FILE',
     dest="xhtml_file",
-    help="File to store XHTML in")
+    help="File to store XHTML to (DEPRECATED, use -f xhtml and -o)")
 
 parser.add_option("", "--html",
     action="store",
     default=None,
     metavar='FILE',
     dest="html_file",
-    help="File to store XHTML in")
+    help="File to store XHTML to (DEPRECATED, use -f xhtml and -o)")
 
 parser.add_option("", "--docbook4",
     action="store",
     metavar='FILE',
     dest="docbook4_file",
-    help="File to store Docbook 4 in")
+    help="File to store Docbook 4 to (DEPRECATED, use -f docbook4 and -o)")
 
+parser.add_option("-f", "--format",
+    action="store",
+    dest="format",
+    help="Format to transform Czechtile file to")
+
+parser.add_option("-o", "--output-file",
+    action="store",
+    metavar='FILE',
+    dest="output_file",
+    help="File to store transformation to")
+
+parser.add_option("", "--nowrap",
+    action="store_true",
+    dest="nowrap",
+    help="Do not add 'top-level' information")
 
 def _check_options(options, args):
     if options.debug == True:
         logging.basicConfig(level=logging.DEBUG)
-
-def readFile(fn):
-    f = open(fn)
-    t = f.read()
-    f.close()
-    return t
 
 def writeFile(fn, content):
     f = open(fn, 'wb')
@@ -92,11 +72,17 @@ def writeFile(fn, content):
 def main():
     (options, args) = parser.parse_args()
     _check_options(options, args)
-
-    txt = readFile(options.in_file)
+	
+    if len(args) < 1:
+        raise ValueError("Czechtile file not given!")
+    czt_file = args[0]
+    if not exists(czt_file):
+        raise ValueError("Czechtile file %s do not exist!" % czt_file)
+    txt = open(czt_file).read()
     logging.debug('File readed: %s' % txt)
 
     tree = parse(txt, register_map)
+    tree.wrap_document = not options.nowrap
 
     if options.xhtml_file is not None:
         writeFile(options.xhtml_file, expand(tree, 'xhtml11', expander_map))
@@ -107,6 +93,14 @@ def main():
     if options.docbook4_file is not None:
         writeFile(options.docbook4_file, expand(tree, 'docbook4', expander_map))
 
+    if options.format is not None:
+    	if options.output_file is None:
+    		raise ValueError("-f without valid -o given")
+    		
+    	if options.format in ('xhtml1', 'xhtml11', 'html', 'xhtml'):
+    		options.format = 'xhtml11'
+
+    writeFile(options.output_file, expand(tree, options.format, expander_map))
 
 if __name__ == '__main__':
     main()

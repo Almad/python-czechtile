@@ -23,15 +23,33 @@ from czechtile.expanders.base import CzechtileExpander, ExpanderMap, ListExpande
 
 class Document(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">', u'</html>')
+        if getattr(node, "wrap_document", True):
+            header = u'<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">'
+            footer = u'</html>'
+        else:
+            header = u''
+            footer = u''
+        return self.expand_with_content(node, format, node_map, header, footer)
 
 class Book(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'<body class="book">', u'</body>')
+        if getattr(node.parent, "wrap_document", True):
+            header = u'<body class="book">'
+            footer = u'</body>'
+        else:
+            header = u''
+            footer = u''
+        return self.expand_with_content(node, format, node_map, header, footer)
 
 class Article(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'<body class="article">', u'</body>')
+        if getattr(node.parent, "wrap_document", True):
+            header = u'<body class="article">'
+            footer = u'</body>'
+        else:
+            header = u''
+            footer = u''
+        return self.expand_with_content(node, format, node_map, header, footer)
 
 class Sekce(CzechtileExpander):
     def expand(self, node, format, node_map):

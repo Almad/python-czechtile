@@ -54,12 +54,12 @@ def run_macro_tests(path):
 
 def main():
     check_call(os.path.join(os.path.dirname(__file__), 'czechtile', 'test', 'run.py'))
-    path = get_tests_path()
-    macro_path = os.path.join(path, 'makra')
-    macro_tests = get_macro_tests(macro_path)
-    for test in macro_tests:
-        run_macro_tests(os.path.join(macro_path, test))
-    sys.stdout.write("\n")
+    #path = get_tests_path()
+    #macro_path = os.path.join(path, 'makra')
+    #macro_tests = get_macro_tests(macro_path)
+    #for test in macro_tests:
+    #    run_macro_tests(os.path.join(macro_path, test))
+    #sys.stdout.write("\n")
     
 if __name__ == "__main__":
     main()

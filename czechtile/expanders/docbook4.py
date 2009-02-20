@@ -23,15 +23,31 @@ from czechtile.expanders.base import CzechtileExpander, ExpanderMap, ListExpande
 
 class Document(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'<?xml version="1.0" encoding="UTF-8"?>\n')
+        if getattr(node, "wrap_document", True):
+            header = u'<?xml version="1.0" encoding="UTF-8"?>\n'
+        else:
+            header = u''
+        return self.expand_with_content(node, format, node_map, header)
 
 class Book(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book>', u'</book>')
+        if getattr(node.parent, "wrap_document", True):
+            header = u'<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><book>'
+            footer = u'</book>'
+        else:
+            header = u''
+            footer = u''
+        return self.expand_with_content(node, format, node_map, header, footer)
 
 class Article(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>', u'</article>')
+        if getattr(node.parent, "wrap_document", True):
+            header = u'<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>'
+            footer = u'</article>'
+        else:
+            header = u''
+            footer = u''
+        return self.expand_with_content(node, format, node_map, header, footer)
 
 class Sekce(CzechtileExpander):
     def expand(self, node, format, node_map):
