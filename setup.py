@@ -41,7 +41,8 @@ author_email="bugs@almad.net"
 url="http://projects.almad.net/czechtile"
 cp_license="BSD"
 packages=[
-    "czechtile"
+    "czechtile",
+    "czechtile.expanders",
 ]
 download_url="http://www.almad.net/download/czechtile/"+czechtile.__versionstr__+".tar.gz"
 data_files=[]
