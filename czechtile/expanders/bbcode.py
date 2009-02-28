@@ -18,7 +18,11 @@
 ###
 
 from czechtile import nodes
-from czechtile.expanders.base import CzechtileExpander, ExpanderMap, TextNodeExpander
+from czechtile.expanders.base import CzechtileExpander, EmptyExpander, ExpanderMap, TextNodeExpander
+
+class Document(EmptyExpander): pass
+class Article(EmptyExpander): pass
+class Odstavec(EmptyExpander): pass
 
 class Silne(CzechtileExpander):
     def expand(self, node, format, node_map):
@@ -33,8 +37,12 @@ class Hyperlink(CzechtileExpander):
         return self.expand_with_content(node, format, node_map, u''.join([u'[url=', unicode(node.link), u']']), u'[/url]')
 
 map = ExpanderMap({
-    nodes.TextNode : TextNodeExpander,
-    nodes.Silne : Silne,
-    nodes.Zvyraznene : Zvyraznene,
-    nodes.Hyperlink : Hyperlink
+    nodes.DocumentNode: Document,
+    nodes.TextNode: TextNodeExpander,
+
+    nodes.Article: Article,
+    nodes.Odstavec: Odstavec,
+    nodes.Silne: Silne,
+    nodes.Zvyraznene: Zvyraznene,
+    nodes.Hyperlink: Hyperlink,
 })

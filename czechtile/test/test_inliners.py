@@ -47,6 +47,9 @@ class TestSilne(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><strong>silne</strong></p>''', res)
 
+        res = expand(tree, 'bbcode', expander_map)
+        self.assertBbcode('''[b]silne[/b]''', res)
+
     def testSilneWithAlternativeSyntax(self):
         tree = parse('*silne*', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)

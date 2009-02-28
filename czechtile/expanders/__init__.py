@@ -22,11 +22,11 @@ __version__ = 0.1
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from base import ExpanderMap
+from base import CzechtileExpander, ExpanderMap
 from sneakylang.expanders import expand
 
 # Import expanders from this directory
-import bbcode
-import docbook4
-import docbook5
-import xhtml11
+from czechtile.expanders import bbcode
+from czechtile.expanders import docbook4
+from czechtile.expanders import docbook5
+from czechtile.expanders import xhtml11

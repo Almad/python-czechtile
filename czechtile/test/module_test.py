@@ -42,6 +42,14 @@ class OutputTestCase(unittest.TestCase):
             txt.decode('utf-8')
         return self.assertEquals(u''.join([u'''<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"><article>''', txt, '</article>']), out)
 
+    def assertBbcode(self, txt, out):
+        # result from CZT must be unicode string
+        self.assertEquals(unicode, type(out))
+        # for backward compatibility, tests assertEqals could be strings
+        if isinstance(txt, str):
+            txt.decode('utf-8')
+        return self.assertEquals(txt, out)
+
 # slightly modified, taken from PyArticle
 def getPersistentTmpfile(suffix='.czt', prefix='czechtile_', object=False):
     fd, fn = mkstemp(suffix=suffix,prefix=prefix)

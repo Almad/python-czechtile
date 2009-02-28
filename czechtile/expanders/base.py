@@ -28,6 +28,10 @@ class CzechtileExpander(Expander):
     def expand_with_content(self, node, format, node_map, prefix=u'', suffix=u''):
         return u''.join([prefix] + [expand(child, format, node_map) for child in node.children] + [suffix])
 
+class EmptyExpander(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u'', u'')
+
 class ListExpander(CzechtileExpander):
     last_level = 0
     levels_list = [0]
