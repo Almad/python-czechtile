@@ -24,9 +24,12 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
+from gpod.gtkpod import ParseError
 import re
 
 from sneakylang import parse, Macro, Document
+from sneakylang.parser import ParserRollback
+
 from czechtile import nodes
 
 class CzechtileMacro(Macro):
@@ -83,7 +86,11 @@ class Nadpis(CzechtileMacro):
 
     def parse_argument_string(self, argument_string):
         args = argument_string.split()
-        level = int(args[0])
+        try:
+            level = int(args[0])
+        except ValueError, err:
+            raise ParserRollback(err)
+        
         self.arguments = [level, ''.join([''.join([arg, ' ']) for arg in args[1:]])[:-1]]
 
     def expand_to_nodes(self, level, content):
