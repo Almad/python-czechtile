@@ -24,7 +24,6 @@ __version__ = 0.1
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from gpod.gtkpod import ParseError
 import re
 
 from sneakylang import parse, Macro, Document
