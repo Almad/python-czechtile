@@ -81,6 +81,9 @@ class TestHeadings(OutputTestCase):
         result = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<h1>Nadpis</h1><p>Odstavec</p><h2>NadpisDva</h2><p>Odstavec</p>', result)
 
+    def testMacroNonintLevel(self):
+        # we should not get exception
+        parse(u'((nadpis nonint Texty))', register_map)
 
 if __name__ == "__main__":
     main()
