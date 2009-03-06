@@ -21,6 +21,9 @@ from czechtile import nodes
 from czechtile.expanders import entities
 from czechtile.expanders.base import CzechtileExpander, ExpanderMap, ListExpander, ListItemExpander, TextNodeExpander
 
+from html5lib.sanitizer import HTMLSanitizerMixin
+
+
 class Document(CzechtileExpander):
     def expand(self, node, format, node_map):
         if getattr(node, "wrap_document", True):
@@ -99,8 +102,17 @@ class Preskrtnute(CzechtileExpander):
           u'<strike>', u'</strike>')
 
 class Obrazek(CzechtileExpander):
+    
     def expand(self, node, format, node_map):
-        return u''.join([u'<img src="', node.source, '" />'])
+        # sanitize picture content
+        src = u""
+        sanitizer = HTMLSanitizerMixin()
+        tokens = sanitizer.sanitize_token({"type":"StartTag", "name":"img", "data":[("src", node.source)]})['data']
+        if len(tokens) > 0:
+            for attribute, value in tokens:
+                if attribute == "src":
+                    src = value
+        return u''.join([u'<img src="', src, '" />'])
 
 map = ExpanderMap({
     nodes.DocumentNode: Document,
