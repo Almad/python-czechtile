@@ -78,7 +78,7 @@ def main():
     czt_file = args[0]
     if not exists(czt_file):
         raise ValueError("Czechtile file %s do not exist!" % czt_file)
-    txt = open(czt_file).read()
+    txt = open(czt_file).read().decode("utf-8")
     logging.debug('File readed: %s' % txt)
 
     tree = parse(txt, register_map)
