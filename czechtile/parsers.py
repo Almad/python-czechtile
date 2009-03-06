@@ -200,15 +200,15 @@ class Pomlcka(Parser):
         self.argument_string = self.chunk + self.stream[0:endMatch.end()]
         self.stream = self.stream[endMatch.end():]
 
-class Uvodzovky(Parser):
+class Uvozovky(Parser):
     start = ['("){1}']
     end = '("){1}'
-    macro = macros.Uvodzovky
+    macro = macros.Uvozovky
 
     def resolve_argument_string(self):
         endMatch = re.search(self.__class__.end, self.stream)
         if not endMatch:
-            raise ParserRollback
+            raise ParserRollback()
 
         self.argument_string = self.stream[0:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
@@ -288,4 +288,4 @@ class ListItem(Parser):
 
 ### End of list/listitem parsers ###
 
-parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene, Uvodzovky, Pomlcka]
+parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene, Uvozovky, Pomlcka]

@@ -118,7 +118,7 @@ map = ExpanderMap({
     nodes.Hyperlink: Hyperlink,
     nodes.List: List,
     nodes.ListItem: ListItem,
-    nodes.Uvodzovky: entities.Uvodzovky,
+    nodes.Uvozovky: entities.Uvozovky,
     nodes.PevnaMedzera: entities.PevnaMedzera,
     nodes.Preskrtnute: Preskrtnute,
     nodes.Obrazek: Obrazek

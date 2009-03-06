@@ -211,12 +211,12 @@ class Pomlcka(CzechtileMacro):
         if signals[1] in spaces:
             self.builder.append(nodes.PevnaMedzera(), move_actual=False)
 
-class Uvodzovky(CzechtileMacro):
-    name = 'uvodzovky'
-    help = '((uvodzovky text v uvodzovkach))'
+class Uvozovky(CzechtileMacro):
+    name = 'uvozovky'
+    help = '((uvozovky text v uvozovkach))'
 
     def expand_to_nodes(self, content):
-        node = nodes.Uvodzovky()
+        node = nodes.Uvozovky()
         self.builder.append(node, move_actual = True)
         parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()

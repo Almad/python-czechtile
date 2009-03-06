@@ -37,26 +37,26 @@ from czechtile import nodes
 from czechtile import macros
 from czechtile import parsers
 
+common_inline_macros = [macros.Zvyraznene, macros.Silne,
+      macros.Hyperlink, macros.TriTecky, macros.Pomlcka,
+      macros.Uvozovky, macros.FootNote, macros.Preskrtnute
+]
+
 # map parsers to registers with nodes allowed
 register_map = RegisterMap({
     macros.Document : Register([macros.Book, macros.Article], parsers.parsers),
     macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
     macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
-    macros.Odstavec : Register([macros.Zvyraznene, macros.Silne,
-      macros.Hyperlink, macros.TriTecky, macros.Pomlcka,
-      macros.Uvodzovky, macros.FootNote, macros.Preskrtnute],
-      parsers.parsers),
-    macros.Hyperlink : Register([macros.Silne, macros.Zvyraznene,
-      macros.FootNote, macros.TriTecky, macros.Pomlcka, macros.Uvodzovky,
-      macros.Preskrtnute], parsers.parsers),
-    macros.Nadpis : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
-    macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
-    macros.Silne : Register([macros.Hyperlink, macros.Uvodzovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
+    macros.Odstavec : Register(common_inline_macros, parsers.parsers),
+    macros.Hyperlink : Register(common_inline_macros, parsers.parsers),
+    macros.Nadpis : Register([macros.Hyperlink, macros.Uvozovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
+    macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvozovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
+    macros.Silne : Register([macros.Hyperlink, macros.Uvozovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
     macros.NeformatovanyText : Register([], parsers.parsers),
     macros.List : Register([macros.ListItem], parsers.parsers),
-    macros.ListItem : Register([macros.Zvyraznene, macros.Silne,
-      macros.Hyperlink, macros.TriTecky, macros.Pomlcka, macros.Uvodzovky,
-      macros.FootNote, macros.Preskrtnute], parsers.parsers)
+    macros.ListItem : Register(common_inline_macros, parsers.parsers),
+    macros.Uvozovky : Register(common_inline_macros, parsers.parsers),
+    
 })
 register_map[macros.Article] = register_map[macros.Book]
 register_map[macros.FootNote] = register_map[macros.Odstavec]
