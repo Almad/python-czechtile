@@ -8,7 +8,14 @@ Run:
 to install this package.
 """
 
-from distutils.core import setup
+try:
+    import ez_setup
+    ez_setup.use_setuptools()
+except ImportError:
+    pass
+
+from setuptools import setup
+
 from distutils.command.install import INSTALL_SCHEMES
 import sys
 
