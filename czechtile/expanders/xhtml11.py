@@ -102,7 +102,7 @@ class Preskrtnute(CzechtileExpander):
           u'<strike>', u'</strike>')
 
 class Obrazek(CzechtileExpander):
-    
+
     def expand(self, node, format, node_map):
         # sanitize picture content
         src = u""
@@ -135,4 +135,3 @@ map = ExpanderMap({
     nodes.Preskrtnute: Preskrtnute,
     nodes.Obrazek: Obrazek
 })
-

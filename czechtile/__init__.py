@@ -56,7 +56,7 @@ register_map = RegisterMap({
     macros.List : Register([macros.ListItem], parsers.parsers),
     macros.ListItem : Register(common_inline_macros, parsers.parsers),
     macros.Uvozovky : Register(common_inline_macros, parsers.parsers),
-    
+
 })
 register_map[macros.Article] = register_map[macros.Book]
 register_map[macros.FootNote] = register_map[macros.Odstavec]
@@ -67,7 +67,8 @@ expander_map.update({
     'docbook4': expanders.docbook4.map,
     'docbook5': expanders.docbook5.map,
     'xhtml11': expanders.xhtml11.map,
-    'bbcode' : expanders.bbcode.map
+    'bbcode': expanders.bbcode.map,
+    'mediawiki': expanders.mediawiki.map
 })
 
 expand = expanders.expand
