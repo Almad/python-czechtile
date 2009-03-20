@@ -26,6 +26,8 @@ import re
 from sneakylang.parser import Parser, ParserRollback
 import macros
 
+parsers = []   # list of allowed parsers
+
 ### "Global content" holders ###
 
 class Book(Parser):
@@ -37,6 +39,7 @@ class Book(Parser):
         self.content = self.stream
         self.stream = ''
         self.argument_string = self.content
+parsers += [Book]   # enable the Book parser
 
 class Article(Parser):
     start = None
@@ -46,10 +49,12 @@ class Article(Parser):
         self.content = self.stream
         self.stream = ''
         self.argument_string = self.content
+parsers += [Article]
 
 class Sekce(Parser):
     start = None
     macro = macros.Sekce
+parsers += [Sekce]
 
 ### End of "global content" hodlers ###
 
@@ -67,6 +72,7 @@ class Odstavec(Parser):
         self.content = self.stream
         self.stream = ''
         self.argument_string = self.content
+parsers += [Odstavec]
 
 class NeformatovanyText(Parser):
     start = [u'(\n§§\n){1}']
@@ -80,7 +86,7 @@ class NeformatovanyText(Parser):
 
         self.argument_string = self.stream[0:endMatch.start()]
         self.stream = self.stream[endMatch.end():]
-
+parsers += [NeformatovanyText]
 
 class Nadpis(Parser):
     start = ['(\n)?(=){1,5}(\ )?']
@@ -126,6 +132,7 @@ class Nadpis(Parser):
         # this is confusing lists after headings now
         self.stream = self.stream[len(line):]
         self.argument_string = ''.join([str(self.level), ' ', self.content])
+parsers += [Nadpis]
 
 ### End of "block" elements ###
 
@@ -143,10 +150,12 @@ class InlineParserEndingWithBegin(Parser):
 class Silne(InlineParserEndingWithBegin):
     start = ['("){3}', '(\*){1}']
     macro = macros.Silne
+parsers += [Silne]
 
 class Zvyraznene(InlineParserEndingWithBegin):
     start = ['("){2}', '(/){2}']
     macro = macros.Zvyraznene
+parsers += [Zvyraznene]
 
 class Hyperlink(Parser):
     hyperlink_pattern = 'http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.\w%]*)*(#{1}[-_~&=\?\.\w%]*)?'
@@ -173,6 +182,7 @@ class Hyperlink(Parser):
 
             self.chunk_end = self.stream[endMatch.start():endMatch.end()]
             self.stream = self.stream[endMatch.end():]
+parsers += [Hyperlink]
 
 ### Typographic parsers - transfer text to czech typographic customs ###
 
@@ -186,6 +196,7 @@ class TriTecky(Parser):
 
     def call_macro(self):
         return self.macro(self.register, self.register_map).expand()
+parsers += [TriTecky]
 
 class Pomlcka(Parser):
     start = ['(?!(\n){1,}(\ )*)(\ ){0,1}(\-){1}']  # be aware of that dash can be a list token (check if it isn't!)
@@ -199,6 +210,7 @@ class Pomlcka(Parser):
 
         self.argument_string = self.chunk + self.stream[0:endMatch.end()]
         self.stream = self.stream[endMatch.end():]
+parsers += [Pomlcka]
 
 class Uvozovky(Parser):
     start = ['("){1}']
@@ -215,6 +227,7 @@ class Uvozovky(Parser):
 
 	if self.stream[:2] == '""':
 	    raise ParserRollback
+parsers += [Uvozovky]
 
 ### End of typographic parsers ###
 
@@ -258,6 +271,7 @@ class List(Parser):
                 self.type_ = self.__class__.types[i]
 
         self.argument_string = ''.join([self.type_, ' ', self.content])
+parsers += [List]
 
 class ListItem(Parser):
     start = ['^( ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1}(\ )*(\ ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
@@ -285,7 +299,6 @@ class ListItem(Parser):
         self.content = self.stream[:endMatch.start()]
         self.stream = self.stream[endMatch.start():]
         self.argument_string = ''.join([str(self.level), ' ', self.type_, ' ', self.content])
+parsers += [ListItem]
 
 ### End of list/listitem parsers ###
-
-parsers = [Article, Book, Hyperlink, List, ListItem, Nadpis, NeformatovanyText, Odstavec, Sekce, Silne, TriTecky, Zvyraznene, Uvozovky, Pomlcka]
