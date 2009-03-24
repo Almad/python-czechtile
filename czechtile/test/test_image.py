@@ -45,6 +45,12 @@ class TestImages(OutputTestCase):
 
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('<img src="http://rpgplanet.cz/images/logo.png" />', res)
+    
+    def testEmptyImageNotTranslated(self):
+        tree = parse('''((obrazek ))''', register_map)
+        self.assertEquals(tree.children[0].__class__, nodes.Article)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].content, '((obrazek ))')
         
 if __name__ == "__main__":
     main() 

@@ -278,8 +278,11 @@ class Obrazek(CzechtileMacro):
     help = '((obrazek lokace))'
 
     def expand_to_nodes(self, source):
+        if len(source.strip()) == 0:
+            raise ParserRollback(u"Empty image source")
+        
         node = nodes.Obrazek()
-        node.source = source
+        node.source = source.strip()
         self.builder.append(node, move_actual=True)
         self.builder.move_up()
 
