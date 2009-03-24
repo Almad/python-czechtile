@@ -226,6 +226,18 @@ class Trademark(Parser):
 
 parsers += [Trademark]
 
+class Copyright(Parser):
+    start = ['(\(C\)){1}', '(\(c\)){1}']
+    end = None
+    macro = macros.Copyright
+
+    def resolve_argument_string(self):
+        pass
+
+    def call_macro(self):
+        return self.macro(self.register, self.register_map).expand()
+
+parsers += [Copyright]
 
 class Uvozovky(Parser):
     start = ['("){1}']

@@ -308,6 +308,43 @@ class TestTrademark(OutputTestCase):
         tree = parse(u'!(tm)', register_map)
         self.assertEquals(u"(tm)", tree.children[0].children[0].children[0].content)
 
+class TestCopyright(OutputTestCase):
+    def setUp(self):
+        super(TestCopyright, self).setUp()
+        
+        self.tree = parse(u'((copyright))', register_map)
+    
+    def _assertTree(self, tree):
+        self.assertEquals(nodes.Odstavec, tree.children[0].children[0].__class__)
+        self.assertEquals(nodes.Copyright, tree.children[0].children[0].children[0].__class__)
+    
+    def testMacroParsing(self):
+        self._assertTree(self.tree)
+    
+    def testXhtmlExpansion(self):
+        res = expand(self.tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<p>&#0169;</p>', res)
+    
+    def testUppercaseAlternative(self):
+        tree = parse(u'(C)', register_map)
+        self._assertTree(tree)
+
+    def testLowercaseAlternative(self):
+        tree = parse(u'(c)', register_map)
+        self._assertTree(tree)
+
+    def testcNotResolved(self):
+        tree = parse(u'c', register_map)
+        self.assertEquals(u"c", tree.children[0].children[0].children[0].content)
+
+    def testCNotResolved(self):
+        tree = parse(u'C', register_map)
+        self.assertEquals(u"C", tree.children[0].children[0].children[0].content)
+
+    def testNegated(self):
+        tree = parse(u'!(C)', register_map)
+        self.assertEquals(u"(C)", tree.children[0].children[0].children[0].content)
+
     
 if __name__ == "__main__":
     main()

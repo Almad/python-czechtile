@@ -24,6 +24,7 @@ class Hyperlink(Node): pass
 class TriTecky(Node): pass
 class Pomlcka(Node): pass
 class Trademark(Node): pass
+class Copyright(Node): pass
 
 class List(Node): pass
 class ListItem(Node): pass

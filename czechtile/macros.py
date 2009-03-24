@@ -161,6 +161,13 @@ class Trademark(CzechtileMacro):
     def expand_to_nodes(self, *args):
         self.builder.append(nodes.Trademark(), move_actual=False)
 
+class Copyright(CzechtileMacro):
+    name = 'copyright'
+    help = '((copyright))'
+
+    def expand_to_nodes(self, *args):
+        self.builder.append(nodes.Copyright(), move_actual=False)
+
 class Pomlcka(CzechtileMacro):
     name = 'pomlcka'
     help = '((pomlcka))'

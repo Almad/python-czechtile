@@ -9,6 +9,10 @@ class Trademark(CzechtileExpander):
     def expand(self, node, format, node_map):
         return u'&#0153;'
 
+class Copyright(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return u'&#0169;'
+
 class Pomlcka(CzechtileExpander):
     def expand(self, node, format, node_map):
         if node.spojovnik:
