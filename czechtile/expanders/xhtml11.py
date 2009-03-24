@@ -19,7 +19,7 @@
 
 from czechtile import nodes
 from czechtile.expanders import entities
-from czechtile.expanders.base import CzechtileExpander, ExpanderMap, ListExpander, ListItemExpander, TextNodeExpander
+from czechtile.expanders.base import CzechtileExpander, ExpanderMap, TextNodeExpander, ListExpander, ListItemExpander
 
 from html5lib.sanitizer import HTMLSanitizerMixin
 
@@ -85,16 +85,15 @@ class Hyperlink(CzechtileExpander):
         return self.expand_with_content(node, format, node_map, u''.join([u'<a href="', unicode(node.link), u'">']), u'</a>')
 
 class List(ListExpander):
-    types = {
-        'itemized': (u'ul',),
-        '1-ordered': (u'ol', u'type="1"'),
-        'A-ordered': (u'ol', u'type="a"'),
-        'I-ordered': (u'ol', u'type="i"')
+    tag_map = {
+        '-': {'tag': u'ul', 'attrs': u''},
+        '1.': {'tag': u'ol', 'attrs': u' type="1"'},
+        'a.': {'tag': u'ol', 'attrs': u' type="a"'},
+        'i.': {'tag': u'ol', 'attrs': u' type="i"'}
     }
 
 class ListItem(ListItemExpander):
-    list_expander = List
-    tag = (u'li',)
+    tag_map = {'tag': u'li', 'attrs': u''}
 
 class Preskrtnute(CzechtileExpander):
     def expand(self, node, format, node_map):

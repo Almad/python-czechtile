@@ -47,7 +47,6 @@ class Pomlcka(Node): pass
 
 class List(Node): pass
 class ListItem(Node): pass
-class Sublist(Node): pass
 
 class FootNote(Node): pass
 

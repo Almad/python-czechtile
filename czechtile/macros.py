@@ -89,7 +89,7 @@ class Nadpis(CzechtileMacro):
             level = int(args[0])
         except ValueError, err:
             raise ParserRollback(err)
-        
+
         self.arguments = [level, ''.join([''.join([arg, ' ']) for arg in args[1:]])[:-1]]
 
     def expand_to_nodes(self, level, content):
@@ -223,41 +223,56 @@ class Uvozovky(CzechtileMacro):
 
 class List(CzechtileMacro):
     name = 'seznam'
-    help = '((seznam typ obsah))'
+    help = '((seznam token obsah))'
 
     def parse_argument_string(self, argument_string):
-        args = argument_string.split(' ')
-        type_ = args[0]
-        self.arguments = [type_, ''.join([''.join([arg, ' ']) for arg in args[1:]])[:-1]]
+        self.arguments = argument_string.split(' ', 1)
 
-    def expand_to_nodes(self, type_, content):
+    def expand_to_nodes(self, token, content):
         node = nodes.List()
-        node.type_ = type_
+        node.token = token
         self.builder.append(node, move_actual=True)
-        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
+
+        prepend = False
+        for text in content.split('\n'):
+            if text:
+                # deal with lists which don't start with space character
+                if not text.startswith(' '):
+                    prepend = True
+                if prepend:
+                    text = ' ' + text
+
+                try:
+                    parse('\n' + text, self.register_map, self.register, builder=self.builder, state=self.state)
+                except ValueError:
+                    # handle the `Adding a text node, but one is already present' error
+                    assert node.last_added_child.__class__ == nodes.TextNode
+                    node.last_added_child.content += '\n' + text
+
+        for child in node.children:
+            if child.__class__ == nodes.TextNode:
+                new_content = ''
+                for text in child.content.split('\n'):
+                    if text:
+                        new_content += '\n' + text[1:]
+
+                parse('\n' + new_content, self.register_map, self.register, builder=self.builder, state=self.state)
+                self.builder.set_actual_node(child)
+                self.builder.replace(node.last_added_child)
+                node.children.pop()
+                #macro = List.argument_call(new_content, self.register, self.builder, self.state)
+                #macro.expand()
+
+        self.builder.set_actual_node(node)
         self.builder.move_up()
-        # hack: inspect my children and check if there are textnodes - if yes, remove them
-        # this is because of badly resolved items, must be changed with list upgrade
-        new_children = []
-        for n in node.children:
-            if isinstance(n, nodes.ListItem):
-                new_children.append(n)
-        node.children = new_children
+
 
 class ListItem(CzechtileMacro):
     name = 'polozka'
     help = '((polozka text))'
 
-    def parse_argument_string(self, argument_string):
-        args = argument_string.split()
-        level = int(args[0])
-        type_ = args[1]
-        self.arguments = [level, type_, ''.join([''.join([arg, ' ']) for arg in args[2:]])[:-1]]
-
-    def expand_to_nodes(self, level, type_, content):
+    def expand_to_nodes(self, content):
         node = nodes.ListItem()
-        node.level = level
-        node.type_ = type_
         self.builder.append(node, move_actual=True)
         parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
@@ -282,4 +297,3 @@ class Obrazek(CzechtileMacro):
         node.source = source
         self.builder.append(node, move_actual=True)
         self.builder.move_up()
-

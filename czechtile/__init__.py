@@ -53,7 +53,7 @@ register_map = RegisterMap({
     macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvozovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
     macros.Silne : Register([macros.Hyperlink, macros.Uvozovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
     macros.NeformatovanyText : Register([], parsers.parsers),
-    macros.List : Register([macros.ListItem], parsers.parsers),
+    macros.List : Register([macros.List, macros.ListItem], parsers.parsers),
     macros.ListItem : Register(common_inline_macros, parsers.parsers),
     macros.Uvozovky : Register(common_inline_macros, parsers.parsers),
 

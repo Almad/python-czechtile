@@ -134,6 +134,51 @@ class Nadpis(Parser):
         self.argument_string = ''.join([str(self.level), ' ', self.content])
 parsers += [Nadpis]
 
+### List-related parsers ###
+
+class List(Parser):
+    tokens = ['-', '1.', 'a.', 'i.']
+
+    def start(tokens):
+        tokens_re = '|'.join(tokens).replace('.', '\.')
+        tokens_re = '(%s){1}' % tokens_re
+        start = ['^(\n)*(\ )?%s(\ ){1}' % tokens_re,
+            '(\n){2}(\ )*%s(\ ){1}' % tokens_re]
+        return start, tokens_re
+    start, tokens_re = start(tokens)
+    end = '(\n){2}|(\n)$|$'
+    macro = macros.List
+
+    def resolve_argument_string(self):
+        endMatch = re.search(self.__class__.end, self.stream)
+        if not endMatch:
+            raise ParserRollback
+
+        tokens_search = re.search(self.tokens_re, self.chunk)
+        token = tokens_search.group(0)
+
+        self.content = self.chunk.replace('\n', '') + self.stream[:endMatch.start()]
+        self.stream = self.stream[endMatch.end():]
+
+        self.argument_string = ' '.join([token, self.content])
+parsers += [List]
+
+class ListItem(Parser):
+    def start():
+        return ['(\n){1}(\ )?%s(\ ){1}' % List.tokens_re]
+    start = start()
+    macro = macros.ListItem
+
+    priority = 1
+
+    def resolve_argument_string(self):
+        self.content = self.stream
+        self.stream = u''
+        self.argument_string = self.content
+parsers += [ListItem]
+
+### End of list-related parsers ###
+
 ### End of "block" elements ###
 
 ### Inline elements, mostly in Paragraphs ####
@@ -232,73 +277,3 @@ parsers += [Uvozovky]
 ### End of typographic parsers ###
 
 ### End of inline elements ###
-
-### ---
-### List/listitem parsers ###
-
-class List(Parser):
-    start = ['^( ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1,2}(\ ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
-    end = '(\n){2}|$'
-    macro = macros.List
-
-    # required variables
-    types = {
-        '- ' : 'itemized',
-        '1. ' : '1-ordered',
-        'a. ' : 'A-ordered',
-        'i. ' : 'I-ordered'
-    }
-    first_level = 0
-
-    def resolve_argument_string(self):
-        self.__class__.first_level = 0  # new list, first_level with old value unwanted
-
-        endMatch = re.search(self.__class__.end, self.stream)
-        if not endMatch:
-            raise ParserRollback
-
-        self.content = self.chunk + self.stream[:endMatch.start()]
-        self.stream = self.stream[endMatch.end():]
-
-        # lists without space before list token...
-        spaces = self.chunk.count(' ') - 2
-        if spaces < 0:
-            spaces = 0
-
-        # determining list type
-        for i in self.__class__.types.keys():
-            if re.search(i, self.chunk[spaces:]):
-                self.type_ = self.__class__.types[i]
-
-        self.argument_string = ''.join([self.type_, ' ', self.content])
-parsers += [List]
-
-class ListItem(Parser):
-    start = ['^( ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}', '(\n){1}(\ )*(\ ){0,1}(-|(a\.)|(i\.)|(1\.)){1}(\ ){1}']
-    #start = List.start
-    end = '(\n){1}|$'
-    macro = macros.ListItem
-
-    def resolve_argument_string(self):
-
-        endMatch = re.search(self.__class__.end, self.stream)
-        if not endMatch:
-            raise ParserRollback
-
-        self.level = self.chunk.count(' ') - 2
-
-        # determining list(item) level if there is no space before list token
-        if self.level < 0:
-            List.first_level = self.level
-        if List.first_level < 0:
-            self.level = self.level + 1
-
-        for i in List.types.keys():
-            if re.search(i, self.chunk[self.level:]):
-                self.type_ = List.types[i]
-        self.content = self.stream[:endMatch.start()]
-        self.stream = self.stream[endMatch.start():]
-        self.argument_string = ''.join([str(self.level), ' ', self.type_, ' ', self.content])
-parsers += [ListItem]
-
-### End of list/listitem parsers ###

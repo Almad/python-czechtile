@@ -1,17 +1,17 @@
 ###
 # Czechtile: WikiHezkyCesky
 # Copyright (C) 2006 Lukas "Almad" Linhart http://www.almad.net/
-# 
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -19,7 +19,7 @@
 
 from czechtile import nodes
 from czechtile.expanders import entities
-from czechtile.expanders.base import CzechtileExpander, ExpanderMap, ListExpander, ListItemExpander, TextNodeExpander
+from czechtile.expanders.base import CzechtileExpander, ExpanderMap, TextNodeExpander, ListExpander, ListItemExpander
 
 class Document(CzechtileExpander):
     def expand(self, node, format, node_map):
@@ -97,16 +97,15 @@ class Obrazek(CzechtileExpander):
           node.source, '" /></imageobject></mediaobject>'])
 
 class List(ListExpander):
-    types = {
-        'itemized': (u'itemizedlist',),
-        '1-ordered': (u'orderedlist', u'numeration="arabic"'),
-        'A-ordered': (u'orderedlist', u'numeration="loweralpha"'),
-        'I-ordered': (u'orderedlist', u'numeration="lowerroman"')
+    tag_map = {
+        '-': {'tag': u'itemizedlist', 'attrs': u''},
+        '1.': {'tag': u'orderedlist', 'attrs': u' numeration="arabic"'},
+        'a.': {'tag': u'orderedlist', 'attrs': u' numeration="loweralpha"'},
+        'i.': {'tag': u'orderedlist', 'attrs': u' numeration="lowerroman"'}
     }
 
 class ListItem(ListItemExpander):
-    list_expander = List
-    tag = (u'listitem',)
+    tag_map = {'tag': u'listitem', 'attrs': u''}
 
 
 map = ExpanderMap({
