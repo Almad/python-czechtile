@@ -229,6 +229,13 @@ class Copyright(TypographicParser):
 
 parsers += [Copyright]
 
+class RightsReserved(TypographicParser):
+    start = ['(\(R\)){1}', '(\(r\)){1}']
+    end = None
+    macro = macros.RightsReserved
+
+parsers += [RightsReserved]
+
 class Uvozovky(Parser):
     start = ['("){1}']
     end = '("){1}'

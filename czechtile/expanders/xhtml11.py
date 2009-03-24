@@ -120,6 +120,7 @@ map = ExpanderMap({
     nodes.Pomlcka: entities.Pomlcka,
     nodes.Trademark: entities.Trademark,
     nodes.Copyright: entities.Copyright,
+    nodes.RightsReserved: entities.RightsReserved,
     nodes.Hyperlink: Hyperlink,
     nodes.List: List,
     nodes.ListItem: ListItem,

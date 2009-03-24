@@ -168,6 +168,13 @@ class Copyright(CzechtileMacro):
     def expand_to_nodes(self, *args):
         self.builder.append(nodes.Copyright(), move_actual=False)
 
+class RightsReserved(CzechtileMacro):
+    name = 'rights-reserved'
+    help = '((rights-reserved))'
+
+    def expand_to_nodes(self, *args):
+        self.builder.append(nodes.RightsReserved(), move_actual=False)
+
 class Pomlcka(CzechtileMacro):
     name = 'pomlcka'
     help = '((pomlcka))'

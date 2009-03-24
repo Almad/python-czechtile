@@ -13,6 +13,10 @@ class Copyright(CzechtileExpander):
     def expand(self, node, format, node_map):
         return u'&#0169;'
 
+class RightsReserved(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return u'&#0174;'
+
 class Pomlcka(CzechtileExpander):
     def expand(self, node, format, node_map):
         if node.spojovnik:
