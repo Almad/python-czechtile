@@ -186,16 +186,18 @@ parsers += [Hyperlink]
 
 ### Typographic parsers - transfer text to czech typographic customs ###
 
-class TriTecky(Parser):
-    start = ['(\.){3}']
-    end = None
-    macro = macros.TriTecky
-
+class TypographicParser(Parser):
     def resolve_argument_string(self):
         pass
 
     def call_macro(self):
         return self.macro(self.register, self.register_map).expand()
+
+class TriTecky(TypographicParser):
+    start = ['(\.){3}']
+    end = None
+    macro = macros.TriTecky
+
 parsers += [TriTecky]
 
 
@@ -213,29 +215,17 @@ class Pomlcka(Parser):
         self.stream = self.stream[endMatch.end():]
 parsers += [Pomlcka]
 
-class Trademark(Parser):
+class Trademark(TypographicParser):
     start = ['(\(TM\)){1}', '(\(tm\)){1}']
     end = None
     macro = macros.Trademark
 
-    def resolve_argument_string(self):
-        pass
-
-    def call_macro(self):
-        return self.macro(self.register, self.register_map).expand()
-
 parsers += [Trademark]
 
-class Copyright(Parser):
+class Copyright(TypographicParser):
     start = ['(\(C\)){1}', '(\(c\)){1}']
     end = None
     macro = macros.Copyright
-
-    def resolve_argument_string(self):
-        pass
-
-    def call_macro(self):
-        return self.macro(self.register, self.register_map).expand()
 
 parsers += [Copyright]
 
