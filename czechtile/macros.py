@@ -286,3 +286,13 @@ class Obrazek(CzechtileMacro):
         self.builder.append(node, move_actual=True)
         self.builder.move_up()
 
+class HorniIndex(CzechtileMacro):
+    name = 'horni-index'
+    help = '((horni-index text posazeny do horniho indexu))'
+
+    def expand_to_nodes(self, content):
+        node = nodes.HorniIndex()
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
+        self.builder.move_up()
+

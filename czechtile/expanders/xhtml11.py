@@ -84,6 +84,10 @@ class Hyperlink(CzechtileExpander):
     def expand(self, node, format, node_map):
         return self.expand_with_content(node, format, node_map, u''.join([u'<a href="', unicode(node.link), u'">']), u'</a>')
 
+class HorniIndex(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u'<sup>', u'</sup>')
+
 class List(ListExpander):
     types = {
         'itemized': (u'ul',),
@@ -125,6 +129,7 @@ map = ExpanderMap({
     nodes.NeformatovanyText: NeformatovanyText,
     nodes.Silne: Silne,
     nodes.Zvyraznene: Zvyraznene,
+    nodes.HorniIndex: HorniIndex,
     nodes.TriTecky: entities.TriTecky,
     nodes.Pomlcka: entities.Pomlcka,
     nodes.Hyperlink: Hyperlink,

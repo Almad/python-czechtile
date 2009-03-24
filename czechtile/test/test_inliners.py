@@ -231,7 +231,7 @@ class TestFixedText(OutputTestCase):
         self.assertDocbook4(u'<literallayout>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</literallayout>', res)
 
 class TestPreskrtnute(OutputTestCase):
-    def testPreskrtnuteMakro(self):
+    def testMakro(self):
         tree = parse(u'((preskrtnute preciarknuty text))', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Preskrtnute)
@@ -242,5 +242,23 @@ class TestPreskrtnute(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><strike>preciarknuty text</strike></p>''', res)
 
+class TestHorniIndex(OutputTestCase):
+    
+    def setUp(self):
+        super(TestHorniIndex, self).setUp()
+        
+        self.text = u"text v nornim indexu zdravi - 你好"
+        self.tree = parse(u'((horni-index %s))' % self.text, register_map)
+    
+    def testMacroParsing(self):
+        self.assertEquals(nodes.Odstavec, self.tree.children[0].children[0].__class__)
+        self.assertEquals(nodes.HorniIndex, self.tree.children[0].children[0].children[0].__class__)
+        self.assertEquals(self.text, self.tree.children[0].children[0].children[0].children[0].content)
+    
+    def testXhtmlExpansion(self):
+        self.tree = parse(u'((horni-index text v nornim indexu zdravi - 你好))', register_map)
+        res = expand(self.tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<p><sup>%s</sup></p>' % self.text, res)
+    
 if __name__ == "__main__":
     main()
