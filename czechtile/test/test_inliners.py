@@ -109,6 +109,17 @@ class TestOdkaz(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><a href="http://rpgplanet.cz">http://rpgplanet.cz</a></p>''', res)
 
+    def testOdkazEasyNahrazovaniBezHttpSWWW(self):
+        tree = parse('''www.rpgplanet.cz''', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Hyperlink)
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para><ulink url="http://www.rpgplanet.cz">www.rpgplanet.cz</ulink></para>''', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p><a href="http://www.rpgplanet.cz">www.rpgplanet.cz</a></p>''', res)
+
     def testOdkazVZavorkach(self):
         tree = parse('''(http://rpgplanet.cz)''', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)

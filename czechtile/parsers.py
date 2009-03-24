@@ -159,7 +159,8 @@ parsers += [Zvyraznene]
 
 class Hyperlink(Parser):
     hyperlink_pattern = 'http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.\w%]*)*(#{1}[-_~&=\?\.\w%]*)?'
-    start = [hyperlink_pattern, '\('+hyperlink_pattern]
+    www_pattern = 'w{3}\.{1}\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.\w%]*)*(#{1}[-_~&=\?\.\w%]*)?'
+    start = [hyperlink_pattern, '\('+hyperlink_pattern, www_pattern]
     end = '(\))'
     macro = macros.Hyperlink
 
@@ -167,11 +168,13 @@ class Hyperlink(Parser):
         if not self.chunk.startswith('('):
             # Easy substitution of http://link
             self.link = self.chunk
-            self.argument_string = ''.join([self.chunk, ' ', self.chunk])
+            if self.link.startswith('www.'):
+                self.link = "http://" + self.link
+            self.argument_string = ''.join([self.link, ' ', self.chunk])
         else:
             endMatch = re.search(self.__class__.end, self.stream)
             if not endMatch:
-                raise ParserRollback
+                raise ParserRollback()
             self.link = self.chunk[1:]
             text = re.sub("^(\s)*", '', self.stream[0:endMatch.start()])
             # empty text, we should avoid this because of hyperlink in parenthesis,
