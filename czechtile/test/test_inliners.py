@@ -109,6 +109,17 @@ class TestOdkaz(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><a href="http://rpgplanet.cz">http://rpgplanet.cz</a></p>''', res)
 
+    def testOdkazEasyNahrazovaniBezHttpSWWW(self):
+        tree = parse('''www.rpgplanet.cz''', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
+        self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Hyperlink)
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4('''<para><ulink url="http://www.rpgplanet.cz">www.rpgplanet.cz</ulink></para>''', res)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p><a href="http://www.rpgplanet.cz">www.rpgplanet.cz</a></p>''', res)
+
     def testOdkazVZavorkach(self):
         tree = parse('''(http://rpgplanet.cz)''', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
@@ -231,7 +242,7 @@ class TestFixedText(OutputTestCase):
         self.assertDocbook4(u'<literallayout>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</literallayout>', res)
 
 class TestPreskrtnute(OutputTestCase):
-    def testPreskrtnuteMakro(self):
+    def testMakro(self):
         tree = parse(u'((preskrtnute preciarknuty text))', register_map)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.Odstavec)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.Preskrtnute)
@@ -242,5 +253,145 @@ class TestPreskrtnute(OutputTestCase):
         res = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p><strike>preciarknuty text</strike></p>''', res)
 
+class TestHorniIndex(OutputTestCase):
+    
+    def setUp(self):
+        super(TestHorniIndex, self).setUp()
+        
+        self.text = u"text v nornim indexu zdravi - 你好"
+        self.tree = parse(u'((horni-index %s))' % self.text, register_map)
+    
+    def testMacroParsing(self):
+        self.assertEquals(nodes.Odstavec, self.tree.children[0].children[0].__class__)
+        self.assertEquals(nodes.HorniIndex, self.tree.children[0].children[0].children[0].__class__)
+        self.assertEquals(self.text, self.tree.children[0].children[0].children[0].children[0].content)
+    
+    def testXhtmlExpansion(self):
+        res = expand(self.tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<p><sup>%s</sup></p>' % self.text, res)
+
+class TestDolniIndex(OutputTestCase):
+    
+    def setUp(self):
+        super(TestDolniIndex, self).setUp()
+        
+        self.tree = parse(u'H((dolni-index 2))0', register_map)
+    
+    def testMacroParsing(self):
+        self.assertEquals(nodes.Odstavec, self.tree.children[0].children[0].__class__)
+        self.assertEquals(nodes.DolniIndex, self.tree.children[0].children[0].children[1].__class__)
+        self.assertEquals(u"2", self.tree.children[0].children[0].children[1].children[0].content)
+    
+    def testXhtmlExpansion(self):
+        res = expand(self.tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<p>H<sub>2</sub>0</p>', res)
+
+class TestTrademark(OutputTestCase):
+    def setUp(self):
+        super(TestTrademark, self).setUp()
+        
+        self.tree = parse(u'((trademark))', register_map)
+    
+    def _assertTree(self, tree):
+        self.assertEquals(nodes.Odstavec, tree.children[0].children[0].__class__)
+        self.assertEquals(nodes.Trademark, tree.children[0].children[0].children[0].__class__)
+    
+    def testMacroParsing(self):
+        self._assertTree(self.tree)
+    
+    def testXhtmlExpansion(self):
+        res = expand(self.tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<p>&#0153;</p>', res)
+    
+    def testUppercaseAlternative(self):
+        tree = parse(u'(TM)', register_map)
+        self._assertTree(tree)
+
+    def testLowercaseAlternative(self):
+        tree = parse(u'(tm)', register_map)
+        self._assertTree(tree)
+
+    def testTmNotResolved(self):
+        tree = parse(u'tm', register_map)
+        self.assertEquals(u"tm", tree.children[0].children[0].children[0].content)
+
+    def testNegated(self):
+        tree = parse(u'!(tm)', register_map)
+        self.assertEquals(u"(tm)", tree.children[0].children[0].children[0].content)
+
+class TestCopyright(OutputTestCase):
+    def setUp(self):
+        super(TestCopyright, self).setUp()
+        
+        self.tree = parse(u'((copyright))', register_map)
+    
+    def _assertTree(self, tree):
+        self.assertEquals(nodes.Odstavec, tree.children[0].children[0].__class__)
+        self.assertEquals(nodes.Copyright, tree.children[0].children[0].children[0].__class__)
+    
+    def testMacroParsing(self):
+        self._assertTree(self.tree)
+    
+    def testXhtmlExpansion(self):
+        res = expand(self.tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<p>&#0169;</p>', res)
+    
+    def testUppercaseAlternative(self):
+        tree = parse(u'(C)', register_map)
+        self._assertTree(tree)
+
+    def testLowercaseAlternative(self):
+        tree = parse(u'(c)', register_map)
+        self._assertTree(tree)
+
+    def testcNotResolved(self):
+        tree = parse(u'c', register_map)
+        self.assertEquals(u"c", tree.children[0].children[0].children[0].content)
+
+    def testCNotResolved(self):
+        tree = parse(u'C', register_map)
+        self.assertEquals(u"C", tree.children[0].children[0].children[0].content)
+
+    def testNegated(self):
+        tree = parse(u'!(C)', register_map)
+        self.assertEquals(u"(C)", tree.children[0].children[0].children[0].content)
+
+class TestRightsReserved(OutputTestCase):
+    def setUp(self):
+        super(TestRightsReserved, self).setUp()
+        
+        self.tree = parse(u'((rights-reserved))', register_map)
+    
+    def _assertTree(self, tree):
+        self.assertEquals(nodes.Odstavec, tree.children[0].children[0].__class__)
+        self.assertEquals(nodes.RightsReserved, tree.children[0].children[0].children[0].__class__)
+    
+    def testMacroParsing(self):
+        self._assertTree(self.tree)
+    
+    def testXhtmlExpansion(self):
+        res = expand(self.tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<p>&#0174;</p>', res)
+    
+    def testUppercaseAlternative(self):
+        tree = parse(u'(R)', register_map)
+        self._assertTree(tree)
+
+    def testLowercaseAlternative(self):
+        tree = parse(u'(r)', register_map)
+        self._assertTree(tree)
+
+    def testrNotResolved(self):
+        tree = parse(u'r', register_map)
+        self.assertEquals(u"r", tree.children[0].children[0].children[0].content)
+
+    def testRNotResolved(self):
+        tree = parse(u'R', register_map)
+        self.assertEquals(u"R", tree.children[0].children[0].children[0].content)
+
+    def testNegated(self):
+        tree = parse(u'!(R)', register_map)
+        self.assertEquals(u"(R)", tree.children[0].children[0].children[0].content)
+    
 if __name__ == "__main__":
     main()

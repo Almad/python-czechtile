@@ -39,8 +39,12 @@ from czechtile import parsers
 
 common_inline_macros = [macros.Zvyraznene, macros.Silne,
       macros.Hyperlink, macros.TriTecky, macros.Pomlcka,
-      macros.Uvozovky, macros.FootNote, macros.Preskrtnute
+      macros.Uvozovky, macros.FootNote, macros.Preskrtnute,
+      macros.HorniIndex, macros.DolniIndex,
+      macros.Trademark, macros.Copyright, macros.RightsReserved
 ]
+
+hyperlink_macros = [macro for macro in common_inline_macros if macro is not macros.Hyperlink]
 
 # map parsers to registers with nodes allowed
 register_map = RegisterMap({
@@ -48,7 +52,7 @@ register_map = RegisterMap({
     macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
     macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
     macros.Odstavec : Register(common_inline_macros, parsers.parsers),
-    macros.Hyperlink : Register(common_inline_macros, parsers.parsers),
+    macros.Hyperlink : Register(hyperlink_macros, parsers.parsers),
     macros.Nadpis : Register([macros.Hyperlink, macros.Uvozovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
     macros.Zvyraznene : Register([macros.Hyperlink, macros.Uvozovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
     macros.Silne : Register([macros.Hyperlink, macros.Uvozovky, macros.FootNote, macros.Pomlcka], parsers.parsers),

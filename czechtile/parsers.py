@@ -204,7 +204,8 @@ parsers += [Zvyraznene]
 
 class Hyperlink(Parser):
     hyperlink_pattern = 'http:\/\/\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.\w%]*)*(#{1}[-_~&=\?\.\w%]*)?'
-    start = [hyperlink_pattern, '\('+hyperlink_pattern]
+    www_pattern = 'w{3}\.{1}\w+([-_\.]?\w)*\.[a-zA-Z]{2,4}(\/{1}[-_~&=\?\.\w%]*)*(#{1}[-_~&=\?\.\w%]*)?'
+    start = [hyperlink_pattern, '\('+hyperlink_pattern, www_pattern]
     end = '(\))'
     macro = macros.Hyperlink
 
@@ -212,11 +213,13 @@ class Hyperlink(Parser):
         if not self.chunk.startswith('('):
             # Easy substitution of http://link
             self.link = self.chunk
-            self.argument_string = ''.join([self.chunk, ' ', self.chunk])
+            if self.link.startswith('www.'):
+                self.link = "http://" + self.link
+            self.argument_string = ''.join([self.link, ' ', self.chunk])
         else:
             endMatch = re.search(self.__class__.end, self.stream)
             if not endMatch:
-                raise ParserRollback
+                raise ParserRollback()
             self.link = self.chunk[1:]
             text = re.sub("^(\s)*", '', self.stream[0:endMatch.start()])
             # empty text, we should avoid this because of hyperlink in parenthesis,
@@ -231,17 +234,20 @@ parsers += [Hyperlink]
 
 ### Typographic parsers - transfer text to czech typographic customs ###
 
-class TriTecky(Parser):
-    start = ['(\.){3}']
-    end = None
-    macro = macros.TriTecky
-
+class TypographicParser(Parser):
     def resolve_argument_string(self):
         pass
 
     def call_macro(self):
         return self.macro(self.register, self.register_map).expand()
+
+class TriTecky(TypographicParser):
+    start = ['(\.){3}']
+    end = None
+    macro = macros.TriTecky
+
 parsers += [TriTecky]
+
 
 class Pomlcka(Parser):
     start = ['(?!(\n){1,}(\ )*)(\ ){0,1}(\-){1}']  # be aware of that dash can be a list token (check if it isn't!)
@@ -256,6 +262,27 @@ class Pomlcka(Parser):
         self.argument_string = self.chunk + self.stream[0:endMatch.end()]
         self.stream = self.stream[endMatch.end():]
 parsers += [Pomlcka]
+
+class Trademark(TypographicParser):
+    start = ['(\(TM\)){1}', '(\(tm\)){1}']
+    end = None
+    macro = macros.Trademark
+
+parsers += [Trademark]
+
+class Copyright(TypographicParser):
+    start = ['(\(C\)){1}', '(\(c\)){1}']
+    end = None
+    macro = macros.Copyright
+
+parsers += [Copyright]
+
+class RightsReserved(TypographicParser):
+    start = ['(\(R\)){1}', '(\(r\)){1}']
+    end = None
+    macro = macros.RightsReserved
+
+parsers += [RightsReserved]
 
 class Uvozovky(Parser):
     start = ['("){1}']

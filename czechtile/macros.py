@@ -1,29 +1,5 @@
 # -*- coding: utf-8 -*-
 
-""" Macros
-"""
-
-__version__ = 0.1
-
-###
-#Czechtile: WikiHezkyCesky
-#Copyright (C) 2006 Lukas "Almad" Linhart http://www.almad.net/
-#
-#This library is free software; you can redistribute it and/or
-#modify it under the terms of the GNU Lesser General Public
-#License as published by the Free Software Foundation; either
-#version 2.1 of the License, or (at your option) any later version.
-#
-#This library is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#Lesser General Public License for more details.
-#
-#You should have received a copy of the GNU Lesser General Public
-#License along with this library; if not, write to the Free Software
-#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-###
-
 import re
 
 from sneakylang import parse, Macro, Document
@@ -40,8 +16,15 @@ class CzechtileMacro(Macro):
     def parse_argument_string(self, argument_string):
         self.arguments = [argument_string]
 
-class MacroWrappingParagraph(CzechtileMacro):
+class CzechtileInlineMacro(CzechtileMacro):
+    def expand_to_nodes(self, content):
+        node = self.node()
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
+        self.builder.move_up()
 
+class MacroWrappingParagraph(CzechtileMacro):
+    
     def wrap_text_nodes(self, node):
         # we must go with numbers as we must replace textnode with it's tree on same position
         for child in node.children:
@@ -126,36 +109,21 @@ class NeformatovanyText(CzechtileMacro):
         self.builder.append(tn, move_actual=False)
         self.builder.move_up()
 
-class Zvyraznene(CzechtileMacro):
+class Zvyraznene(CzechtileInlineMacro):
     name = 'zvyraznene'
     help = '((zvyraznene zesilneny text))'
+    node = nodes.Zvyraznene
 
-    def expand_to_nodes(self, content):
-        node = nodes.Zvyraznene()
-        self.builder.append(node, move_actual = True)
-        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
-        self.builder.move_up()
-
-class FootNote(CzechtileMacro):
+class FootNote(CzechtileInlineMacro):
     name = 'poznamka'
     help = '((poznamka text pod carou))'
-
-    def expand_to_nodes(self, content):
-        node = nodes.FootNote()
-        self.builder.append(node, move_actual = True)
-        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
-        self.builder.move_up()
+    node = nodes.FootNote
 
 
-class Silne(CzechtileMacro):
+class Silne(CzechtileInlineMacro):
     name = 'silne'
     help = '((silne zesilneny text))'
-
-    def expand_to_nodes(self, content):
-        node = nodes.Silne()
-        self.builder.append(node, move_actual = True)
-        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
-        self.builder.move_up()
+    node = nodes.Silne
 
 class Hyperlink(CzechtileMacro):
     name = 'odkaz'
@@ -186,6 +154,27 @@ class TriTecky(CzechtileMacro):
     def expand_to_nodes(self, *args):
         self.builder.append(nodes.TriTecky(), move_actual=False)
 
+class Trademark(CzechtileMacro):
+    name = 'trademark'
+    help = '((trademark))'
+
+    def expand_to_nodes(self, *args):
+        self.builder.append(nodes.Trademark(), move_actual=False)
+
+class Copyright(CzechtileMacro):
+    name = 'copyright'
+    help = '((copyright))'
+
+    def expand_to_nodes(self, *args):
+        self.builder.append(nodes.Copyright(), move_actual=False)
+
+class RightsReserved(CzechtileMacro):
+    name = 'rights-reserved'
+    help = '((rights-reserved))'
+
+    def expand_to_nodes(self, *args):
+        self.builder.append(nodes.RightsReserved(), move_actual=False)
+
 class Pomlcka(CzechtileMacro):
     name = 'pomlcka'
     help = '((pomlcka))'
@@ -211,15 +200,10 @@ class Pomlcka(CzechtileMacro):
         if signals[1] in spaces:
             self.builder.append(nodes.PevnaMedzera(), move_actual=False)
 
-class Uvozovky(CzechtileMacro):
+class Uvozovky(CzechtileInlineMacro):
     name = 'uvozovky'
     help = '((uvozovky text v uvozovkach))'
-
-    def expand_to_nodes(self, content):
-        node = nodes.Uvozovky()
-        self.builder.append(node, move_actual = True)
-        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
-        self.builder.move_up()
+    node = nodes.Uvozovky
 
 class List(CzechtileMacro):
     name = 'seznam'
@@ -277,23 +261,30 @@ class ListItem(CzechtileMacro):
         parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
 
-class Preskrtnute(CzechtileMacro):
+class Preskrtnute(CzechtileInlineMacro):
     name = 'preskrtnute'
     help = '((preskrtnute preskrtnuty text))'
-
-    def expand_to_nodes(self, content):
-        node = nodes.Preskrtnute()
-        self.builder.append(node, move_actual=True)
-        parse(content, self.register_map, self.register, \
-          builder=self.builder, state=self.state)
-        self.builder.move_up()
+    node = nodes.Preskrtnute
 
 class Obrazek(CzechtileMacro):
     name = 'obrazek'
     help = '((obrazek lokace))'
 
     def expand_to_nodes(self, source):
+        if len(source.strip()) == 0:
+            raise ParserRollback(u"Empty image source")
+
         node = nodes.Obrazek()
-        node.source = source
+        node.source = source.strip()
         self.builder.append(node, move_actual=True)
         self.builder.move_up()
+
+class HorniIndex(CzechtileInlineMacro):
+    name = 'horni-index'
+    help = '((horni-index text posazeny do horniho indexu))'
+    node = nodes.HorniIndex
+
+class DolniIndex(CzechtileInlineMacro):
+    name = 'dolni-index'
+    help = '((dolni-index text posazeny do dolniho indexu))'
+    node = nodes.DolniIndex
