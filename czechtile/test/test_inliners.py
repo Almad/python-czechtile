@@ -256,9 +256,24 @@ class TestHorniIndex(OutputTestCase):
         self.assertEquals(self.text, self.tree.children[0].children[0].children[0].children[0].content)
     
     def testXhtmlExpansion(self):
-        self.tree = parse(u'((horni-index text v nornim indexu zdravi - 你好))', register_map)
         res = expand(self.tree, 'xhtml11', expander_map)
         self.assertXhtml(u'<p><sup>%s</sup></p>' % self.text, res)
+
+class TestDolniIndex(OutputTestCase):
+    
+    def setUp(self):
+        super(TestDolniIndex, self).setUp()
+        
+        self.tree = parse(u'H((dolni-index 2))0', register_map)
+    
+    def testMacroParsing(self):
+        self.assertEquals(nodes.Odstavec, self.tree.children[0].children[0].__class__)
+        self.assertEquals(nodes.DolniIndex, self.tree.children[0].children[0].children[1].__class__)
+        self.assertEquals(u"2", self.tree.children[0].children[0].children[1].children[0].content)
+    
+    def testXhtmlExpansion(self):
+        res = expand(self.tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<p>H<sub>2</sub>0</p>', res)
     
 if __name__ == "__main__":
     main()

@@ -30,6 +30,7 @@ class Sublist(Node): pass
 
 class FootNote(Node): pass
 class HorniIndex(Node): pass
+class DolniIndex(Node): pass
 
 class Uvozovky(Node): pass
 class PevnaMedzera(Node): pass

@@ -296,3 +296,12 @@ class HorniIndex(CzechtileMacro):
         parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
 
+class DolniIndex(CzechtileMacro):
+    name = 'dolni-index'
+    help = '((dolni-index text posazeny do dolniho indexu))'
+
+    def expand_to_nodes(self, content):
+        node = nodes.DolniIndex()
+        self.builder.append(node, move_actual = True)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
+        self.builder.move_up()

@@ -40,7 +40,7 @@ from czechtile import parsers
 common_inline_macros = [macros.Zvyraznene, macros.Silne,
       macros.Hyperlink, macros.TriTecky, macros.Pomlcka,
       macros.Uvozovky, macros.FootNote, macros.Preskrtnute,
-      macros.HorniIndex,
+      macros.HorniIndex, macros.DolniIndex,
 ]
 
 # map parsers to registers with nodes allowed

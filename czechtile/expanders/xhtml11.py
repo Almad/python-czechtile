@@ -88,6 +88,10 @@ class HorniIndex(CzechtileExpander):
     def expand(self, node, format, node_map):
         return self.expand_with_content(node, format, node_map, u'<sup>', u'</sup>')
 
+class DolniIndex(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u'<sub>', u'</sub>')
+
 class List(ListExpander):
     types = {
         'itemized': (u'ul',),
@@ -130,6 +134,7 @@ map = ExpanderMap({
     nodes.Silne: Silne,
     nodes.Zvyraznene: Zvyraznene,
     nodes.HorniIndex: HorniIndex,
+    nodes.DolniIndex: DolniIndex,
     nodes.TriTecky: entities.TriTecky,
     nodes.Pomlcka: entities.Pomlcka,
     nodes.Hyperlink: Hyperlink,
