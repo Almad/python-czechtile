@@ -137,6 +137,7 @@ map = ExpanderMap({
     nodes.DolniIndex: DolniIndex,
     nodes.TriTecky: entities.TriTecky,
     nodes.Pomlcka: entities.Pomlcka,
+    nodes.Trademark: entities.Trademark,
     nodes.Hyperlink: Hyperlink,
     nodes.List: List,
     nodes.ListItem: ListItem,

@@ -154,6 +154,13 @@ class TriTecky(CzechtileMacro):
     def expand_to_nodes(self, *args):
         self.builder.append(nodes.TriTecky(), move_actual=False)
 
+class Trademark(CzechtileMacro):
+    name = 'trademark'
+    help = '((trademark))'
+
+    def expand_to_nodes(self, *args):
+        self.builder.append(nodes.Trademark(), move_actual=False)
+
 class Pomlcka(CzechtileMacro):
     name = 'pomlcka'
     help = '((pomlcka))'
@@ -242,8 +249,6 @@ class Obrazek(CzechtileMacro):
         node.source = source.strip()
         self.builder.append(node, move_actual=True)
         self.builder.move_up()
-
-
 
 class HorniIndex(CzechtileInlineMacro):
     name = 'horni-index'

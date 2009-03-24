@@ -198,6 +198,7 @@ class TriTecky(Parser):
         return self.macro(self.register, self.register_map).expand()
 parsers += [TriTecky]
 
+
 class Pomlcka(Parser):
     start = ['(?!(\n){1,}(\ )*)(\ ){0,1}(\-){1}']  # be aware of that dash can be a list token (check if it isn't!)
     end = '(\ ){0,1}'
@@ -211,6 +212,20 @@ class Pomlcka(Parser):
         self.argument_string = self.chunk + self.stream[0:endMatch.end()]
         self.stream = self.stream[endMatch.end():]
 parsers += [Pomlcka]
+
+class Trademark(Parser):
+    start = ['(\(TM\)){1}', '(\(tm\)){1}']
+    end = None
+    macro = macros.Trademark
+
+    def resolve_argument_string(self):
+        pass
+
+    def call_macro(self):
+        return self.macro(self.register, self.register_map).expand()
+
+parsers += [Trademark]
+
 
 class Uvozovky(Parser):
     start = ['("){1}']

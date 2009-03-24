@@ -274,6 +274,40 @@ class TestDolniIndex(OutputTestCase):
     def testXhtmlExpansion(self):
         res = expand(self.tree, 'xhtml11', expander_map)
         self.assertXhtml(u'<p>H<sub>2</sub>0</p>', res)
+
+class TestTrademark(OutputTestCase):
+    def setUp(self):
+        super(TestTrademark, self).setUp()
+        
+        self.tree = parse(u'((trademark))', register_map)
+    
+    def _assertTree(self, tree):
+        self.assertEquals(nodes.Odstavec, tree.children[0].children[0].__class__)
+        self.assertEquals(nodes.Trademark, tree.children[0].children[0].children[0].__class__)
+    
+    def testMacroParsing(self):
+        self._assertTree(self.tree)
+    
+    def testXhtmlExpansion(self):
+        res = expand(self.tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<p>&#0153;</p>', res)
+    
+    def testUppercaseAlternative(self):
+        tree = parse(u'(TM)', register_map)
+        self._assertTree(tree)
+
+    def testLowercaseAlternative(self):
+        tree = parse(u'(tm)', register_map)
+        self._assertTree(tree)
+
+    def testTmNotResolved(self):
+        tree = parse(u'tm', register_map)
+        self.assertEquals(u"tm", tree.children[0].children[0].children[0].content)
+
+    def testNegated(self):
+        tree = parse(u'!(tm)', register_map)
+        self.assertEquals(u"(tm)", tree.children[0].children[0].children[0].content)
+
     
 if __name__ == "__main__":
     main()
