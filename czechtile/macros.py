@@ -24,7 +24,7 @@ class CzechtileInlineMacro(CzechtileMacro):
         self.builder.move_up()
 
 class MacroWrappingParagraph(CzechtileMacro):
-    
+
     def wrap_text_nodes(self, node):
         # we must go with numbers as we must replace textnode with it's tree on same position
         for child in node.children:
@@ -32,8 +32,10 @@ class MacroWrappingParagraph(CzechtileMacro):
                 self.builder.set_actual_node(child)
                 text = re.sub("^(\s)*", "", re.sub("(\s)*$", "", child.content))
                 for para_content in text.split('\n\n'):
-                    macro = Odstavec.argument_call(para_content, self.register, self.builder, self.state)
-                    macro.expand()
+                    if para_content:
+                        macro = Odstavec.argument_call(para_content, \
+                          self.register, self.builder, self.state)
+                        macro.expand()
 
 class Book(MacroWrappingParagraph):
     name = 'kniha'
