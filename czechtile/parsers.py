@@ -143,10 +143,11 @@ class List(Parser):
         tokens_re = '|'.join(tokens).replace('.', '\.')
         tokens_re = '(%s){1}' % tokens_re
         start = ['^(\n)*(\ )?%s(\ ){1}' % tokens_re,
-            '(\n){2}(\ )*%s(\ ){1}' % tokens_re]
+            '(\n){2}(\ )*%s(\ ){1}' % tokens_re,
+            '(\n){1}(\ )?%s(\ ){1}' % tokens_re]
         return start, tokens_re
     start, tokens_re = start(tokens)
-    end = '(\n){2}|(\n)$|$'
+    end = '(\n){2}|(\n)*$|$'
     macro = macros.List
 
     def resolve_argument_string(self):

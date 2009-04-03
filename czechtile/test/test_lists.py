@@ -25,6 +25,7 @@ from os.path import join
 import sys
 sys.path.insert(0, join(pardir, pardir))
 import logging as pylog
+#pylog.basicConfig(level=pylog.DEBUG)
 
 from unittest import main
 from czechtile import *
