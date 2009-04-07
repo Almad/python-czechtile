@@ -219,8 +219,8 @@ class List(CzechtileMacro):
         node.token = token
         self.builder.append(node, move_actual=True)
         parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
+        assert self.builder.actual_node == node
         self.builder.move_up()
-
 
 class ListItem(CzechtileMacro):
     name = 'polozka'

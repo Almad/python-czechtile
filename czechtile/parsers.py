@@ -155,7 +155,7 @@ class List(Parser):
         self.chunk = self.chunk.replace('\n', '')
         spaces_dec = self.chunk.count(' ') - 2
 
-        end = '(\n){1}(\ ){%d}%s(\ ){1}|(\n){2}' % (spaces_dec,
+        end = '(\n){1}(\ ){0,%d}%s(\ ){1}|(\n){2}' % (spaces_dec,
           self.tokens_re)
 
         end_doc = '(\n)*$|$'
@@ -193,8 +193,7 @@ class ListItem(Parser):
     def start():
         return ['(\n){1}(\ )?%s(\ ){1}' % List.tokens_re]
     start = start()
-    #end = '(\n){1}(\ )?%s(\ ){1}|$' % List.tokens_re
-    end = '(\n){1}|$'
+    end = '(\n){1}(\ )*%s(\ ){1}|$' % List.tokens_re
     macro = macros.ListItem
 
     priority = 1
