@@ -35,7 +35,7 @@ from module_test import *
 class TestBasicLists(OutputTestCase):
 
     def testItemizedList(self):
-        tree = parse('''\n - Polozka1\n - Polozka2\n\n''', register_map)
+        tree = parse('''\n - Polozka1\n - Polozka2''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].token, '-')
@@ -52,7 +52,7 @@ class TestBasicLists(OutputTestCase):
 
 
     def testNumberOrderedList(self):
-        tree = parse('''\n 1. Polozka1\n 1. Polozka2\n\n''', register_map)
+        tree = parse('''\n 1. Polozka1\n 1. Polozka2''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].token, '1.')
@@ -69,7 +69,7 @@ class TestBasicLists(OutputTestCase):
 
 
     def testAlphaOrderedList(self):
-        tree = parse('''\n a. Polozka1\n a. Polozka2\n\n''', register_map)
+        tree = parse('''\n a. Polozka1\n a. Polozka2''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].token, 'a.')
@@ -85,7 +85,7 @@ class TestBasicLists(OutputTestCase):
         self.assertXhtml('<ol type="a"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
     def testRomanOrderedList(self):
-        tree = parse('''\n i. Polozka1\n i. Polozka2\n\n''', register_map)
+        tree = parse('''\n i. Polozka1\n i. Polozka2''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].token, 'i.')
@@ -103,7 +103,7 @@ class TestBasicLists(OutputTestCase):
 class TestSublists(OutputTestCase):
 
     def testEarlierEndingSublist(self):
-        tree = parse('''\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n - Polozka2\n\n''', register_map)
+        tree = parse('''\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n - Polozka2''', register_map)
         #self.assertEquals(tree.children[0].__class__, nodes.Article)
         #self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         #self.assertEquals(tree.children[0].children[0].token, '-')
@@ -125,7 +125,7 @@ class TestSublists(OutputTestCase):
         self.assertXhtml('<ul><li>Polozka1</li><ul><li>VnorenaPolozka1</li><li>VnorenaPolozka2</li><ul><li>DvojitoVnorenaPolozka1</li></ul></ul><li>Polozka2</li></ul>', res)
         
     def testSimpleSublist(self):
-        tree = parse('''\n - Polozka prva\n  - Polozka vnorena prva\n  - Polozka vnorena druha\n - Polozka druha\n\n''', register_map)
+        tree = parse('''\n - Polozka prva\n  - Polozka vnorena prva\n  - Polozka vnorena druha\n - Polozka druha''', register_map)
         #self.assertEquals(tree.children[0].__class__, nodes.Article)
         #self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         #self.assertEquals(tree.children[0].children[0].token, '-')
@@ -145,7 +145,7 @@ class TestSublists(OutputTestCase):
         self.assertXhtml('<ul><li>Polozka prva</li><ul><li>Polozka vnorena prva</li><li>Polozka vnorena druha</li></ul><li>Polozka druha</li></ul>', res)
         
     def testDoubleSublist(self):
-        tree = parse('''\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n  - VnorenaPolozka3\n - Polozka2\n\n''', register_map)
+        tree = parse('''\n - Polozka1\n  - VnorenaPolozka1\n  - VnorenaPolozka2\n   - DvojitoVnorenaPolozka1\n  - VnorenaPolozka3\n - Polozka2''', register_map)
         #self.assertEquals(tree.children[0].__class__, nodes.Article)
         #self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         #self.assertEquals(tree.children[0].children[0].token, '-')
@@ -169,7 +169,7 @@ class TestSublists(OutputTestCase):
         self.assertXhtml('<ul><li>Polozka1</li><ul><li>VnorenaPolozka1</li><li>VnorenaPolozka2</li><ul><li>DvojitoVnorenaPolozka1</li></ul><li>VnorenaPolozka3</li></ul><li>Polozka2</li></ul>', res)
         
     def testMultiTypeSublist(self):
-        tree = parse('''\n - Polozka prva\n  i. Polozka vnorena prva\n  i. Polozka vnorena druha\n - Polozka druha\n\n''', register_map)
+        tree = parse('''\n - Polozka prva\n  i. Polozka vnorena prva\n  i. Polozka vnorena druha\n - Polozka druha''', register_map)
         #self.assertEquals(tree.children[0].__class__, nodes.Article)
         #self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         #self.assertEquals(tree.children[0].children[0].token, '-')
@@ -218,7 +218,7 @@ class TestSpecialCases(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[6].content, 'styri')
         
     def testDashInListItem(self):
-        tree = parse('''\n - jeden - dva tri-styri\n\n''', register_map)
+        tree = parse('''\n - jeden - dva tri-styri''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
@@ -240,7 +240,7 @@ class TestSpecialCases(OutputTestCase):
         self.assertEquals(tree.children[0].children[0].children[1].children[0].content, 'dva')
 
     def testListAtBOF(self):
-        tree = parse(''' - jeden\n - dva\n\n''', register_map)
+        tree = parse(''' - jeden\n - dva''', register_map)
         self.assertEquals(tree.children[0].__class__, nodes.Article)
         self.assertEquals(tree.children[0].children[0].__class__, nodes.List)
         self.assertEquals(tree.children[0].children[0].children[0].__class__, nodes.ListItem)
@@ -304,7 +304,6 @@ CzechTile ruleez.'''
 
     def testZoznamNaKonciPodNadpisomSTextom(self):
         text = '''= nadpis =
-
 Ahooj, ludia..
 
  - seznam1
