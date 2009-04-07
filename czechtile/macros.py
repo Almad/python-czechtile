@@ -218,36 +218,7 @@ class List(CzechtileMacro):
         node = nodes.List()
         node.token = token
         self.builder.append(node, move_actual=True)
-
-        prepend = False
-        for text in content.split('\n'):
-            if text:
-                # deal with lists which don't start with space character
-                if not text.startswith(' '):
-                    prepend = True
-                if prepend:
-                    text = ' ' + text
-
-                try:
-                    parse('\n' + text, self.register_map, self.register, builder=self.builder, state=self.state)
-                except ValueError:
-                    # handle the `Adding a text node, but one is already present' error
-                    assert isinstance(node.last_added_child, nodes.TextNode)
-                    node.last_added_child.content += '\n' + text
-
-        for child in node.children:
-            if isinstance(child, nodes.TextNode):
-                new_content = ''.join(['\n' + text[1:] for text in \
-                    child.content.split('\n') if text])
-
-                parse('\n' + new_content, self.register_map, self.register, builder=self.builder, state=self.state)
-                self.builder.set_actual_node(child)
-                self.builder.replace(node.last_added_child)
-                node.children.pop()
-                #macro = List.argument_call(new_content, self.register, self.builder, self.state)
-                #macro.expand()
-
-        self.builder.set_actual_node(node)
+        parse(content, self.register_map, self.register, builder=self.builder, state=self.state)
         self.builder.move_up()
 
 

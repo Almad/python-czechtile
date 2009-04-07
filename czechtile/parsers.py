@@ -143,23 +143,48 @@ class List(Parser):
         tokens_re = '|'.join(tokens).replace('.', '\.')
         tokens_re = '(%s){1}' % tokens_re
         start = ['^(\n)*(\ )?%s(\ ){1}' % tokens_re,
-            '(\n){2}(\ )*%s(\ ){1}' % tokens_re,
-            '(\n){1}(\ )?%s(\ ){1}' % tokens_re]
+            '(\n){1,2}(\ )*%s(\ ){1}' % tokens_re]#,
+            #'(\n){1}(\ )*%s(\ ){1}' % tokens_re]
         return start, tokens_re
     start, tokens_re = start(tokens)
-    end = '(\n){2}|(\n)*$|$'
     macro = macros.List
 
     def resolve_argument_string(self):
-        endMatch = re.search(self.__class__.end, self.stream)
-        if not endMatch:
-            raise ParserRollback
+        # one space is after the token (-1 for it's not interesting for us)
+        # and we want the decremented result (another -1)
+        self.chunk = self.chunk.replace('\n', '')
+        spaces_dec = self.chunk.count(' ') - 2
 
+        end = '(\n){1}(\ ){%d}%s(\ ){1}|(\n){2}' % (spaces_dec,
+          self.tokens_re)
+
+        end_doc = '(\n)*$|$'
+
+        # two-stage end matching
+        endMatch = re.search(end, self.stream)
+        if endMatch:
+            stream_start = endMatch.start()
+        else:
+            endMatch = re.search(end_doc, self.stream)
+            if not endMatch:
+                raise ParserRollback
+            stream_start = endMatch.end()
+
+        # extract a token from chunk
         tokens_search = re.search(self.tokens_re, self.chunk)
         token = tokens_search.group(0)
 
-        self.content = self.chunk.replace('\n', '') + self.stream[:endMatch.start()]
-        self.stream = self.stream[endMatch.end():]
+        # generate content for the macro call
+        pre = ''
+        if not self.chunk.startswith(' '):
+            assert spaces_dec < 0
+            pre = ' '
+
+        self.content = self.chunk + self.stream[:endMatch.start()]
+        self.content = '\n' + \
+            ''.join([pre + c[max(spaces_dec, 0):] + '\n'
+            for c in self.content.split('\n') if c])[:-1]
+        self.stream = self.stream[stream_start:]
 
         self.argument_string = ' '.join([token, self.content])
 parsers += [List]
@@ -168,13 +193,19 @@ class ListItem(Parser):
     def start():
         return ['(\n){1}(\ )?%s(\ ){1}' % List.tokens_re]
     start = start()
+    #end = '(\n){1}(\ )?%s(\ ){1}|$' % List.tokens_re
+    end = '(\n){1}|$'
     macro = macros.ListItem
 
     priority = 1
 
     def resolve_argument_string(self):
-        self.content = self.stream
-        self.stream = u''
+        endMatch = re.search(self.__class__.end, self.stream)
+        if not endMatch:
+            raise ParserRollback
+
+        self.content = self.stream[:endMatch.start()]
+        self.stream = self.stream[endMatch.start():]
         self.argument_string = self.content
 parsers += [ListItem]
 
