@@ -249,7 +249,6 @@ class TriTecky(TypographicParser):
 
 parsers += [TriTecky]
 
-
 class Pomlcka(Parser):
     start = ['(?!(\n){1,}(\ )*)(\ ){0,1}(\-){1}']  # be aware of that dash can be a list token (check if it isn't!)
     end = '(\ ){0,1}'

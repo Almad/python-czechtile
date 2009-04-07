@@ -232,15 +232,13 @@ class List(CzechtileMacro):
                     parse('\n' + text, self.register_map, self.register, builder=self.builder, state=self.state)
                 except ValueError:
                     # handle the `Adding a text node, but one is already present' error
-                    assert node.last_added_child.__class__ == nodes.TextNode
+                    assert isinstance(node.last_added_child, nodes.TextNode)
                     node.last_added_child.content += '\n' + text
 
         for child in node.children:
-            if child.__class__ == nodes.TextNode:
-                new_content = ''
-                for text in child.content.split('\n'):
-                    if text:
-                        new_content += '\n' + text[1:]
+            if isinstance(child, nodes.TextNode):
+                new_content = ''.join(['\n' + text[1:] for text in \
+                    child.content.split('\n') if text])
 
                 parse('\n' + new_content, self.register_map, self.register, builder=self.builder, state=self.state)
                 self.builder.set_actual_node(child)
