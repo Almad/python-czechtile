@@ -50,6 +50,14 @@ class OutputTestCase(unittest.TestCase):
             txt.decode('utf-8')
         return self.assertEquals(txt, out)
 
+    def assertMediawiki(self, txt, out):
+        # result from CZT must be unicode string
+        self.assertEquals(unicode, type(out))
+        # for backward compatibility, tests assertEqals could be strings
+        if isinstance(txt, str):
+            txt.decode('utf-8')
+        return self.assertEquals(txt, out)
+
 # slightly modified, taken from PyArticle
 def getPersistentTmpfile(suffix='.czt', prefix='czechtile_', object=False):
     fd, fn = mkstemp(suffix=suffix,prefix=prefix)
