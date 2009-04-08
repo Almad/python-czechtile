@@ -75,8 +75,8 @@ class Odstavec(Parser):
 parsers += [Odstavec]
 
 class NeformatovanyText(Parser):
-    start = [u'(\n§§\n){1}']
-    end = u'(\n§§\n){1}'
+    start = [u'(\n§§\n){1}', u'^(§§\n){1}']
+    end = u'(\n§§){1}(\n|$)'
     macro = macros.NeformatovanyText
 
     def resolve_argument_string(self):
