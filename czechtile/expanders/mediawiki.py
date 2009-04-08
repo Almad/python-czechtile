@@ -50,22 +50,21 @@ class Hyperlink(CzechtileExpander):
     def expand(self, node, format, node_map):
         return self.expand_with_content(node, format, node_map, u'[%s ' % unicode(node.link), u']')
 
-# TODO
-class List(EmptyExpander): pass
-class ListItem(EmptyExpander): pass
+class List(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        if node.token == '-':
+            token = u'*'
+        else:
+            token = u'#'
+        res = self.expand_with_content(node, format, node_map)
+        res = u''.join([token + r + u'\n' for r in res.split('\n') if r])
+        if not isinstance(node.parent, nodes.List):
+            res = res[:-1]
+        return res
 
-#class List(ListExpander):
-    #types = {
-        #'itemized': (u'*',),
-        #'1-ordered': (u'#',),
-        #'A-ordered': (u'#',),
-        #'I-ordered': (u'#',)
-    #}
-    #tag_formats = {'start': u'%s', 'end': u''}
-
-#class ListItem(ListItemExpander):
-    #list_expander = List
-    #tag = (u'*',)
+class ListItem(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u' ', u'\n')
 
 class Preskrtnute(CzechtileExpander):
     def expand(self, node, format, node_map):
@@ -74,7 +73,7 @@ class Preskrtnute(CzechtileExpander):
 
 class Obrazek(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return '[[Image:%s]]' % node.source
+        return u'[[Image:%s]]' % node.source
 
 map = ExpanderMap({
     nodes.DocumentNode: Document,
