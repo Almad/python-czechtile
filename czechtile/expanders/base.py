@@ -30,7 +30,7 @@ class CzechtileExpander(Expander):
 
 class EmptyExpander(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'', u'')
+        return self.expand_with_content(node, format, node_map)
 
 class ListExpander(CzechtileExpander):
     def expand(self, node, format, node_map):

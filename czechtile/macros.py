@@ -5,7 +5,7 @@ import re
 from sneakylang import parse, Macro, Document
 from sneakylang.parser import ParserRollback
 
-from czechtile import nodes
+from . import nodes
 
 class CzechtileMacro(Macro):
 

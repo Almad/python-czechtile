@@ -1,9 +1,10 @@
-from czechtile import nodes
-from czechtile.expanders import entities
-from czechtile.expanders.base import CzechtileExpander, ExpanderMap, TextNodeExpander, ListExpander, ListItemExpander
-
+from html5lib.constants import tokenTypes
 from html5lib.sanitizer import HTMLSanitizerMixin
 
+from .. import nodes
+from . import entities
+from .base import CzechtileExpander, ExpanderMap, TextNodeExpander, \
+                  ListExpander, ListItemExpander
 
 class Document(CzechtileExpander):
     def expand(self, node, format, node_map):
@@ -92,15 +93,26 @@ class Preskrtnute(CzechtileExpander):
 class Obrazek(CzechtileExpander):
 
     def expand(self, node, format, node_map):
-        # sanitize picture content
-        src = u""
+        # sanitize the picture location
         sanitizer = HTMLSanitizerMixin()
-        tokens = sanitizer.sanitize_token({"type":"StartTag", "name":"img", "data":[("src", node.source)]})['data']
+        tokens = sanitizer.sanitize_token({'type': tokenTypes['StartTag'], \
+            'name': 'img', 'data': [('src', node.source)]})['data']
+
+        # look for the src attribute in tokens
         if len(tokens) > 0:
             for attribute, value in tokens:
-                if attribute == "src":
-                    src = value
-        return u''.join([u'<img src="', src, '" />'])
+                if attribute == 'src':
+                    # we got it, return
+                    return u'<img src="%s" />' % value
+
+        # the src attribute wasn't sent back, it contained malicious code,
+        # return the input form of the node (i.e., a macro)
+        return str(node)
+
+        # ---
+        # hmm, the fail is that a node doesn't know the name of the macro
+        # which created him -- this fact doesn't make reconstructing the macro
+        # call very easy
 
 map = ExpanderMap({
     nodes.DocumentNode: Document,

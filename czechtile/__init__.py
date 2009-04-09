@@ -32,10 +32,10 @@ if not (__version__[1] == "stable" and __version__[2] == 0):
 
 from sneakylang import Register, RegisterMap, TreeBuilder
 
-from czechtile import expanders
-from czechtile import nodes
-from czechtile import macros
-from czechtile import parsers
+from . import expanders
+from . import nodes
+from . import macros
+from . import parsers
 
 common_inline_macros = [macros.Zvyraznene, macros.Silne,
       macros.Hyperlink, macros.TriTecky, macros.Pomlcka,

@@ -17,9 +17,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ###
 
-from czechtile import nodes
-from czechtile.expanders import entities
-from czechtile.expanders.base import CzechtileExpander, ExpanderMap, TextNodeExpander, ListExpander, ListItemExpander
+from .. import nodes
+from . import entities
+from .base import CzechtileExpander, ExpanderMap, TextNodeExpander, \
+                  ListExpander, ListItemExpander
 
 class Document(CzechtileExpander):
     def expand(self, node, format, node_map):

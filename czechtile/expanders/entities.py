@@ -1,5 +1,4 @@
-
-from czechtile.expanders.base import CzechtileExpander
+from .base import CzechtileExpander
 
 class TriTecky(CzechtileExpander):
     def expand(self, node, format, node_map):
