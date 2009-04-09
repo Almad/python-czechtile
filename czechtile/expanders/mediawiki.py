@@ -48,8 +48,12 @@ class Zvyraznene(CzechtileExpander):
         return self.expand_with_content(node, format, node_map, u"''", u"''")
 
 class Hyperlink(CzechtileExpander):
+    prefix = u'[%s '
+    sufix = u']'
+
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'[%s ' % unicode(node.link), u']')
+        return self.expand_with_content(node, format, node_map, \
+          self.prefix % unicode(node.link), self.sufix)
 
 class List(CzechtileExpander):
     def expand(self, node, format, node_map):
