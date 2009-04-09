@@ -23,7 +23,7 @@ __version__ = 0.1
 ###
 
 from sneakylang.expanders import expand
-from .base import ExpanderMap
+from .base import CzechtileExpander, ExpanderMap
 
 # Import expanders from this directory
 from . import bbcode
