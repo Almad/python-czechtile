@@ -83,20 +83,20 @@ class Obrazek(CzechtileExpander):
 
 # FIXME: nasledujuce expandery su dost divne
 class PevnaMedzera(CzechtileExpander):
-    def expand(self, *args, **kwargs):
-        return ' '
+    def expand(self, node, format, node_map):
+        return u' '
 
 class Pomlcka(CzechtileExpander):
-    def expand(self, *args, **kwargs):
-        return '-'
+    def expand(self, node, format, node_map):
+        return u'-'
 
 class TriTecky(CzechtileExpander):
-    def expand(self, *args, **kwargs):
-        return '...'
+    def expand(self, node, format, node_map):
+        return u'...'
 
 class Uvozovky(CzechtileExpander):
-    def expand(self, *args, **kwargs):
-        return '"'
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u'"', u'"')
 
 map = ExpanderMap({
     nodes.DocumentNode: Document,
