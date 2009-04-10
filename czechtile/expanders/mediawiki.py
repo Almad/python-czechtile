@@ -29,7 +29,8 @@ class Sekce(EmptyExpander): pass
 
 class Nadpis(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'=' * node.level, u'=' * node.level)
+        return self.expand_with_content(node, format, node_map, \
+            u'=' * node.level + u' ', u' ' + u'=' * node.level)
 
 class Odstavec(CzechtileExpander):
     def expand(self, node, format, node_map):
@@ -64,7 +65,7 @@ class List(CzechtileExpander):
         res = self.expand_with_content(node, format, node_map)
         res = u''.join([token + r + u'\n' for r in res.split('\n') if r])
         if not isinstance(node.parent, nodes.List):
-            res = res[:-1]
+            res = '\n\n' + res
         return res
 
 class ListItem(CzechtileExpander):
