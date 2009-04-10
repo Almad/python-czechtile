@@ -80,6 +80,23 @@ class Obrazek(CzechtileExpander):
     def expand(self, node, format, node_map):
         return u'[[Image:%s]]' % node.source
 
+# FIXME: nasledujuce expandery su dost divne
+class PevnaMedzera(CzechtileExpander):
+    def expand(self, *args, **kwargs):
+        return ' '
+
+class Pomlcka(CzechtileExpander):
+    def expand(self, *args, **kwargs):
+        return '-'
+
+class TriTecky(CzechtileExpander):
+    def expand(self, *args, **kwargs):
+        return '...'
+
+class Uvozovky(CzechtileExpander):
+    def expand(self, *args, **kwargs):
+        return '"'
+
 map = ExpanderMap({
     nodes.DocumentNode: Document,
     nodes.TextNode: TextNodeExpander,
@@ -91,13 +108,14 @@ map = ExpanderMap({
     nodes.NeformatovanyText: NeformatovanyText,
     nodes.Silne: Silne,
     nodes.Zvyraznene: Zvyraznene,
-    nodes.TriTecky: entities.TriTecky,
-    nodes.Pomlcka: entities.Pomlcka,
     nodes.Hyperlink: Hyperlink,
     nodes.List: List,
     nodes.ListItem: ListItem,
-    nodes.Uvozovky: entities.Uvozovky,
-    nodes.PevnaMedzera: entities.PevnaMedzera,
     nodes.Preskrtnute: Preskrtnute,
-    nodes.Obrazek: Obrazek
+    nodes.Obrazek: Obrazek,
+
+    nodes.PevnaMedzera: PevnaMedzera,
+    nodes.Pomlcka: Pomlcka,
+    nodes.TriTecky: TriTecky,
+    nodes.Uvozovky: Uvozovky
 })
