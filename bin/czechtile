@@ -72,7 +72,7 @@ def writeFile(fn, content):
 def main():
     (options, args) = parser.parse_args()
     _check_options(options, args)
-	
+
     if len(args) < 1:
         raise ValueError("Czechtile file not given!")
     czt_file = args[0]
@@ -94,13 +94,15 @@ def main():
         writeFile(options.docbook4_file, expand(tree, 'docbook4', expander_map))
 
     if options.format is not None:
-    	if options.format in ('xhtml1', 'xhtml11', 'html', 'xhtml'):
-    		options.format = 'xhtml11'
+        if options.format in ('xhtml1', 'xhtml11', 'html', 'xhtml'):
+            options.format = 'xhtml11'
+        elif options.format in ('mediawiki', 'mw'):
+            options.format = 'mediawiki'
 
-    	output = expand(tree, options.format, expander_map)
+        output = expand(tree, options.format, expander_map)
         
         if options.output_file is None:
-    		print output.encode('utf-8')
+            print output.encode('utf-8')
         else:
             writeFile(options.output_file, output)
 
