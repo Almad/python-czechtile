@@ -34,7 +34,7 @@ class Nadpis(CzechtileExpander):
 
 class Odstavec(CzechtileExpander):
     def expand(self, node, format, node_map):
-        return self.expand_with_content(node, format, node_map, u'', u'\n\n')
+        return self.expand_with_content(node, format, node_map, u'\n', u'\n')
 
 class NeformatovanyText(CzechtileExpander):
     def expand(self, node, format, node_map):
@@ -65,7 +65,7 @@ class List(CzechtileExpander):
         res = self.expand_with_content(node, format, node_map)
         res = u''.join([token + r + u'\n' for r in res.split('\n') if r])
         if not isinstance(node.parent, nodes.List):
-            res = '\n\n' + res
+            res = '\n' + res
         return res
 
 class ListItem(CzechtileExpander):
