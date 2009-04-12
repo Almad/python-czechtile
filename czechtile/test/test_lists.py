@@ -51,7 +51,7 @@ class TestBasicLists(OutputTestCase):
         self.assertXhtml('<ul><li>Polozka1</li><li>Polozka2</li></ul>', res)
 
         res = expand(tree, 'mediawiki', expander_map)
-        self.assertMediawiki('\n\n* Polozka1\n* Polozka2\n', res)
+        self.assertMediawiki('\n* Polozka1\n* Polozka2\n', res)
 
     def testNumberOrderedList(self):
         tree = parse('''\n 1. Polozka1\n 1. Polozka2''', register_map)
@@ -70,7 +70,7 @@ class TestBasicLists(OutputTestCase):
         self.assertXhtml('<ol type="1"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
         res = expand(tree, 'mediawiki', expander_map)
-        self.assertMediawiki('\n\n# Polozka1\n# Polozka2\n', res)
+        self.assertMediawiki('\n# Polozka1\n# Polozka2\n', res)
 
     def testAlphaOrderedList(self):
         tree = parse('''\n a. Polozka1\n a. Polozka2''', register_map)
@@ -89,7 +89,7 @@ class TestBasicLists(OutputTestCase):
         self.assertXhtml('<ol type="a"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
         res = expand(tree, 'mediawiki', expander_map)
-        self.assertMediawiki('\n\n# Polozka1\n# Polozka2\n', res)
+        self.assertMediawiki('\n# Polozka1\n# Polozka2\n', res)
 
     def testRomanOrderedList(self):
         tree = parse('''\n i. Polozka1\n i. Polozka2''', register_map)
@@ -108,7 +108,7 @@ class TestBasicLists(OutputTestCase):
         self.assertXhtml('<ol type="i"><li>Polozka1</li><li>Polozka2</li></ol>', res)
 
         res = expand(tree, 'mediawiki', expander_map)
-        self.assertMediawiki('\n\n# Polozka1\n# Polozka2\n', res)
+        self.assertMediawiki('\n# Polozka1\n# Polozka2\n', res)
 
 class TestSublists(OutputTestCase):
 
@@ -135,7 +135,7 @@ class TestSublists(OutputTestCase):
         self.assertXhtml('<ul><li>Polozka1</li><ul><li>VnorenaPolozka1</li><li>VnorenaPolozka2</li><ul><li>DvojitoVnorenaPolozka1</li></ul></ul><li>Polozka2</li></ul>', res)
 
         res = expand(tree, 'mediawiki', expander_map)
-        self.assertMediawiki('''\n\n* Polozka1\n** VnorenaPolozka1\n** VnorenaPolozka2\n*** DvojitoVnorenaPolozka1\n* Polozka2\n''', res)
+        self.assertMediawiki('''\n* Polozka1\n** VnorenaPolozka1\n** VnorenaPolozka2\n*** DvojitoVnorenaPolozka1\n* Polozka2\n''', res)
         
     def testSimpleSublist(self):
         tree = parse('''\n - Polozka prva\n  - Polozka vnorena prva\n  - Polozka vnorena druha\n - Polozka druha''', register_map)
