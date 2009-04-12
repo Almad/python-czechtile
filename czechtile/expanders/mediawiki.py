@@ -63,7 +63,7 @@ class List(CzechtileExpander):
         else:
             token = u'#'
         res = self.expand_with_content(node, format, node_map)
-        res = u''.join([token + r + u'\n' for r in res.split('\n') if r])
+        res = u''.join([token + r + u'\n' for r in res.splitlines() if r])
         if not isinstance(node.parent, nodes.List):
             res = '\n' + res
         return res

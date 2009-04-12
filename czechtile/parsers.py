@@ -113,7 +113,7 @@ class Nadpis(Parser):
     def resolve_argument_string(self):
         # we're interested only in this line
 
-        line = self.stream.split('\n')[0]
+        line = self.stream.splitlines()[0]
         eqls = re.search('(=)+', self.chunk)
         level = len(eqls.group())
 
@@ -183,7 +183,7 @@ class List(Parser):
         self.content = self.chunk + self.stream[:endMatch.start()]
         self.content = '\n' + \
             ''.join([pre + c[max(spaces_dec, 0):] + '\n'
-            for c in self.content.split('\n') if c])[:-1]
+            for c in self.content.splitlines() if c])[:-1]
         self.stream = self.stream[stream_start:]
 
         self.argument_string = ' '.join([token, self.content])
