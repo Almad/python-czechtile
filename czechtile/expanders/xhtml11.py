@@ -1,4 +1,8 @@
-from html5lib.constants import tokenTypes
+try:
+    from html5lib.constants import tokenTypes
+    START_TAG_CONST = tokenTypes['StartTag']
+except ImportError:
+    START_TAG_CONST = "StartTag"
 from html5lib.sanitizer import HTMLSanitizerMixin
 
 from .. import nodes
@@ -95,7 +99,7 @@ class Obrazek(CzechtileExpander):
     def expand(self, node, format, node_map):
         # sanitize the picture location
         sanitizer = HTMLSanitizerMixin()
-        tokens = sanitizer.sanitize_token({'type': tokenTypes['StartTag'], \
+        tokens = sanitizer.sanitize_token({'type': START_TAG_CONST, \
             'name': 'img', 'data': [('src', node.source)]})['data']
 
         # look for the src attribute in tokens
