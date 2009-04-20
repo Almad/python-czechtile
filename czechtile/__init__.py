@@ -4,7 +4,7 @@
 Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
 """
 
-__version__ = [0.2, "alpha", 3]
+__version__ = [0.3, "stable", 0]
 __versionstr__ = 'czechtile-'+str(__version__[0])
 
 if not (__version__[1] == "stable" and __version__[2] == 0):
