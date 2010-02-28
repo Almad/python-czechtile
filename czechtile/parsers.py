@@ -88,6 +88,25 @@ class NeformatovanyText(Parser):
         self.stream = self.stream[endMatch.end():]
 parsers += [NeformatovanyText]
 
+
+class ZdrojovyKod(Parser):
+    start = [u'(\n§§\ ){1}([a-z])+(\n){1}']
+    end = u'(\n§§){1}(\n|$)'
+    macro = macros.ZdrojovyKod
+
+    def resolve_argument_string(self):
+        endMatch = re.search(self.__class__.end, self.stream)
+        if not endMatch:
+            raise ParserRollback()
+
+        name = self.chunk[3:].strip()
+
+        self.argument_string = '%s %s' % (name, self.stream[0:endMatch.start()])
+
+        self.stream = self.stream[endMatch.end():]
+        
+parsers += [ZdrojovyKod]
+
 class Nadpis(Parser):
     start = ['(\n)?(=){1,5}(\ )?']
     macro = macros.Nadpis

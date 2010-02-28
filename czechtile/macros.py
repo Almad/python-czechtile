@@ -111,6 +111,24 @@ class NeformatovanyText(CzechtileMacro):
         self.builder.append(tn, move_actual=False)
         self.builder.move_up()
 
+class ZdrojovyKod(CzechtileMacro):
+    name = 'zdrojovy-kod'
+    help = '((zdrojovy-kod nazev-jazyka nenaformatovany obsah textu))'
+
+    def parse_argument_string(self, argument_string):
+        args = argument_string.split(' ')
+        language_name = args[0]
+        self.arguments = [language_name, ''.join([''.join([arg, ' ']) for arg in args[1:]])[:-1]]
+
+    def expand_to_nodes(self, language_name, content):
+        node = nodes.ZdrojovyKod()
+        node.syntax_name = language_name
+        self.builder.append(node, move_actual=True)
+        tn = nodes.TextNode()
+        tn.content = content
+        self.builder.append(tn, move_actual=False)
+        self.builder.move_up()
+
 class Zvyraznene(CzechtileInlineMacro):
     name = 'zvyraznene'
     help = '((zvyraznene zesilneny text))'

@@ -57,6 +57,9 @@ class NeformatovanyText(CzechtileExpander):
     def expand(self, node, format, node_map):
         return self.expand_with_content(node, format, node_map, u'<pre>', u'</pre>')
 
+class ZdrojovyKod(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return self.expand_with_content(node, format, node_map, u'<pre class="brush: %s">' % node.syntax_name, u'</pre>')
 
 class Silne(CzechtileExpander):
     def expand(self, node, format, node_map):
@@ -127,6 +130,7 @@ map = ExpanderMap({
     nodes.Nadpis: Nadpis,
     nodes.Odstavec: Odstavec,
     nodes.NeformatovanyText: NeformatovanyText,
+    nodes.ZdrojovyKod: ZdrojovyKod,
     nodes.Silne: Silne,
     nodes.Zvyraznene: Zvyraznene,
     nodes.HorniIndex: HorniIndex,
