@@ -26,6 +26,7 @@ class Pomlcka(Node): pass
 class Trademark(Node): pass
 class Copyright(Node): pass
 class RightsReserved(Node): pass
+class NovyRadek(Node): pass
 
 class List(Node): pass
 class ListItem(Node): pass

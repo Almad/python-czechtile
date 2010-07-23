@@ -3,6 +3,7 @@
 
 """ Test nahrazovani na peknou ceskou typografii
 """
+
 ###
 #Czechtile: WikiHezkyCesky
 #Copyright (C) 2006 Lukas "Almad" Linhart http://www.almad.net/
@@ -61,6 +62,15 @@ class TestCzechTypos(OutputTestCase):
 
         result = expand(tree, 'xhtml11', expander_map)
         self.assertXhtml('''<p>&#8222;Uvodzovkujem&#8220;</p>''', result)
+
+    def testNovyRadek(self):
+        tree = parse('''A
+B
+C''', register_map)
+
+        result = expand(tree, 'docbook4', expander_map)
+        result = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml('''<p>A<br />B<br />C</p>''', result)
 
 if __name__ == "__main__":
     main()

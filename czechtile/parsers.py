@@ -276,7 +276,6 @@ class TriTecky(TypographicParser):
     start = ['(\.){3}']
     end = None
     macro = macros.TriTecky
-
 parsers += [TriTecky]
 
 class Pomlcka(Parser):
@@ -328,8 +327,14 @@ class Uvozovky(Parser):
         self.stream = self.stream[endMatch.end():]
 
 	if self.stream[:2] == '""':
-	    raise ParserRollback
+            raise ParserRollback
 parsers += [Uvozovky]
+
+class NovyRadek(TypographicParser):
+    start = ['(\n){1}']
+    end = None
+    macro = macros.NovyRadek
+parsers += [NovyRadek]
 
 ### End of typographic parsers ###
 

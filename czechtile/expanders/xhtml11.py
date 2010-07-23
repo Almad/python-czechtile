@@ -78,6 +78,10 @@ class DolniIndex(CzechtileExpander):
     def expand(self, node, format, node_map):
         return self.expand_with_content(node, format, node_map, u'<sub>', u'</sub>')
 
+class NovyRadek(CzechtileExpander):
+    def expand(self, node, format, node_map):
+        return u'<br />'
+
 class List(ListExpander):
     tag_map = {
         '-': {'tag': u'ul', 'attrs': u''},
@@ -142,5 +146,6 @@ map = ExpanderMap({
     nodes.Uvozovky: entities.Uvozovky,
     nodes.PevnaMedzera: entities.PevnaMedzera,
     nodes.Preskrtnute: Preskrtnute,
-    nodes.Obrazek: Obrazek
+    nodes.Obrazek: Obrazek,
+    nodes.NovyRadek: NovyRadek
 })

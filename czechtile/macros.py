@@ -259,3 +259,10 @@ class DolniIndex(CzechtileInlineMacro):
     name = 'dolni-index'
     help = '((dolni-index text posazeny do dolniho indexu))'
     node = nodes.DolniIndex
+
+class NovyRadek(CzechtileMacro):
+    name = 'novy_radek'
+    help = '((novy_radek))'
+
+    def expand_to_nodes(self, *args):
+        self.builder.append(nodes.NovyRadek(), move_actual=False)

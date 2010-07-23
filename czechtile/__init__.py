@@ -41,7 +41,8 @@ common_inline_macros = [macros.Zvyraznene, macros.Silne,
       macros.Hyperlink, macros.TriTecky, macros.Pomlcka,
       macros.Uvozovky, macros.FootNote, macros.Preskrtnute,
       macros.HorniIndex, macros.DolniIndex,
-      macros.Trademark, macros.Copyright, macros.RightsReserved
+      macros.Trademark, macros.Copyright, macros.RightsReserved,
+      macros.NovyRadek
 ]
 
 hyperlink_macros = [macro for macro in common_inline_macros if macro is not macros.Hyperlink]
