@@ -241,6 +241,22 @@ class TestFixedText(OutputTestCase):
         res = expand(tree, 'docbook4', expander_map)
         self.assertDocbook4(u'<literallayout>Tohle je ""nenaparsovaný"" text\nKterý je fixní.</literallayout>', res)
 
+class TestHighlightedCode(OutputTestCase):
+
+    def testSyntaxHighlighting(self):
+        tree = parse(u'\n§§ python\ndef python_fuction():\n    print "awesome"\n§§\n', register_map)
+        self.assertEquals(tree.children[0].children[0].__class__, nodes.ZdrojovyKod)
+        self.assertEquals(tree.children[0].children[0].syntax_name, "python")
+        self.assertEquals(len(tree.children[0].children), 1)
+        content = u'def python_fuction():\n    print "awesome"'
+        self.assertEquals(tree.children[0].children[0].children[0].content, content)
+
+        res = expand(tree, 'xhtml11', expander_map)
+        self.assertXhtml(u'<pre class="brush: python">%s</pre>' % content, res)
+
+        res = expand(tree, 'docbook4', expander_map)
+        self.assertDocbook4(u'<literallayout>%s</literallayout>' % content, res)
+
 class TestPreskrtnute(OutputTestCase):
     def testMakro(self):
         tree = parse(u'((preskrtnute preciarknuty text))', register_map)

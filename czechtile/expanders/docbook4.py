@@ -119,6 +119,7 @@ map = ExpanderMap({
     nodes.Nadpis: Nadpis,
     nodes.Odstavec: Odstavec,
     nodes.NeformatovanyText: NeformatovanyText,
+    nodes.ZdrojovyKod: NeformatovanyText,
     nodes.Silne: Silne,
     nodes.Zvyraznene: Zvyraznene,
     nodes.TriTecky: entities.TriTecky,

@@ -4,7 +4,7 @@
 Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
 """
 
-__version__ = [0.3, "stable", 0]
+__version__ = [0.3, "dev", 1]
 __versionstr__ = 'czechtile-'+str(__version__[0])
 
 if not (__version__[1] == "stable" and __version__[2] == 0):
@@ -50,8 +50,8 @@ hyperlink_macros = [macro for macro in common_inline_macros if macro is not macr
 # map parsers to registers with nodes allowed
 register_map = RegisterMap({
     macros.Document : Register([macros.Book, macros.Article], parsers.parsers),
-    macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
-    macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.List, macros.Obrazek], parsers.parsers),
+    macros.Book : Register([macros.Sekce, macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.ZdrojovyKod, macros.List, macros.Obrazek], parsers.parsers),
+    macros.Sekce : Register([macros.Odstavec, macros.Nadpis, macros.NeformatovanyText, macros.ZdrojovyKod, macros.List, macros.Obrazek], parsers.parsers),
     macros.Odstavec : Register(common_inline_macros, parsers.parsers),
     macros.Hyperlink : Register(hyperlink_macros, parsers.parsers),
     macros.Nadpis : Register([macros.Hyperlink, macros.Uvozovky, macros.FootNote, macros.Pomlcka], parsers.parsers),
