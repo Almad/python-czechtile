@@ -24,9 +24,15 @@ required_python_version = '2.4'
 ###############################################################################
 # arguments for the setup command
 ###############################################################################
-import czechtile
+
+VERSION = (0, 4)
+
+__version__ = VERSION
+__versionstr__ = '.'.join(map(str, VERSION))
+
+
 name = "czechtile"
-version = czechtile.__versionstr__[len(name)+1:]
+version = __versionstr__,
 desc = "Python implementation of Czechtile WikiSyntax"
 long_desc = """Czechtile is WikiSyntax intended to be used on Czech keyboard layout: this is Python module for
 handling Czechtile input and transformation into DocBook and XHTML."""
@@ -45,13 +51,13 @@ classifiers=[
 ]
 author="Lukas Almad Linhart"
 author_email="bugs@almad.net"
-url="http://projects.almad.net/czechtile"
+# url="http://projects.almad.net/czechtile"
 cp_license="BSD"
 packages=[
     "czechtile",
     "czechtile.expanders",
 ]
-download_url="http://www.almad.net/download/czechtile/"+czechtile.__versionstr__+".tar.gz"
+# download_url="http://www.almad.net/download/czechtile/"+czechtile.__versionstr__+".tar.gz"
 data_files=[]
 scripts = ['bin/czechtile']
 
@@ -79,10 +85,10 @@ def main():
         classifiers=classifiers,
         author=author,
         author_email=author_email,
-        url=url,
+#        url=url,
         license=cp_license,
         packages=packages,
-        download_url=download_url,
+#        download_url=download_url,
         data_files=data_files,
     )
 

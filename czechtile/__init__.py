@@ -4,11 +4,10 @@
 Set of rules for SneakyLang [http://projects.almad.net/sneakylang]
 """
 
-__version__ = [0.3, "dev", 1]
-__versionstr__ = 'czechtile-'+str(__version__[0])
+VERSION = (0, 4)
 
-if not (__version__[1] == "stable" and __version__[2] == 0):
-    __versionstr__ = __versionstr__+"_"+__version__[1]+str(__version__[2])
+__version__ = VERSION
+__versionstr__ = '.'.join(map(str, VERSION))
 
 
 ###
