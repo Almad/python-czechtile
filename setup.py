@@ -32,7 +32,7 @@ __versionstr__ = '.'.join(map(str, VERSION))
 
 
 name = "czechtile"
-version = __versionstr__,
+version = __versionstr__
 desc = "Python implementation of Czechtile WikiSyntax"
 long_desc = """Czechtile is WikiSyntax intended to be used on Czech keyboard layout: this is Python module for
 handling Czechtile input and transformation into DocBook and XHTML."""
